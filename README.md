@@ -1,2 +1,2 @@
 # erapor6
-Aplikasi Penilaian Direktorat SMK
+<p align=center>PERSIAPAN</p>
