@@ -175,15 +175,17 @@ class P5bk extends Component
     }
     public function store(){
         foreach($this->nilai as $anggota_rombel_id => $nilai_p5){
-            Catatan_budaya_kerja::updateOrCreate(
-                [
-                    'sekolah_id' => session('sekolah_id'),
-                    'anggota_rombel_id' => $anggota_rombel_id,
-                ],
-                [
-                    'catatan' => $this->deskripsi[$anggota_rombel_id]
-                ]
-            );
+            if(isset($this->deskripsi[$anggota_rombel_id])){
+                Catatan_budaya_kerja::updateOrCreate(
+                    [
+                        'sekolah_id' => session('sekolah_id'),
+                        'anggota_rombel_id' => $anggota_rombel_id,
+                    ],
+                    [
+                        'catatan' => $this->deskripsi[$anggota_rombel_id]
+                    ]
+                );
+            }
             foreach($nilai_p5 as $aspek_budaya_kerja_id => $nilai){
                 $collection = Str::of($nilai)->explode('|');
                 Nilai_budaya_kerja::updateOrCreate(

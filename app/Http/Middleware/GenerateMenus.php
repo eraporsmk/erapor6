@@ -542,7 +542,7 @@ class GenerateMenus
                 return [
                     'class' => 'd-flex align-items-center text-'.$color,
                     'onclick' => $onclick,
-                    'title' => 'asd',
+                    //'title' => 'asd',
                 ];
             } else {
                 return [
@@ -556,7 +556,7 @@ class GenerateMenus
             } else {
                 return [
                     'class' => 'd-flex align-items-center',
-                    'title' => 'asd',
+                    //'title' => 'asd',
                 ];
             }
         }
