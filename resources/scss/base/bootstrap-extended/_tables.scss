@@ -1,0 +1,93 @@
+// ================================================================================================
+//     File Name: tables.scss
+//     Description: Tables pages custom scss
+//     ----------------------------------------------------------------------------------------------
+//     Item Name: Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template
+//     Author: PIXINVENT
+//     Author URL: http://www.themeforest.net/user/pixinvent
+// ================================================================================================
+
+// table-white-space
+.table-white-space {
+  th,
+  td {
+    white-space: nowrap;
+  }
+}
+
+// table th, td padding
+.table {
+  thead,
+  tfoot {
+    th {
+      vertical-align: top;
+      text-transform: uppercase;
+      font-size: $table-th-font-size;
+      letter-spacing: 0.5px;
+    }
+  }
+  &.table-sm {
+    th,
+    td {
+      padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
+      &:first-child {
+        padding-left: 0.75rem;
+      }
+    }
+  }
+  &.table-dark {
+    tr > * {
+      border-bottom-color: $theme-dark-border-color !important;
+    }
+  }
+}
+// if we are not using table-light class then also header color should apply
+.table:not(.table-dark):not(.table-light) {
+  thead:not(.table-dark) th,
+  tfoot:not(.table-dark) th {
+    background-color: $table-head-bg;
+  }
+}
+// table inside card, don't need margin bottom
+.table-hover {
+  tbody {
+    tr {
+      cursor: pointer;
+    }
+  }
+}
+
+// table border radius
+.card .table {
+  margin-bottom: 0;
+  border-bottom-left-radius: $border-radius;
+  border-bottom-right-radius: $border-radius;
+  tbody {
+    tr:last-child > * {
+      border-bottom-width: 0;
+    }
+  }
+  tbody {
+    tr:last-child {
+      td:first-child {
+        border-bottom-left-radius: $border-radius;
+      }
+      td:last-child {
+        border-bottom-right-radius: $border-radius;
+      }
+    }
+  }
+}
+
+// Flush spacing of left from first column ans right from last column
+.table.table-flush-spacing {
+  thead,
+  tbody {
+    tr > td:first-child {
+      padding-left: 0;
+    }
+    tr > td:last-child {
+      padding-right: 0;
+    }
+  }
+}

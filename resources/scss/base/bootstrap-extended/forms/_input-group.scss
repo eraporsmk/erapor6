@@ -1,0 +1,90 @@
+//
+// Base styles
+//
+
+// input group !important for overriding the dark style
+.input-group {
+  &:not(.bootstrap-touchspin):focus-within {
+    box-shadow: $input-focus-box-shadow;
+    border-radius: $input-border-radius;
+    .form-control,
+    .input-group-text {
+      border-color: $primary;
+      box-shadow: none;
+
+      &.is-valid {
+        border-color: $success;
+      }
+
+      &.is-invalid {
+        border-color: $danger;
+      }
+    }
+  }
+  &.is-valid {
+    .input-group-text {
+      border-color: $success !important;
+    }
+    &:not(.bootstrap-touchspin):focus-within {
+      .input-group-text {
+        border-color: $success;
+      }
+    }
+  }
+  &.is-invalid {
+    .input-group-text {
+      border-color: $danger !important;
+    }
+    &:not(.bootstrap-touchspin):focus-within {
+      .input-group-text {
+        border-color: $danger;
+      }
+    }
+  }
+
+  &.disabled {
+    .input-group-text {
+      background-color: $input-disabled-bg;
+    }
+  }
+
+  &.round {
+    .form-control,
+    .input-group-text,
+    &:focus-within {
+      @include border-radius(1.5rem);
+    }
+  }
+  &.square {
+    .form-control,
+    .input-group-text,
+    &:focus-within {
+      @include border-radius(0);
+    }
+  }
+}
+
+.input-group-text {
+  @include transition($input-transition);
+}
+
+// input group merge
+.input-group-merge {
+  .form-control {
+    &:not(:first-child) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    &:not(:last-child) {
+      padding-right: 0;
+      border-right: 0;
+    }
+
+    &.is-valid {
+      .input-group-text {
+        border-color: $success;
+      }
+    }
+  }
+}

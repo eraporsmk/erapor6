@@ -1,0 +1,16 @@
+// Toasts
+
+.toast {
+  &.show {
+    z-index: 1030;
+  }
+  .btn-close:focus {
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 420.98px) {
+  .toast {
+    width: auto;
+  }
+}

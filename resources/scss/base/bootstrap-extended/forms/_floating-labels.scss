@@ -1,0 +1,6 @@
+.form-floating > .form-control:focus ~ label {
+  color: $primary;
+}
+.form-floating > label {
+  opacity: 0.65;
+}

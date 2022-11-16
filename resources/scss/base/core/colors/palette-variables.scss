@@ -1,0 +1,104 @@
+// Overrides user _variables-components
+@import '../../bootstrap-extended/include';
+
+// Google Color Palette defined: http://www.google.com/design/spec/style/color.html
+
+$white-color: (
+  'base': #ffffff
+);
+$black-color: (
+  'base': #000000
+);
+$dark-color: (
+  'base': $dark,
+  'darken-1': #343434,
+  'darken-2': #1e1e1e,
+  'darken-3': #626262
+);
+$light-color: (
+  'base': $light
+);
+
+$primary-color: (
+  'lighten-4': lighten($primary, 20%),
+  'lighten-3': lighten($primary, 15%),
+  'lighten-2': lighten($primary, 10%),
+  'lighten-1': lighten($primary, 5%),
+  'base': $primary,
+  'darken-1': darken($primary, 5%),
+  'darken-2': darken($primary, 10%),
+  'darken-3': darken($primary, 15%),
+  'darken-4': darken($primary, 20%)
+);
+$secondary-color: (
+  'lighten-4': lighten($secondary, 20%),
+  'lighten-3': lighten($secondary, 15%),
+  'lighten-2': lighten($secondary, 10%),
+  'lighten-1': lighten($secondary, 5%),
+  'base': $secondary,
+  'darken-1': darken($secondary, 5%),
+  'darken-2': darken($secondary, 10%),
+  'darken-3': darken($secondary, 15%),
+  'darken-4': darken($secondary, 20%)
+);
+
+// #4839EB
+//
+$success-color: (
+  'lighten-4': lighten($success, 20%),
+  'lighten-3': lighten($success, 15%),
+  'lighten-2': lighten($success, 10%),
+  'lighten-1': lighten($success, 5%),
+  'base': $success,
+  'darken-1': darken($success, 5%),
+  'darken-2': darken($success, 10%),
+  'darken-3': darken($success, 15%),
+  'darken-4': darken($success, 20%)
+);
+$info-color: (
+  'lighten-4': lighten($info, 20%),
+  'lighten-3': lighten($info, 15%),
+  'lighten-2': lighten($info, 10%),
+  'lighten-1': lighten($info, 5%),
+  'base': $info,
+  'darken-1': darken($info, 5%),
+  'darken-2': darken($info, 10%),
+  'darken-3': darken($info, 15%),
+  'darken-4': darken($info, 20%)
+);
+$warning-color: (
+  'lighten-4': lighten($warning, 20%),
+  'lighten-3': lighten($warning, 15%),
+  'lighten-2': lighten($warning, 10%),
+  'lighten-1': lighten($warning, 5%),
+  'base': $warning,
+  // #FFAC5D
+  'darken-1': darken($warning, 5%),
+  'darken-2': darken($warning, 10%),
+  'darken-3': darken($warning, 15%),
+  'darken-4': darken($warning, 20%)
+);
+$danger-color: (
+  'lighten-4': lighten($danger, 20%),
+  'lighten-3': lighten($danger, 15%),
+  'lighten-2': lighten($danger, 10%),
+  'lighten-1': lighten($danger, 5%),
+  'base': $danger,
+  'darken-1': darken($danger, 5%),
+  'darken-2': darken($danger, 10%),
+  'darken-3': darken($danger, 15%),
+  'darken-4': darken($danger, 20%)
+);
+
+$colors: (
+  'white': $white-color,
+  'black': $black-color,
+  'dark': $dark-color,
+  'light': $light-color,
+  'primary': $primary-color,
+  'secondary': $secondary-color,
+  'success': $success-color,
+  'info': $info-color,
+  'warning': $warning-color,
+  'danger': $danger-color
+);

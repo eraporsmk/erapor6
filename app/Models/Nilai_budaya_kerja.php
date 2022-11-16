@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\Uuid;
+
+class Nilai_budaya_kerja extends Model
+{
+    use HasFactory, Uuid, SoftDeletes;
+    public $incrementing = false;
+    public $keyType = 'string';
+	protected $table = 'nilai_budaya_kerja';
+	protected $primaryKey = 'nilai_budaya_kerja_id';
+	protected $guarded = [];
+    public function budaya_kerja()
+	{
+		return $this->belongsTo(Budaya_kerja::class, 'budaya_kerja_id', 'budaya_kerja_id');
+	}
+    public function rencana_budaya_kerja()
+    {
+        return $this->belongsTo(Rencana_budaya_kerja::class, 'rencana_budaya_kerja_id', 'rencana_budaya_kerja_id');
+    }
+    public function aspek_budaya_kerja()
+    {
+        return $this->belongsTo(Aspek_budaya_kerja::class, 'aspek_budaya_kerja_id', 'aspek_budaya_kerja_id');
+    }
+    public function anggota_rombel()
+    {
+        return $this->belongsTo(Anggota_rombel::class, 'anggota_rombel_id', 'anggota_rombel_id');
+    }
+}
