@@ -1,1 +1,0 @@
-!function(o,e,t){"use strict";var c=t(".accordion"),n=t(".accordion-hover-title");c.attr("data-toggle-hover","true")&&n.closest(".accordion-item").on("mouseenter",(function(){t(this).children(".collapse").collapse("show")}))}(window,document,jQuery);

@@ -1,1 +1,0 @@
-$((function(){"use strict";var e=$(".auth-reset-password-form");e.length&&e.validate({rules:{"reset-password-new":{required:!0},"reset-password-confirm":{required:!0,equalTo:"#reset-password-new"}}})}));
