@@ -85,7 +85,7 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 		@foreach($get_siswa->all_nilai_ekskul as $nilai_ekskul)
 		<tr>
 			<td style="vertical-align: middle;">{{$loop->iteration}}</td>
-			<td>{{strtoupper($nilai_ekskul->rombongan_belajar->nama)}}</td>
+			<td>{{strtoupper($nilai_ekskul->ekstrakurikuler->nama_ekskul)}}</td>
 			<td>{{$nilai_ekskul->deskripsi_ekskul}}</td>
 		</tr>
 		@endforeach

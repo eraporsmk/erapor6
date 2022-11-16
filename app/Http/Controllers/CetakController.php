@@ -323,8 +323,7 @@ class CetakController extends Controller
 					$query->whereHas('ekstrakurikuler', function($query){
 						$query->where('semester_id', session('semester_aktif'));
 					});
-					$query->with('ekstrakurikuler');
-					$query->with('rombongan_belajar');
+					$query->with(['ekstrakurikuler']);
 				},
 				'kehadiran',
 				'all_prakerin',
