@@ -88,7 +88,3 @@ DB_DATABASE=windows
 DB_USERNAME=windows
 DB_PASSWORD=windows
 ```
-- Hapus folder **php** dan folder **webserver** yang ada di direktori **c:\eRaporSMK**
-- Unduh file **php-webserver.zip** [disini](https://bit.ly/php-webserver-erapor6)
-- Extract file **php-webserver.zip** di direktor **c:\eRaporSMK**
-
