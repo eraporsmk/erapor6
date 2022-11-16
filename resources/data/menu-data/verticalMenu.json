@@ -1,0 +1,50 @@
+{
+  "menu": [
+    {
+      "url": "dashboard",
+      "name": "Beranda",
+      "icon": "home",
+      "slug": "dashboard"
+    },
+    {
+      "name": "Page Layouts",
+      "icon": "mail",
+      "slug": "",
+      "badge": "5",
+      "badgeClass": "badge rounded-pill badge-light-danger ms-auto me-1",
+      "submenu": [
+        {
+          "url": "layouts/collapsed-menu",
+          "name": "Collapsed Menu",
+          "icon": "circle",
+          "slug": "collapsed-menu",
+		  "role" : "adminstrator"
+        },
+        {
+          "url": "layouts/full",
+          "name": "Layout Full",
+          "icon": "circle",
+          "slug": "layout-full"
+        },
+        {
+          "url": "layouts/without-menu",
+          "name": "Without Menu",
+          "icon": "circle",
+          "slug": "without-menu"
+        },
+        {
+          "url": "layouts/empty",
+          "name": "Layout Empty",
+          "icon": "circle",
+          "slug": "layout-empty"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "Layout Blank",
+          "icon": "circle",
+          "slug": "layout-blank"
+        }
+      ]
+    }
+  ]
+}

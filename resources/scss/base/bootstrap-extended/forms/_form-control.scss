@@ -1,0 +1,38 @@
+.form-control {
+  &::placeholder {
+    transition: all 0.2s ease;
+  }
+
+  &:focus {
+    &::placeholder {
+      transform: translate(5px);
+      transition: all 0.2s ease;
+    }
+    &:valid,
+    &.is-valid {
+      box-shadow: $input-focus-box-shadow;
+    }
+  }
+}
+
+.form-control-plaintext {
+  &:focus {
+    outline: none;
+  }
+}
+
+// Text area line height
+textarea {
+  &.form-control {
+    line-height: 1.6rem;
+    padding: 0.8rem 1rem !important;
+  }
+
+  &.form-control-sm {
+    padding: 0.4rem 0.857rem !important;
+  }
+
+  &.form-control-lg {
+    padding: 1rem 1.143rem !important;
+  }
+}

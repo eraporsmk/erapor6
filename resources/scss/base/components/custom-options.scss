@@ -1,0 +1,41 @@
+// =========================================================================================
+//   File Name: custom-options.scss
+//   Description: custom checkbox and radion button style.
+//   ----------------------------------------------------------------------------------------
+//   Item Name: Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template
+//   Author: PIXINVENT
+//   Author URL: http://www.themeforest.net/user/pixinvent
+// ==========================================================================================
+
+// Component: custom options
+// ========================================================================
+
+.custom-options-checkable {
+  .custom-option-item {
+    width: 100%;
+    cursor: pointer;
+    border-radius: 0.42rem;
+    color: $secondary;
+    background-color: $custom-options-bg-color;
+    border: 1px solid $border-color;
+    .custom-option-item-title {
+      color: $secondary;
+    }
+  }
+}
+
+.custom-option-item-check {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+
+  &:checked {
+    + .custom-option-item {
+      color: $primary;
+      background-color: rgba($primary, 0.12);
+      border-color: $primary;
+      .custom-option-item-title {
+        color: $primary;
+      }
+    }
+  }
+}
