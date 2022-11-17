@@ -39,8 +39,15 @@ class KompetensiDasar extends Component
                 $query->whereNotIn('kurikulum', [2006, 2013, 2022]);
             })->orderBy($this->sortby, $this->sortbydesc)
                 ->when($this->search, function($query) {
-                    $query->where('kompetensi_dasar', 'ILIKE', '%' . $this->search . '%');
-                    $query->orWhere('mata_pelajaran.nama', 'ILIKE', '%' . $this->search . '%');
+                    //$query->where('kompetensi_dasar', 'ILIKE', '%' . $this->search . '%');
+                    //$query->orWhere('mata_pelajaran.nama', 'ILIKE', '%' . $this->search . '%');
+                    $query->where('id_kompetensi', 'ilike', '%'.$search.'%');
+					$query->orWhere('kompetensi_dasar', 'ilike', '%'.$search.'%');
+					$query->orWhere('kurikulum', 'ilike', '%'.$search.'%');
+					$query->orWhereHas('mata_pelajaran', function($q) use ($search) { 
+						$q->where('mata_pelajaran_id', 'ilike', '%'.$search.'%');
+                        $q->where('mata_pelajaran', 'ilike', '%'.$search.'%');
+					});
             })->paginate($this->per_page),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Kompetensi Dasar"]
