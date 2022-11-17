@@ -1,5 +1,29 @@
 <p align="center"><img src="http://erapor-smk.net/logo.png" width="600"></p>
 
+## Server Requirements
+PHP >= 7.4.30
+
+PHP cURL Extension
+
+BCMath PHP Extension
+
+Ctype PHP Extension
+
+Fileinfo PHP extension
+
+JSON PHP Extension
+
+Mbstring PHP Extension
+
+OpenSSL PHP Extension
+
+PDO PHP Extension
+
+Tokenizer PHP Extension
+
+XML PHP Extension
+
+
 ## Cara Install (Untuk Pengguna Baru)
 
 - Clone Repositori ini
@@ -88,3 +112,4 @@ DB_DATABASE=windows
 DB_USERNAME=windows
 DB_PASSWORD=windows
 ```
+
