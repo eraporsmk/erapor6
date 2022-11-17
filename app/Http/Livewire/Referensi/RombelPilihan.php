@@ -108,6 +108,7 @@ class RombelPilihan extends Component
         $pengajar = [];
         $kelompok_id = [];
         $no_urut = [];
+        $nama_mata_pelajaran = [];
         foreach($this->pembelajaran as $pembelajaran){
             if($pembelajaran->guru_pengajar_id){
                 $pengajar[$pembelajaran->pembelajaran_id] = $pembelajaran->guru_pengajar_id;
