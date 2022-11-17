@@ -386,7 +386,10 @@ class SinkronDapodik extends Command
                 'last_sync'			=> now(),
             ]
         );
-        $this->simpan_anggota_rombel($data, $user, $semester, $deleted_at);
+        $find = Rombongan_belajar::find($data->rombongan_belajar_id);
+        if($find){
+            $this->simpan_anggota_rombel($data, $user, $semester, $deleted_at);
+        }
     }
     private function simpan_ekstrakurikuler($dapodik, $user, $semester){
         $i=1;
@@ -875,7 +878,8 @@ class SinkronDapodik extends Command
         foreach($dapodik as $data){
             $anggota_rombel_id[] = $data->anggota_rombel_id;
             $pd = Peserta_didik::find($data->peserta_didik_id);
-            if($pd){
+            $rombel = Rombongan_belajar::find($data->rombongan_belajar_id);
+            if($pd && $rombel){
                 $this->simpan_anggota_rombel($data, $user, $semester, NULL);
                 $this->proses_sync('Memperoses', 'anggota_rombel_pilihan', $i, count($dapodik), $user->sekolah_id);
                 $bar->advance();
