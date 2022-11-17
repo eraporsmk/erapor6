@@ -14,7 +14,7 @@ class CreateRefSchema extends Migration
      */
     public function up()
     {
-        DB::select("CREATE SCHEMA ref");
+        DB::select("CREATE SCHEMA IF NOT EXISTS ref");
     }
 
     /**
