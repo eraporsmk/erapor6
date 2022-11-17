@@ -25,7 +25,7 @@
                         @if($collection->count())
                             @foreach($collection as $item)
                             <tr>
-                                <td class="align-top">{{$item->pembelajaran->nama_mata_pelajaran}}</td>
+                                <td class="align-top">{{$item->mata_pelajaran->nama_mata_pelajaran}}</td>
                                 <td class="align-top">{{$item->id_kompetensi}}</td>
                                 <td class="text-center align-top">
                                     @if($item->kelas_10)
