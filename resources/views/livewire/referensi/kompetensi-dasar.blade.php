@@ -38,7 +38,7 @@
                                     13
                                     @endif
                                 </td>
-                                <td class="align-top">{{($item->kompetensi_dasar_alias) ?? $item->kompetensi_dasar}}</td>
+                                <td class="align-top">{{($item->kompetensi_dasar_alias) ? $item->kompetensi_dasar_alias : $item->kompetensi_dasar}}</td>
                                 <td class="text-center align-top">{{$item->kurikulum}}</td>
                                 <td class="text-center align-top">{!! ($item->aktif) ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-danger">Non Aktif</span>' !!}</td>
                                 <td class="text-center align-top">
