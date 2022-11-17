@@ -64,7 +64,7 @@ class KompetensiDasar extends Component
 					$query->orWhere('kurikulum', 'ilike', '%'.$this->search.'%');
 					$query->orWhereHas('mata_pelajaran', function($q){ 
 						$q->where('mata_pelajaran_id', 'ilike', '%'.$this->search.'%');
-                        $q->where('mata_pelajaran', 'ilike', '%'.$this->search.'%');
+                        $q->orWhere('nama', 'ilike', '%'.$this->search.'%');
 					});
             })->paginate($this->per_page),
             'breadcrumbs' => [
