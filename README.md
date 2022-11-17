@@ -70,6 +70,7 @@ php artisan db:seed
 ```
 ## Untuk pengguna windows:
 - Silahkan gunakan installer [disini](https://drive.google.com/file/d/1nd35wiP3CqR45aNKWxh3a-83za1ibk89/view?usp=sharing)
+- Panduan aplikasi silahkan download [disini](https://drive.google.com/file/d/1ncUSeI-DeYKNJss6lSNL7gDA_ubR7fvq/view?usp=sharing)
 
 ## Cara Install (Untuk Pengguna Lama)
 
