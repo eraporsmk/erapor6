@@ -47,10 +47,14 @@
                                         Aksi
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="btnGroupDrop1">
-                                            <li><a class="dropdown-item" href="#" title="Tambah/Ubah Ringkasan Kompetensi"><i class="fa fa-pencil"></i> Ubah Ringkasan</a></li>
-                                            <li><a class="dropdown-item" href="#" title="Hapus Ringkasan Kompetensi"><i class="fas fa-trash"></i> Hapus</a></li>
-                                            <li><a class="dropdown-item" href="#" class="confirm_aktif tooltip-left" title="Non Aktifkan"><i class="fa fa-close"></i> Non Aktifkan</a></li>
-                                            <li><a class="dropdown-item" href="#" title="Hapus Data Ganda"><i class="fa fa-power-off"></i> Hapus Data Ganda</a></li>
+                                            <li><a class="dropdown-item" wire:click="getID('{{$item->kompetensi_dasar_id}}', 'edit')" title="Tambah/Ubah Ringkasan Kompetensi"><i class="fa fa-pencil"></i> Ubah Ringkasan</a></li>
+                                            <li><a class="dropdown-item" wire:click="getID('{{$item->kompetensi_dasar_id}}', 'delete')" title="Hapus Ringkasan Kompetensi"><i class="fas fa-trash"></i> Hapus</a></li>
+                                            @if($item->aktif)
+                                            <li><a class="dropdown-item" wire:click="getID('{{$item->kompetensi_dasar_id}}', 'nonaktif')" class="confirm_aktif tooltip-left" title="Non Aktifkan"><i class="fa fa-close"></i> Non Aktifkan</a></li>
+                                            @else
+                                            <li><a class="dropdown-item" wire:click="getID('{{$item->kompetensi_dasar_id}}', 'aktifkan')" class="confirm_aktif tooltip-left" title="Aktifkan"><i class="fa-solid fa-check"></i> Aktifkan</a></li>
+                                            @endif
+                                            <li><a class="dropdown-item" wire:click="getID('{{$item->kompetensi_dasar_id}}', 'hapus')" title="Hapus Data Ganda"><i class="fa fa-power-off"></i> Hapus Data Ganda</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -76,5 +80,16 @@
             </div>
         </div>
     </div>
+    @include('livewire.referensi.modal.edit-kd')
     @include('components.loader')
 </div>
+@push('scripts')
+<script>
+    Livewire.on('show-modal', event => {
+        $('#editKd').modal('show');
+    })
+    Livewire.on('close-modal', event => {
+        $('#editKd').modal('hide');
+    })
+</script>
+@endpush
