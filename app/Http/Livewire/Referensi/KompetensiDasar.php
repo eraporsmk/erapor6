@@ -25,7 +25,7 @@ class KompetensiDasar extends Component
     public function render()
     {
         return view('livewire.referensi.kompetensi-dasar', [
-            'collection' => Kompetensi_dasar::with(['mata_pelajaran'])->where(function($query){
+            'collection' => Kompetensi_dasar::has('mata_pelajaran')->with(['mata_pelajaran'])->where(function($query){
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('guru_id', $this->loggedUser()->guru_id);
                     $query->whereNotNull('kelompok_id');
