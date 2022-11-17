@@ -159,7 +159,7 @@ class GenerateMenus
                     $menu->referensi->add('Kompetensi Dasar', 'kompetensi-dasar')->data([
                         'role' => ['guru'], 
                         'smt' => collect([1,2]),
-                        'cara_penilaian' => collect(['lengkap'])
+                        'cara_penilaian' => collect(['lengkap', 'sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
                     $menu->referensi->add('Capaian Pembelajaran', 'capaian-pembelajaran')->data([
                         'role' => ['guru'], 
