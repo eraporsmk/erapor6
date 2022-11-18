@@ -16,7 +16,7 @@ class Sekolah extends Model
 	protected $guarded = [];
 
 	public function kepala_sekolah(){
-		return $this->hasOne(Guru::class, 'guru_id', 'guru_id')->select('guru_id', 'nama');
+		return $this->hasOne(Guru::class, 'guru_id', 'guru_id');
 	}
 	public function ptk()
 	{
