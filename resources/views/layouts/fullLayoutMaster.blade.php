@@ -28,6 +28,7 @@ data-textdirection="{{ env('MIX_CONTENT_DIRECTION') === 'rtl' ? 'rtl' : 'ltr' }}
   <style>
     /*.blank-page{background:#d2d6de url(images/login-page.png)}*/
     .blank-page{background:#fff}
+    .judul {color: #1A1B1C !important}
   </style>
 </head>
 

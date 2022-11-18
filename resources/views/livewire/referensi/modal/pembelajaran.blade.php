@@ -32,9 +32,11 @@
                                         <div wire:ignore>
                                             <select id="pengajar_{{$item->pembelajaran_id}}" class="form-select" wire:model="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
                                                 <option value="">== Pilih Guru Pengajar ==</option>
+                                                {{--
                                                 @foreach ($guru_pengajar as $pengajar)
                                                     <option value="{{$pengajar->guru_id}}">{{$pengajar->nama_lengkap}}</option>
                                                 @endforeach
+                                                --}}
                                             </select>
                                         </div>
                                     </td>
@@ -42,9 +44,11 @@
                                         <div wire:ignore>
                                             <select id="kelompok_id_{{$item->pembelajaran_id}}" class="form-select" wire:model="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
                                                 <option value="">== Pilih Guru Pengajar ==</option>
+                                                {{--
                                                 @foreach ($data_kelompok as $kelompok)
                                                     <option value="{{$kelompok->kelompok_id}}">{{$kelompok->nama_kelompok}}</option>
                                                 @endforeach
+                                                --}}
                                             </select>
                                         </div>
                                     </td>

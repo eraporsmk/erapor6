@@ -496,7 +496,7 @@ class GenerateMenus
                 'role' => ['admin', 'guru', 'siswa'], 
                 'smt' => collect([1,2]),
                 'cara_penilaian' => collect(['lengkap', 'sederhana'])
-            ])->append($this->setAppend())->prepend($this->icon('home'))->link->attr($this->text_class('danger', 'event.preventDefault(); document.getElementById(\'logout-form\').submit();'));
+            ])->append($this->setAppend())->prepend($this->icon('right-from-bracket'))->link->attr($this->text_class('danger', 'event.preventDefault(); document.getElementById(\'logout-form\').submit();'));
         })->filter(function($item) use ($request){
             $user = auth()->user();
             $semester = $request->session()->get('semester_id');

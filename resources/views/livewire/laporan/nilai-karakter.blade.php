@@ -18,7 +18,17 @@
                             <tr>
                                 <td>{{$item->peserta_didik->nama}}</td>
                                 <td>{{$item->capaian}}</td>
-                                <td>aksi</td>
+                                <td class="text-center">
+                                    <div class="btn-group dropstart">
+                                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Aksi
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="btnGroupDrop1">
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->catatan_ppk_id}}', 'view')" title="Lihat Detil"><i class="fas fa-eye"></i> Detil</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->catatan_ppk_id}}', 'hapus')" title="Hapus Data"><i class="fas fa-trash"></i> Hapus</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
                             @endforeach
                         @else
@@ -105,6 +115,46 @@
             </div>
         </div>
     </div>
+    <div wire:ignore.self class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel"
+        aria-hidden="true" data-bs-backdrop="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewModalLabel">Detil Nilai Karakter</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody><tr>
+                            <td width="25%">Nama Peserta Didik</td>
+                            <td class="text-center" width="1%">:</td>
+                            <td width="74%">{{($catatan_ppk) ? $catatan_ppk->peserta_didik->nama : ''}}</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:middle;">Catatan Perkembangan Karakter</td>
+                            <td style="vertical-align:middle;">:</td>
+                            <td>{{($catatan_ppk) ? $catatan_ppk->capaian : ''}}</td>
+                        </tr>
+                        @if($catatan_ppk)
+                        @forelse ($catatan_ppk->nilai_karakter as $nilai_karakter)
+                        <tr>
+                            <td style="vertical-align:middle;">Catatan Penilaian Sikap {{$nilai_karakter->sikap->butir_sikap}}</td>
+                            <td style="vertical-align:middle;">:</td>
+                            <td>{{$nilai_karakter->deskripsi}}</td>
+                        </tr>
+                        @empty
+                            
+                        @endforelse
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @push('scripts')
 <script>
@@ -135,6 +185,10 @@
     })
     Livewire.on('close-modal', event => {
         $('#addModal').modal('hide');
+        $('#viewModal').modal('hide');
+    })
+    Livewire.on('show-modal', event => {
+        $('#viewModal').modal('show');
     })
 </script>
 @endpush

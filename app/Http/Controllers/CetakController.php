@@ -313,7 +313,7 @@ class CetakController extends Controller
 						'wali_kelas'
 					]);
 				},
-				'catatan_ppk' => function($query){
+				'single_catatan_ppk' => function($query){
 					$query->with(['nilai_karakter' => function($query){
 						$query->with('sikap');
 					}]);

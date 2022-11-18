@@ -76,6 +76,9 @@ class Anggota_rombel extends Model
 	public function catatan_ppk(){
 		return $this->hasMany(Catatan_ppk::class, 'anggota_rombel_id', 'anggota_rombel_id');
 	}
+	public function single_catatan_ppk(){
+		return $this->hasOne(Catatan_ppk::class, 'anggota_rombel_id', 'anggota_rombel_id');
+	}
 	public function catatan_wali(){
 		return $this->hasMany(Catatan_wali::class, 'anggota_rombel_id', 'anggota_rombel_id');
 	}

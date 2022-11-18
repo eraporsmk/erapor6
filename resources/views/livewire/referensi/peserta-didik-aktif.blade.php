@@ -24,7 +24,7 @@
                                 <td class="text-center">{{$item->jenis_kelamin}}</td>
                                 <td>{{$item->tempat_lahir}}, {{$item->tanggal_lahir}}</td>
                                 <td>{{$item->agama->nama}}</td>
-                                <td>{{($item->anggota_rombel) ? $item->anggota_rombel->rombongan_belajar->nama : var_dump($item->anggota_rombel)}}</td>
+                                <td>{{($item->anggota_rombel) ? $item->anggota_rombel->rombongan_belajar->nama : '-'}}</td>
                             </tr>
                             @endforeach
                         @else

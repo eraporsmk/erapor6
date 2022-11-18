@@ -15,4 +15,13 @@
             </div>
         </div>
     </div>
+    @include('livewire.laporan.modal.review_nilai')
+    @include('components.loader')
 </div>
+@push('scripts')
+<script>
+    Livewire.on('preview-nilai', event => {
+        $('#reviewModal').modal('show')
+    })
+</script>
+@endpush

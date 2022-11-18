@@ -51,8 +51,8 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 <table width="100%" class="table table-bordered">
 	<thead>
 		<tr>
-			<th style="vertical-align:middle;width: 100px;" style="vertical-align: middle;" class="text-center">Karakter yang dibangun</th>
-			<th style="vertical-align:middle;" style="vertical-align: middle;" class="text-center">Deskripsi</th>
+			<th style="vertical-align:middle;" style="vertical-align: middle;" class="text-center" width="20%">Karakter yang dibangun</th>
+			<th style="vertical-align:middle;" style="vertical-align: middle;" class="text-center" width="80%">Deskripsi</th>
 		</tr>
 	</thead>
 	<tbody>

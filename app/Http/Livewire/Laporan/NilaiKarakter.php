@@ -32,7 +32,9 @@ class NilaiKarakter extends Component
     public $nilai_sikap = [];
     public $deskripsi = [];
     public $capaian;
-    
+    public $catatan_ppk;
+    public $catatan_ppk_id;
+
     public $show = FALSE;
     public $anggota_rombel_id = '';
     public function getListeners()
@@ -41,6 +43,7 @@ class NilaiKarakter extends Component
             'showModal',
             'showAlert',
             'anggota_rombel_id',
+            'delete'
         ];
     }
 
@@ -174,5 +177,43 @@ class NilaiKarakter extends Component
     }
     public function showAlert(){
         $this->alert('success', 'Nilai Karakter berhasil disimpan');
+    }
+    public function getID($catatan_ppk_id, $aksi){
+        $this->catatan_ppk_id = $catatan_ppk_id;
+        $this->catatan_ppk = Catatan_ppk::find($this->catatan_ppk_id);
+        if($aksi == 'view'){
+            $this->emit('show-modal');
+        } else {
+            $this->alert('question', 'Apakah Anda yakin?', [
+                'text' => 'Tindakan ini tidak dapat dikembalikan',
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'delete',
+                'showCancelButton' => true,
+                'cancelButtonText' => 'Batal',
+                'allowOutsideClick' => false,
+                'timer' => null
+            ]);
+        }
+    }
+    public function delete(){
+        $data = $this->catatan_ppk;
+        if($data->delete()){
+            $this->alert('success', 'Nilai karakter berhasil dihapus!', [
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'confirmed',
+                'allowOutsideClick' => false,
+                'timer' => null
+            ]);
+        } else {
+            $this->alert('error', 'Nilai karakter gagal dihapus!. Coba beberapa saat lagi!', [
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'confirmed',
+                'allowOutsideClick' => false,
+                'timer' => null
+            ]);
+        }
     }
 }

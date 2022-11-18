@@ -3,7 +3,7 @@ $configData = Helper::applClasses();
 @endphp
 @extends('layouts/fullLayoutMaster')
 
-@section('title', 'Login Page')
+@section('title', 'Login Pengguna')
 
 @section('page-style')
   {{-- Page Css files --}}
@@ -36,12 +36,12 @@ $configData = Helper::applClasses();
     <!-- Login-->
     <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5 border-start">
       <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
-            <h1 class="brand-text text-primary ms-1 text-center">
+            <h1 class="brand-text judul ms-1 text-center">
               <img src="{{asset('images/logo.png')}}" alt="logo" srcset="" style="height:28px">
               {{config('app.name')}}
             </h1>
         <!--h2 class="card-title fw-bold mb-0 text-primary text-center">{{config('app.name')}}</h2-->
-        <h3 class="card-text text-primary mb-2 text-center">Versi {{config('global.app_version')}}</h3>
+        <h3 class="card-text judul mb-2 text-center">Versi {{config('global.app_version')}}</h3>
         <form class="auth-login-form mt-2" method="POST" action="{{ route('login') }}">
           @csrf
           <div class="mb-1">
