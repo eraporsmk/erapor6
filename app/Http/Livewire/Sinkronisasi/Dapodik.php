@@ -62,13 +62,18 @@ class Dapodik extends Component
         }
     }
     private function referensi(){
-        $response = Http::get($this->url_server('dashboard', 'api/referensi'));
-        return $response->object();
+        try {
+            $response = Http::get($this->url_server('dashboard', 'api/referensi'));
+            return $response->object();
+        } catch (\Exception $e){
+            $this->online = FALSE;
+        }
     }
     public function render()
     {
         $dapodik = ($this->data_dapodik()) ?? NULL;
-        $referensi = $this->referensi();
+        $referensi = ($this->referensi()) ?? NULL;
+        //dd($referensi);
         $erapor = $this->ref_erapor();
         $this->sekolah_id = auth()->user()->sekolah_id;
         return view('livewire.sinkronisasi.dapodik', [
