@@ -103,9 +103,14 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <!--button type="submit" class="btn btn-primary">Simpan</button-->
+                <div class="spinner-border text-primary" role="status" wire:loading wire:target="photo">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <button type="submit" class="btn btn-primary" wire:target="photo" wire:loading.remove>Simpan</button>
             </div>
             </form>
         </div>
     </div>
+    @include('components.loader')
 </div>
