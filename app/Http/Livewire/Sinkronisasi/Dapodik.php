@@ -102,14 +102,14 @@ class Dapodik extends Component
                     'aksi' => 'mata_pelajaran',
                     'server' => 'dapodik',
                 ],
-                [
+                /*[
                     'nama' => 'Mata Pelajaran Kurikulum',
                     'dapodik' => ($dapodik) ? $dapodik->dapodik->mata_pelajaran_kurikulum : 0,
                     'erapor' => $erapor['mata_pelajaran_kurikulum'],
                     'sinkron' => $erapor['mata_pelajaran_kurikulum'],
                     'aksi' => 'mata_pelajaran_kurikulum',
                     'server' => 'dapodik',
-                ],
+                ],*/
                 [
                     'nama' => 'Wilayah',
                     'dapodik' => ($referensi) ? $referensi->wilayah : 0,
