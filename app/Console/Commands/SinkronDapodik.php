@@ -760,27 +760,30 @@ class SinkronDapodik extends Command
                 $induk_pembelajaran_id = $data->induk_pembelajaran_id;
                 $induk = Pembelajaran::withTrashed()->find($induk_pembelajaran_id);
             }
-            Pembelajaran::withTrashed()->updateOrCreate(
-				[
-                    'pembelajaran_id' => $data->pembelajaran_id
-                ],
-				[
-                    'pembelajaran_id_dapodik' => $data->pembelajaran_id,
-                    'induk_pembelajaran_id' => ($induk) ? $induk_pembelajaran_id : NULL,
-                    'semester_id' => $data->semester_id,
-                    'sekolah_id'				=> $data->sekolah_id,
-                    'rombongan_belajar_id'		=> $data->rombongan_belajar_id,
-                    'guru_id'					=> $data->ptk_id,
-                    'mata_pelajaran_id'			=> $data->mata_pelajaran_id,
-                    'nama_mata_pelajaran'		=> $data->nama_mata_pelajaran,
-                    'kkm'						=> 0,
-                    'is_dapodik'				=> 1,
-                    'last_sync'					=> now(),
-                ]
-			);
-            $this->proses_sync('Memperoses', 'pembelajaran', $i, count($dapodik), $user->sekolah_id);
-            $bar->advance();
-            $i++;
+            $find = Rombongan_belajar::find($data->rombongan_belajar_id);
+            if($find){
+                Pembelajaran::withTrashed()->updateOrCreate(
+                    [
+                        'pembelajaran_id' => $data->pembelajaran_id
+                    ],
+                    [
+                        'pembelajaran_id_dapodik' => $data->pembelajaran_id,
+                        'induk_pembelajaran_id' => ($induk) ? $induk_pembelajaran_id : NULL,
+                        'semester_id' => $data->semester_id,
+                        'sekolah_id'				=> $data->sekolah_id,
+                        'rombongan_belajar_id'		=> $data->rombongan_belajar_id,
+                        'guru_id'					=> $data->ptk_id,
+                        'mata_pelajaran_id'			=> $data->mata_pelajaran_id,
+                        'nama_mata_pelajaran'		=> $data->nama_mata_pelajaran,
+                        'kkm'						=> 0,
+                        'is_dapodik'				=> 1,
+                        'last_sync'					=> now(),
+                    ]
+                );
+                $this->proses_sync('Memperoses', 'pembelajaran', $i, count($dapodik), $user->sekolah_id);
+                $bar->advance();
+                $i++;
+            }
         }
         $bar->finish();
         if($pembelajaran_id){
