@@ -629,22 +629,22 @@ class RefCP extends Command
             $mapel = NULL;
             if($line['mata_pelajaran_id']){
                 $mapel = Mata_pelajaran::find($line['mata_pelajaran_id']);
-            }
-            if($mapel){
-                Capaian_pembelajaran::updateOrCreate(
-                    [
-                        'cp_id' => $line['no']
-                    ],
-                    [
-                        'mata_pelajaran_id' => $line['mata_pelajaran_id'],
-                        'fase' => $line['fase'],
-                        'elemen' => $line['elemen'],
-                        'deskripsi' => $line['deskripsi'],
-                        'last_sync' => now(),
-                    ]
-                );
-            } else {
-                $this->info($line['mata_pelajaran_id'] . ' belum tersedia');
+                if($mapel){
+                    Capaian_pembelajaran::updateOrCreate(
+                        [
+                            'cp_id' => $line['no']
+                        ],
+                        [
+                            'mata_pelajaran_id' => $line['mata_pelajaran_id'],
+                            'fase' => $line['fase'],
+                            'elemen' => $line['elemen'],
+                            'deskripsi' => $line['deskripsi'],
+                            'last_sync' => now(),
+                        ]
+                    );
+                } else {
+                    $this->info($line['mata_pelajaran_id'] . ' belum tersedia');
+                }
             }
         });
     }
