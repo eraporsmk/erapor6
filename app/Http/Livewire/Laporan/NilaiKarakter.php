@@ -141,17 +141,21 @@ class NilaiKarakter extends Component
             ]
 		);
 		foreach ($this->deskripsi as $sikap_id => $deskripsi) {
-			Nilai_karakter::updateOrCreate(
-				[
-                    'catatan_ppk_id' => $catatan_ppk->catatan_ppk_id, 
-                    'sikap_id' => $sikap_id
-                ],
-				[
-                    'sekolah_id' => session('sekolah_id'),
-                    'deskripsi' => $deskripsi,
-                    'last_sync'	=> now()
-                ]
-			);
+            if($deskripsi){
+                Nilai_karakter::updateOrCreate(
+                    [
+                        'catatan_ppk_id' => $catatan_ppk->catatan_ppk_id, 
+                        'sikap_id' => $sikap_id
+                    ],
+                    [
+                        'sekolah_id' => session('sekolah_id'),
+                        'deskripsi' => $deskripsi,
+                        'last_sync'	=> now()
+                    ]
+                );
+            } else {
+                Nilai_karakter::where('catatan_ppk_id', $catatan_ppk->catatan_ppk_id)->where('sikap_id', $sikap_id)->delete();
+            }
 		}
         $this->emit('showAlert');
         $this->emit('close-modal');
