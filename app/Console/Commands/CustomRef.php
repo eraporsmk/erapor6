@@ -13,7 +13,7 @@ class CustomRef extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'custom:ref';
 
     /**
      * The console command description.
