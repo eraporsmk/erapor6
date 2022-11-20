@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use App\Models\Peserta_didik;
 use App\Models\Pembelajaran;
+use App\Models\Rombongan_belajar;
 
 class LeggerNilaiKurmerExport implements FromView, ShouldAutoSize
 {
@@ -30,6 +31,7 @@ class LeggerNilaiKurmerExport implements FromView, ShouldAutoSize
 		$params = array(
 			'data_siswa' => $data_siswa,
 			'all_pembelajaran'	=> $all_pembelajaran,
+            'rombongan_belajar' => Rombongan_belajar::with(['sekolah'])->find($this->rombongan_belajar_id),
 		);
 		return view('content.laporan.legger_nilai_kurmer', $params);
     }

@@ -1,4 +1,26 @@
 <table class="table" border="1">
+	<tr>
+		<td>Sekolah</td>
+		<td>{{$rombongan_belajar->sekolah->nama}}</td>
+	</tr>
+	<tr>
+		<td>NPSN</td>
+		<td>{{$rombongan_belajar->sekolah->npsn}}</td>
+	</tr>
+	<tr>
+		<td>Kelas</td>
+		<td>{{$rombongan_belajar->nama}}</td>
+	</tr>
+	<tr>
+		<td>Tahun Pelajaran</td>
+		<td>{{session('semester_id')}}</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+	</tr>
+</table>
+<table class="table" border="1">
 	<thead>
 		<tr>
 			<th>No</th>
@@ -11,7 +33,6 @@
 	</thead>
 	<tbody>
 	@foreach($data_siswa as $siswa)
-		{{--dd($siswa->nilai_rapor_legger)--}}
 		<tr>
 			<td>{{$loop->iteration}}</td>
 			<td>{{$siswa->nama}}</td>
