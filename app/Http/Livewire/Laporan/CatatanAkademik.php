@@ -72,20 +72,52 @@ class CatatanAkademik extends Component
         $this->form = $this->check_walas($this->rombongan_belajar_id);
     }
     public function updatedCatatanAkademik(){
-        //dd($this->catatan_akademik);
-        $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
-            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-        })->with(['anggota_rombel' => function($query){
-            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            $query->with(['nilai_rapor' => function($query){
+        if($this->loggedUser()->hasRole('waka', session('semester_id'))){
+            $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            })->with(['anggota_rombel' => function($query){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                $query->with(['nilai_rapor' => function($query){
+                    $query->has('pembelajaran');
+                    $query->with(['pembelajaran' => function($query){
+                        $query->select('pembelajaran_id', 'nama_mata_pelajaran');
+                    }]);
+                    //$query->limit(3);
+                    $query->orderBy('total_nilai', 'ASC');
+                }]);
+            }])->orderBy('nama')->get();
+        } elseif($this->check_walas()){
+            $with = ['single_catatan_wali', 'nilai_rapor' => function($query){
                 $query->has('pembelajaran');
                 $query->with(['pembelajaran' => function($query){
                     $query->select('pembelajaran_id', 'nama_mata_pelajaran');
                 }]);
                 //$query->limit(3);
                 $query->orderBy('total_nilai', 'ASC');
-            }]);
-        }])->orderBy('nama')->get();
+            }];
+            $this->data_siswa = pd_walas($with);
+        }
+    }
+    public function mount(){
+        if($this->loggedUser()->hasRole('waka', session('semester_id'))){
+            $this->show = FALSE;
+            $this->form = FALSE;
+        } elseif($this->check_walas()){
+            $this->show = TRUE;
+            $this->form = TRUE;
+            $with = ['single_catatan_wali', 'nilai_rapor' => function($query){
+                $query->has('pembelajaran');
+                $query->with(['pembelajaran' => function($query){
+                    $query->select('pembelajaran_id', 'nama_mata_pelajaran');
+                }]);
+                //$query->limit(3);
+                $query->orderBy('total_nilai', 'ASC');
+            }];
+            $this->data_siswa = pd_walas($with);
+            foreach($this->data_siswa as $siswa){
+                $this->catatan_akademik[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_catatan_wali) ? $siswa->anggota_rombel->single_catatan_wali->uraian_deskripsi : '';
+            }
+        }
     }
     public function mount_salah(){
         /*if($this->check_walas()){
@@ -148,10 +180,11 @@ class CatatanAkademik extends Component
                 ]
             );
         }
-        $this->alert('success', 'Catatan Akademik berhasil disimpan', [
+        $this->flash('success', 'Catatan Akademik berhasil disimpan', [], '/laporan/catatan-akademik');
+        /*$this->alert('success', 'Catatan Akademik berhasil disimpan', [
             'showConfirmButton' => true,
             'confirmButtonText' => 'OK',
             'onConfirmed' => 'confirmed' 
-        ]);
+        ]);*/
     }
 }

@@ -5,7 +5,6 @@
             <form wire:ignore.self wire:submit.prevent="store">
                 <div class="card-body">
                     @role('waka', session('semester_id'))
-                    @include('components.loader')
                     <div class="row mb-2">
                         <label for="semester_id" class="col-sm-3 col-form-label">Tahun Pelajaran</label>
                         <div class="col-sm-9">
@@ -32,10 +31,10 @@
                             </select>
                         </div>
                     </div>
+                    @endrole
                     @if($show)
                         @include('livewire.laporan.catatan-akademik-pd')
                     @endif
-                    @endrole
                 </div>
                 <div class="card-footer{{($form) ? '' : ' d-none'}}">
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -43,6 +42,7 @@
             </form>
         </div>
     </div>
+    @include('components.loader')
 </div>
 @push('scripts')
 <script>
