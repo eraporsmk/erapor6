@@ -19,18 +19,11 @@ class RaporSemester extends Component
     public $data_siswa = [];
     public $get_siswa;
     public $data_rombongan_belajar = [];
+    public $rombongan_belajar;
     public function render()
     {
         $this->semester_id = session('semester_id');
         return view('livewire.laporan.rapor-semester', [
-            'rombongan_belajar' => (check_walas()) ? Rombongan_belajar::with([
-                'kurikulum'
-                ])->where(function($query){
-                    $query->where('jenis_rombel', 1);
-                    $query->where('guru_id', $this->loggedUser()->guru_id);
-                    $query->where('semester_id', session('semester_aktif'));
-                    $query->where('sekolah_id', session('sekolah_id'));
-                })->first() : NULL,
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Laporan'], ['name' => "Cetak Rapor Semester"]
             ]
@@ -45,6 +38,14 @@ class RaporSemester extends Component
         } elseif($this->check_walas()){
             $this->show = TRUE;
             $this->data_siswa = pd_walas();
+            $this->rombongan_belajar = Rombongan_belajar::with([
+                'kurikulum'
+                ])->where(function($query){
+                    $query->where('jenis_rombel', 1);
+                    $query->where('guru_id', $this->loggedUser()->guru_id);
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->where('sekolah_id', session('sekolah_id'));
+                })->first();
         }
     }
     public function preview($anggota_rombel_id){
@@ -116,6 +117,9 @@ class RaporSemester extends Component
         })->with(['anggota_rombel' => function($query){
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
         }])->orderBy('nama')->get();
+        $this->rombongan_belajar = Rombongan_belajar::with([
+            'kurikulum'
+        ])->find($this->rombongan_belajar_id);
         $this->show = TRUE;
     }
     private function check_walas($rombongan_belajar_id = NULL){
