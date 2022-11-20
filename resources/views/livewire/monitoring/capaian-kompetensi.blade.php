@@ -164,17 +164,6 @@
         xaxis: {
           type: 'category'
         },
-        /*yaxis: [{
-          title: {
-            text: 'Website Blog',
-          },
-        
-        }, {
-          opposite: true,
-          title: {
-            text: 'Social Media'
-          }
-        }]*/
         };
 
         var chart = new ApexCharts(document.querySelector("#chart"), options);
