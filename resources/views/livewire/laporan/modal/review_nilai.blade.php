@@ -9,7 +9,6 @@
                 </div>
                 <div class="modal-body">
 					@if($get_siswa)
-					{{dd($get_siswa)}}
 					<table class="table table-bordered table-striped">
 						<thead>
 							<tr>
