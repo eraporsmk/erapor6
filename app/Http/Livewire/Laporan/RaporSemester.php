@@ -62,7 +62,7 @@ class RaporSemester extends Component
                 $query->with([
                     'pembelajaran' => function($query){
                         $callback = function($query){
-                            $query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
+                            $query->where('anggota_rombel_id', $this->anggota_rombel_id);
                         };
                         $query->with([
                             'kelompok',
