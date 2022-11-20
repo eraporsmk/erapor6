@@ -30,9 +30,17 @@ class Remedial extends Component
     public $nilai = [];
     public $rerata = [];
     public $remedial = [];
+    public $skm;
     //inject
     public $kompetensi_dasar_id;
     public $class_input = [];
+
+    public function getListeners()
+    {
+        return [
+            'confirmed'
+        ];
+    }
     public function render()
     {
         $breadcrumbs = [
@@ -104,9 +112,11 @@ class Remedial extends Component
         $this->mata_pelajaran_id = NULL;
     }
     public function changePembelajaran(){
+        $this->reset(['skm']);
         if($this->mata_pelajaran_id){
             $pembelajaran = Pembelajaran::where('rombongan_belajar_id', $this->rombongan_belajar_id)->where('mata_pelajaran_id', $this->mata_pelajaran_id)->first();
             $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
+            $this->skm = get_kkm($pembelajaran->kelompok_id, 0);
         } else {
             $this->data_rencana = NULL;
             $this->pembelajaran_id = NULL;
@@ -214,14 +224,62 @@ class Remedial extends Component
         }
         $this->flash('success', 'Nilai Remedial berhasil disimpan', [], '/penilaian/remedial');
     }
-    public function updatingNilai($value, $key)
+    public function updatedNilai($value, $key)
     {
+        $callback = function($query){
+			$query->with('pembelajaran');
+			$query->where('kompetensi_id', $this->kompetensi_id);
+			$query->where('pembelajaran_id', $this->pembelajaran_id);
+		};
+        $this->kd_nilai = Kd_nilai::whereHas('rencana_penilaian', $callback)->with(['rencana_penilaian' => $callback, 'kompetensi_dasar'])->select(['kompetensi_dasar_id', 'id_kompetensi'])->groupBy(['kompetensi_dasar_id', 'id_kompetensi'])->orderBy('id_kompetensi')->get();
         $key = explode('.', $key);
-        $this->nilai[$key[0]][$key[1]] = $value;
-        $nilai_remedial = $this->nilai[$key[0]];
-        $this->remedial[$key[0]] = bilangan_bulat(collect($nilai_remedial)->avg());
+        if($value >= 1 && $value <= 100){
+            $this->nilai[$key[0]][$key[1]] = number_format($value, 0);
+            $nilai_remedial = $this->nilai[$key[0]];
+            $this->remedial[$key[0]] = (array_filter($nilai_remedial)) ? bilangan_bulat(collect(array_filter($nilai_remedial))->avg()) : 0;
+        } else {
+            $this->nilai[$key[0]][$key[1]] = 0;
+        }
         //$this->class_input[$key[0]] = 'bg-success1';
         //bilangan_bulat(array_sum($nilai_remedial)/count($nilai_remedial));
         //dd($this->nilai[$key[0]]);
+    }
+    public function hapusRemedial($anggota_rombel_id){
+        $this->changeKompetensi();
+        $this->anggota_rombel_id = $anggota_rombel_id;
+        $this->alert('question', 'Apakah Anda yakin?', [
+            'text' => 'Tindakan ini tidak dapat dikembalikan!',
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'OK',
+            'onConfirmed' => 'confirmed',
+            'showCancelButton' => true,
+            'cancelButtonText' => 'Batal',
+            'allowOutsideClick' => false,
+            'timer' => null
+        ]);
+    }
+    public function confirmed(){
+        $delete = Nilai_remedial::where(function($query){
+            $query->where('anggota_rombel_id', $this->anggota_rombel_id);
+            $query->where('pembelajaran_id', $this->pembelajaran_id);
+        })->delete();
+        if($delete){
+            $this->alert('success', 'Nilai Remedian berhasil dihapus', [
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'terkonfirmasi',
+                'allowOutsideClick' => true,
+                'timer' => null
+            ]);
+        } else {
+            $this->alert('error', 'Nilai Remedian gagal dihapus. Silahkan coba beberapa saat lagi!', [
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'terkonfirmasi',
+                'allowOutsideClick' => true,
+                'timer' => null
+            ]);
+        }
+        $this->changeKompetensi();
     }
 }

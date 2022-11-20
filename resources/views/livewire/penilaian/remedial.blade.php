@@ -62,6 +62,27 @@
                         </div>
                     </div>
                     <div class="row mb-2 {{($show) ? '' : 'd-none'}}" wire:loading.remove wire:target="changeKompetensi">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-bordered">
+                                    <tbody><tr>
+                                        <td colspan="2" class="text-center"><strong>Keterangan</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="30%">SKM</td>
+                                        <td>{{$skm}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="bg-danger form-control input-sm"></td>
+                                        <td>Tidak tuntas (input aktif)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="bg-success form-control input-sm"></td>
+                                        <td>Tuntas (input non aktif)</td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <thead>
@@ -75,7 +96,7 @@
                                     <tr>
                                         @forelse ($kd_nilai as $kd)
                                         <th class="text-center">
-                                            <div wire:ignore>
+                                            <div wire:ignore.self>
                                                 {{$kd->id_kompetensi}}
                                                 <input type="hidden" wire:model="kompetensi_dasar_id.{{$kd->kompetensi_dasar_id}}">
                                             </div>
@@ -95,8 +116,19 @@
                                         </td>
                                         @forelse ($kd_nilai as $kd)
                                         <td class="text-center">
-                                            <div wire:ignore>
-                                                <input type="number" class="form-control" wire:model="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$kd->kompetensi_dasar_id}}">
+                                            <div wire:ignore.self>
+                                                <?php
+                                                if(isset($nilai[$siswa->anggota_rombel->anggota_rombel_id][$kd->kompetensi_dasar_id])){
+                                                    if($nilai[$siswa->anggota_rombel->anggota_rombel_id][$kd->kompetensi_dasar_id] >= $skm){
+                                                        $under = 0;
+                                                    } else {
+                                                        $under = 1;
+                                                    }
+                                                } else {
+                                                    $under = 1;
+                                                }
+                                                ?>
+                                                <input type="number" class="form-control @if($under) bg-danger text-white @else bg-success text-white @endif" wire:model="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$kd->kompetensi_dasar_id}}" @if(!$under) readonly @endif>
                                             </div>
                                         </td>
                                         @empty
@@ -108,9 +140,16 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <div wire:ignore>
+                                            <div>
                                                 <input type="text" class="form-control-plaintext text-danger" wire:model="remedial.{{$siswa->anggota_rombel->anggota_rombel_id}}" readonly>
                                             </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if($siswa->anggota_rombel->nilai_remedial)
+                                            <a href="javascript:void(0)" wire:click="hapusRemedial('{{$siswa->anggota_rombel->anggota_rombel_id}}')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                                            @else
+                                            -
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach      
@@ -125,4 +164,5 @@
             </form>
         </div>
     </div>
+    @include('components.loader')
 </div>
