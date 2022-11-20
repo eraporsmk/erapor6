@@ -9,6 +9,7 @@
                 </div>
                 <div class="modal-body">
 					@if($get_siswa)
+					{{dd($get_siswa)}}
 					<table class="table table-bordered table-striped">
 						<thead>
 							<tr>
@@ -39,7 +40,7 @@
 						$set_pembelajaran = $get_siswa->rombongan_belajar->pembelajaran;//()->whereNotNull('kelompok_id')->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
 						foreach($set_pembelajaran as $pembelajaran){
 							if(in_array($pembelajaran->mata_pelajaran_id, mapel_agama())){
-								if(filter_pembelajaran_agama($get_siswa->siswa->agama->nama, $pembelajaran->nama_mata_pelajaran)){
+								if(filter_pembelajaran_agama($get_siswa->peserta_didik->agama->nama, $pembelajaran->nama_mata_pelajaran)){
 									$get_pembelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran;
 								}
 							} else {
