@@ -627,7 +627,7 @@ class RefCP extends Command
         Kompetensi_dasar::where('kurikulum', 2022)->forceDelete();
         $data = (new FastExcel)->import(public_path('templates/ref_cp_2.xlsx'), function ($line) {
             $mapel = NULL;
-            if($line['mata_pelajaran_id']){
+            if($line['no'] && $line['mata_pelajaran_id']){
                 $mapel = Mata_pelajaran::find($line['mata_pelajaran_id']);
                 if($mapel){
                     Capaian_pembelajaran::updateOrCreate(
@@ -645,6 +645,9 @@ class RefCP extends Command
                 } else {
                     $this->info($line['mata_pelajaran_id'] . ' belum tersedia');
                 }
+            } else {
+                $this->error($line['no'] . ' terhapus');
+                Capaian_pembelajaran::where('cp_id', $line['no'])->delete();
             }
         });
     }

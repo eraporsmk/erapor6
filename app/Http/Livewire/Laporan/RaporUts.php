@@ -20,7 +20,7 @@ class RaporUts extends Component
     public $data_rombongan_belajar = [];
 
     protected $listeners = [
-        'confirmed' => '$refresh'
+        'confirmed' => 'confirmed'
     ];
 
     public function render()
@@ -127,6 +127,19 @@ class RaporUts extends Component
         ])->find($this->rombongan_belajar_id);*/
         $this->show = TRUE;
     }
+    public function updatedRencanaPenilaian(){
+        $this->collection = Pembelajaran::with([
+            'guru', 
+            'rencana_penilaian' => function($query) {
+                $query->where('kompetensi_id', 1);
+            },
+            'rapor_pts',
+            'rombongan_belajar',
+        ])->whereNotNull('kelompok_id')->whereNotNull('no_urut')->whereHas('rombongan_belajar', function($query){
+            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+        })->orderBy('kelompok_id', 'asc')->get();
+        $this->dispatchBrowserEvent('pharaonic.select2.init');
+    }
     public function store(){
         $pembelajaran_id_array = [];
         $rencana_penilaian_id_array = [];
@@ -154,6 +167,7 @@ class RaporUts extends Component
             $query->whereIn('pembelajaran_id', $pembelajaran_id_array);
             $query->whereNotIn('rencana_penilaian_id', $rencana_penilaian_id_array);
         })->delete();
+        $this->dispatchBrowserEvent('pharaonic.select2.init');
         if($rencana_penilaian_id_array){
             $this->alert('success', 'Rapor UTS berhasil disimpan', [
                 'showConfirmButton' => true,
@@ -167,5 +181,27 @@ class RaporUts extends Component
                 'onConfirmed' => 'confirmed' 
             ]);
         }
+        /*if($this->loggedUser()->hasRole('waka', session('semester_id'))){
+            if($rencana_penilaian_id_array){
+                $this->flash('success', 'Rapor UTS berhasil disimpan', [], '/laporan/rapor-uts');
+            } else {
+                $this->flash('error', 'Tidak ada Rapor UTS disimpan', [], '/laporan/rapor-uts');
+            }
+        } else {
+            
+        }*/
+    }
+    public function confirmed(){
+        $this->collection = Pembelajaran::with([
+            'guru', 
+            'rencana_penilaian' => function($query) {
+                $query->where('kompetensi_id', 1);
+            },
+            'rapor_pts',
+            'rombongan_belajar',
+        ])->whereNotNull('kelompok_id')->whereNotNull('no_urut')->whereHas('rombongan_belajar', function($query){
+            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+        })->orderBy('kelompok_id', 'asc')->get();
+        $this->dispatchBrowserEvent('pharaonic.select2.init');
     }
 }

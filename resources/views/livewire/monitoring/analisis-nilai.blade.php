@@ -117,6 +117,7 @@
             <div class="card-footer"></div>
         </div>
     </div>
+    @include('components.loader')
 </div>
 @push('scripts')
 <script>

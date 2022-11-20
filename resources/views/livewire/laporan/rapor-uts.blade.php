@@ -28,8 +28,8 @@
                                 <td>{{$item->nama_mata_pelajaran}}</td>
                                 <td>{{$item->guru->nama}}</td>
                                 <td>
-                                    <div wire:ignore>
-                                        <select id="rencana_penilaian_{{$check}}" class="form-select form-select-sm" data-pharaonic="select2" data-component-id="{{ $this->id }}" wire:model="rencana_penilaian.{{$item->pembelajaran_id}}" data-tags="true" data-placeholder="Pilih Penilaian" multiple>
+                                    <div wire:ignore.self>
+                                        <select id="rencana_penilaian_{{$item->pembelajaran_id}}" class="form-select form-select-sm" data-pharaonic="select2" data-component-id="{{ $this->id }}" wire:model="rencana_penilaian.{{$item->pembelajaran_id}}" data-tags="true" data-placeholder="Pilih Penilaian" multiple>
                                             @foreach ($item->rencana_penilaian as $rencana_penilaian)
                                             <option value="{{$rencana_penilaian->rencana_penilaian_id}}">{{$rencana_penilaian->nama_penilaian}}</option>
                                             @endforeach
@@ -63,6 +63,7 @@
             </form>
         </div>
     </div>
+    @include('components.loader')
 </div>
 @push('scripts')
 <script>
@@ -73,23 +74,23 @@
                 value: item.rombongan_belajar_id,
                 text : item.nama
             }));*/
-            $('#rencana_penilaian_'+urut).html('<option value="">== Pilih Penilaian Update ==</option>')
+            $('#rencana_penilaian_'+pembelajaran_id).html('<option value="">== Pilih Penilaian Update ==</option>')
             $.each(event.detail.rencana_penilaian, function (i, item) {
                 if(item.rencana_penilaian.length){
                     $.each(item.rencana_penilaian, function (i, rencana_penilaian) {
-                        $('#rencana_penilaian_'+urut).append($('<option>', { 
+                        $('#rencana_penilaian_'+pembelajaran_id).append($('<option>', { 
                             value: rencana_penilaian.rencana_penilaian_id,
                             text : rencana_penilaian.nama_penilaian
                         }));
                     });
                 } else {
-                    $('#rencana_penilaian_'+urut).val('')
+                    $('#rencana_penilaian_'+pembelajaran_id).val('')
                 }
             });
             $.each(event.detail.rencana_penilaian_select, function (i, rencana_penilaian_select) {
                 $.each(rencana_penilaian_select, function (i, rencana_penilaian_id) {
                     //console.log(rencana_penilaian_id);
-                    $('#rencana_penilaian_'+urut).val(rencana_penilaian_id)
+                    $('#rencana_penilaian_'+pembelajaran_id).val(rencana_penilaian_id)
                 });
             });
             console.log(event.detail.rencana_penilaian);
