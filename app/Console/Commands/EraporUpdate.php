@@ -64,8 +64,11 @@ class EraporUpdate extends Command
         $this->call('cache:clear');
         $this->call('view:clear');
         $this->call('config:cache');
+        $this->call('custom:ref');
         $this->call('ref:cp');
+        $this->info('Proses update data GTK');
         $this->call('update:guru');
+        $this->info('Proses update data Peserta Didik');
         $this->call('update:siswa');
         $this->call('hapus:ganda');
         if(!File::isDirectory(public_path('storage'))){
