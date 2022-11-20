@@ -25,11 +25,11 @@
                         $nilai_akhir_pengetahuan = 0;
                         $nilai_akhir_keterampilan = 0;
                         if($siswa->anggota_rombel->nilai_akhir_pengetahuan){
-                            $nilai_pengetahuan = $anggota_rombel->nilai_akhir_pengetahuan->nilai;
+                            $nilai_pengetahuan = $siswa->anggota_rombel->nilai_akhir_pengetahuan->nilai;
                             $nilai_akhir_pengetahuan = ($nilai_pengetahuan * $rasio_p);
                         }
                         if($siswa->anggota_rombel->nilai_akhir_keterampilan){
-                            $nilai_keterampilan = $anggota_rombel->nilai_akhir_keterampilan->nilai;
+                            $nilai_keterampilan = $siswa->anggota_rombel->nilai_akhir_keterampilan->nilai;
                             $nilai_akhir_keterampilan = ($nilai_keterampilan * $rasio_k);
                         }
                         $nilai_akhir = ($nilai_akhir_pengetahuan + $nilai_akhir_keterampilan) / 100;
