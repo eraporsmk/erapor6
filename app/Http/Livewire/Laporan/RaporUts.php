@@ -33,7 +33,7 @@ class RaporUts extends Component
         ]);
     }
     public function mount(){
-        $this->rombongan_belajar_id = $this->getRombel()->rombongan_belajar_id;
+        $this->rombongan_belajar_id = ($this->getRombel()) ? $this->getRombel()->rombongan_belajar_id : NULL;
         $this->collection = Pembelajaran::with([
             'guru', 
             'rencana_penilaian' => function($query) {
