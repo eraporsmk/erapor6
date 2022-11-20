@@ -13,7 +13,7 @@
         <tbody>
             @foreach ($data_siswa as $siswa)
             <tr>
-                <td>{{$siswa->nama}} | {{$siswa->agama->nama}}</td>
+                <td>{{$siswa->nama}}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-lg btn-icon btn-flat-primary" wire:click="preview('{{$siswa->anggota_rombel->anggota_rombel_id}}')">
                         <i class="fa-solid fa-search fa-2xl"></i>
