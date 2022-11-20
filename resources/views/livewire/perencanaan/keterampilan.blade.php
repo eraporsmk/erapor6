@@ -32,9 +32,13 @@
                                         Aksi
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="btnGroupDrop1">
-                                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#viewModal" wire:click="getID('{{$item->rencana_penilaian_id}}')" title="Lihat Detil"><i class="fas fa-eye"></i> Detil</a></li>
+                                            <!--li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#viewModal" wire:click="getID('{{$item->rencana_penilaian_id}}')" title="Lihat Detil"><i class="fas fa-eye"></i> Detil</a></li>
                                             <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addModal" wire:click="getID('{{$item->rencana_penilaian_id}}')" title="Edit Data"><i class="fas fa-pencil"></i> Edit</a></li>
-                                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#deleteModal" wire:click="getID('{{$item->rencana_penilaian_id}}')" title="Hapus Data"><i class="fas fa-trash"></i> Hapus</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#deleteModal" wire:click="getID('{{$item->rencana_penilaian_id}}')" title="Hapus Data"><i class="fas fa-trash"></i> Hapus</a></li-->
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->rencana_penilaian_id}}', 'viewModal')" title="Lihat Detil"><i class="fas fa-eye"></i> Detil</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->rencana_penilaian_id}}', 'editModal')" title="Edit Data"><i class="fas fa-pencil"></i> Edit</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->rencana_penilaian_id}}', 'copyModal')" title="Hapus Data"><i class="fas fa-copy"></i> Duplikasi</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->rencana_penilaian_id}}', 'deleteModal')" title="Hapus Data"><i class="fas fa-trash"></i> Hapus</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -70,6 +74,22 @@
 <script>
     Livewire.on('close-modal', event => {
         $('#addModal').modal('hide');
+        $('#viewModal').modal('hide');
+        $('#copyModal').modal('hide');
+        $('#deleteModal').modal('hide');
+        $('#editModal').modal('hide');
+    })
+    Livewire.on('viewModal', event => {
+        $('#viewModal').modal('show');
+    })
+    Livewire.on('addModal', event => {
+        $('#addModal').modal('show');
+    })
+    Livewire.on('copyModal', event => {
+        $('#copyModal').modal('show');
+    })
+    Livewire.on('deleteModal', event => {
+        $('#deleteModal').modal('show');
     })
     window.addEventListener('data_rombongan_belajar', event => {
         $('#rombongan_belajar_id').html('<option value="">== Pilih Rombongan Belajar ==</option>')
@@ -110,6 +130,26 @@
             $(item).val('');
             $(item).trigger('change');
         })
+    })
+    window.addEventListener('data_rombongan_belajar_copy', event => {
+        $('#rombongan_belajar_id_copy').html('<option value="">== Pilih Rombongan Belajar ==</option>')
+        $('#pembelajaran_id_copy').html('<option value="">== Pilih Mata Pelajaran ==</option>')
+        $.each(event.detail.data_rombongan_belajar, function (i, item) {
+            $('#rombongan_belajar_id_copy').append($('<option>', { 
+                value: item.rombongan_belajar_id,
+                text : item.nama
+            }));
+        });
+    })
+    window.addEventListener('data_pembelajaran_copy', event => {
+        console.log(event.detail);
+        $('#pembelajaran_id_copy').html('<option value="">== Pilih Mata Pelajaran ==</option>')
+        $.each(event.detail.data_pembelajaran, function (i, item) {
+            $('#pembelajaran_id_copy').append($('<option>', { 
+                value: item.pembelajaran_id,
+                text : item.nama_mata_pelajaran
+            }));
+        });
     })
 </script>
 @endpush

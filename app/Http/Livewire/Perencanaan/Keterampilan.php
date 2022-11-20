@@ -130,6 +130,7 @@ class Keterampilan extends Component
         if($value){
             $this->data_pembelajaran = Pembelajaran::where($this->kondisi())->orderBy('mata_pelajaran_id', 'asc')->get();
             $this->dispatchBrowserEvent('data_pembelajaran', ['data_pembelajaran' => $this->data_pembelajaran]);
+            $this->dispatchBrowserEvent('data_pembelajaran_copy', ['data_pembelajaran' => $this->data_pembelajaran]);
         }
     }
     public function updatedPembelajaranId($value){
@@ -241,8 +242,20 @@ class Keterampilan extends Component
         $this->emit('close-modal');
         $this->resetPage();
     }
-    public function getID($rencana_penilaian_id){
+    public function getID($rencana_penilaian_id, $query){
+        $this->emit($query);
         $this->rencana = Rencana_penilaian::with(['kd_nilai'])->find($rencana_penilaian_id);
+        if($query == 'copyModal'){
+            $this->tingkat = $this->rencana->rombongan_belajar->tingkat;
+            $this->data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
+                $query->where('tingkat', $this->tingkat);
+                $query->where('semester_id', session('semester_aktif'));
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->whereHas('pembelajaran', $this->kondisi());
+                $query->where('rombongan_belajar_id', '<>', $this->rencana->rombongan_belajar->rombongan_belajar_id);
+            })->get();
+            $this->dispatchBrowserEvent('data_rombongan_belajar_copy', ['data_rombongan_belajar' => $this->data_rombongan_belajar]);
+        }
     }
     public function delete(){
         if($this->rencana){
@@ -262,6 +275,37 @@ class Keterampilan extends Component
         }
     }
     public function duplikasi(){
-        //
+        $Rencana_penilaian = Rencana_penilaian::create([
+            'sekolah_id' => session('sekolah_id'),
+            'pembelajaran_id' => $this->pembelajaran_id,
+            'kompetensi_id' => $this->kompetensi_id,
+            'nama_penilaian' => $this->rencana->nama_penilaian,
+            'metode_id' => $this->rencana->metode_id,
+            'bobot' => $this->rencana->bobot,
+            'keterangan' => $this->rencana->keterangan,
+            'last_sync' => now(),
+        ]);
+        foreach($this->rencana->kd_nilai as $kd_nilai){
+            Kd_nilai::create([
+                'sekolah_id' => session('sekolah_id'),
+                'rencana_penilaian_id' => $Rencana_penilaian->rencana_penilaian_id,
+                'kompetensi_dasar_id' => $kd_nilai->kompetensi_dasar_id,
+                'id_kompetensi' => $kd_nilai->id_kompetensi
+            ]);
+        }
+        $this->close();
+        if($Rencana_penilaian){
+            $this->alert('info', 'Rencana Penilaian Pengetahuan berhasil di duplikasi', [
+                'position' => 'center',
+                'allowOutsideClick' => false,
+                'timer' => null
+            ]);
+        } else {
+            $this->alert('info', 'Rencana Penilaian Pengetahuan gagal duplikasi! Silahkan coba beberapa saat lagi', [
+                'position' => 'center',
+                'allowOutsideClick' => false,
+                'timer' => null
+            ]);
+        }
     }
 }
