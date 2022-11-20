@@ -77,6 +77,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    @if($pengguna)
+                    <button type="submit" class="btn btn-danger" wire:click.prevent="resetPassword('{{$pengguna->user_id}}')">Reset Password</button>
+                    @endif
                     <button type="submit" class="btn btn-primary" wire:click.prevent="update()">Simpan</button>
                 </div>
             </div>

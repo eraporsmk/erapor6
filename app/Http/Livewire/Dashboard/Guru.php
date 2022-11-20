@@ -227,16 +227,21 @@ class Guru extends Component
                     ]);
                 }
                 $find_nilai_rapor = Nilai_rapor::where('anggota_rombel_id', $anggota_rombel->anggota_rombel_id)->where('pembelajaran_id', $pembelajaran_id)->first();
+                $kkm = get_kkm($pembelajaran->kelompok_id, $pembelajaran->kkm);
                 if($find_nilai_rapor){
+                    $rasio_p = ($pembelajaran->rasio_p) ? $pembelajaran->rasio_p : 50;
+                    $rasio_k = ($pembelajaran->rasio_k) ? $pembelajaran->rasio_k : 50;
                     if($this->kompetensi_id == 1 || $this->kompetensi_id == 3){
+                        $total_nilai = (($nilai_akhir * $rasio_p) + ($find_nilai_rapor->nilai_k * $rasio_k)) / 100;
                         $find_nilai_rapor->nilai_p = $nilai_akhir;
-                        $find_nilai_rapor->rasio_p = $pembelajaran->rasio_p;
-                        $find_nilai_rapor->total_nilai = ($find_nilai_rapor->nilai_p + $nilai_akhir) - $pembelajaran->skm;
+                        $find_nilai_rapor->rasio_p = $rasio_p;
+                        $find_nilai_rapor->total_nilai = bilangan_bulat($total_nilai);
                         $find_nilai_rapor->save();
                     } else {
+                        $total_nilai = (($nilai_akhir * $rasio_k) + ($find_nilai_rapor->nilai_p * $rasio_p)) / 100;
                         $find_nilai_rapor->nilai_k = $nilai_akhir;
-                        $find_nilai_rapor->rasio_k = $pembelajaran->rasio_k;
-                        $find_nilai_rapor->total_nilai = ($find_nilai_rapor->nilai_k + $nilai_akhir) - $pembelajaran->skm;
+                        $find_nilai_rapor->rasio_k = $rasio_k;
+                        $find_nilai_rapor->total_nilai = bilangan_bulat($total_nilai);
                         $find_nilai_rapor->save();
                     }
                 } else {

@@ -9,13 +9,44 @@
         <tbody>
             @foreach ($data_siswa as $siswa)
             <tr>
-                <td>{{$siswa->nama}}</td>
                 <td>
-                    @role('wali', session('semester_id'))
-                    <textarea wire:ignore wire:model="catatan_akademik.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
+                    {{$siswa->nama}}<br>
+                    NISN : {{$siswa->nisn}}<br>
+                    <span class="badge bg-success">3 (Tiga) Nilai Akhir Terendah</span>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align:middle;" rowspan="2">Mata Pelajaran</th>
+                                <th class="text-center" colspan="3">Nilai</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center">P</th>
+                                <th class="text-center">K</th>
+                                <th class="text-center">NA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($siswa->anggota_rombel->nilai_rapor as $nilai)
+                            <tr>
+                                <td>{{$nilai->pembelajaran->nama_mata_pelajaran}}</td>
+                                <td class="text-center">{{$nilai->nilai_p}}</td>
+                                <td class="text-center">{{$nilai->nilai_k}}</td>
+                                <td class="text-center">{{$nilai->total_nilai}}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center">Tidak ada data untuk ditampilkan</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    @if($form)
+                    <textarea wire:model.lazy="catatan_akademik.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
                     @else
-                    {{$catatan_akademik[$siswa->anggota_rombel->anggota_rombel_id]}}
-                    @endrole
+                    <textarea wire:model="catatan_akademik.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control" disabled></textarea>
+                    @endif
                 </td>
             </tr>
             @endforeach
