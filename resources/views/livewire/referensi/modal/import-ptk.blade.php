@@ -47,6 +47,31 @@
                             </thead>
                             <tbody>
                                 @foreach ($imported_data as $urut => $data)
+                                @if(
+                                    $errors->has('nama.'.$urut) ||
+                                    $errors->has('nik.'.$urut) ||
+                                    $errors->has('email.'.$urut)
+                                )
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td class="text-danger">{{ $errors->first('nama.'.$urut) }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-danger">{{ $errors->first('nik.'.$urut) }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-danger">{{ $errors->first('email.'.$urut) }}</td>
+                                </tr>
+                                @else
                                 <tr>
                                     <td class="text-center">{{$loop->iteration}}</td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="nama.{{$urut}}"></td>
@@ -66,6 +91,7 @@
                                     <td><input type="text" class="form-control form-control-sm" wire:model="telp_hp.{{$urut}}"></td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="email.{{$urut}}"></td>
                                 </tr>
+                                @endif
                                 @endforeach
                             </tbody>
                         </table>

@@ -142,6 +142,21 @@ class DataInstruktur extends Component
         $this->imported_data = $multiplied->all();
     }
     public function store(){
+        $this->validate(
+            [
+                'nama.*' => 'required',
+                'nik.*' => 'required|min:16|max:16',
+                'email.*' => 'required|unique:guru,email',
+            ],
+            [
+                'nama.*.required' => 'Nama tidak boleh kosong!',
+                'nik.*.required' => 'NIK tidak boleh kosong!',
+                'nik.*.min' => 'NIK minimal harus 16 digit!',
+                'nik.*.max' => 'NIK maksimal harus 16 digit!',
+                'email.*.required' => 'Email tidak boleh kosong!',
+                'email.*.unique' => 'Email sudah terdaftar!',
+            ]
+        );
         foreach($this->nama as $urut => $nama){
             $agama = Agama::where('nama', $this->agama[$urut])->first();
             if($agama){
