@@ -24,6 +24,7 @@ class AnalisisNilai extends Component
     public $kompetensi_id;
     public $rencana_penilaian_id;
     public $nilai_value = [];
+    public $pembelajaran;
 
     public function render()
     {
@@ -85,10 +86,9 @@ class AnalisisNilai extends Component
     public function updatedPembelajaranId($value){
         $this->reset(['show', 'data_siswa', 'kkm']);
         if($this->pembelajaran_id){
-            $pembelajaran = Pembelajaran::with(['rombongan_belajar'])->find($this->pembelajaran_id);
-            $this->nama_mapel = $pembelajaran->nama_mata_pelajaran;
-            $this->nama_rombel = $pembelajaran->rombongan_belajar->nama;
-            $this->kkm = get_kkm($pembelajaran->kelompok_id, 0);
+            $this->pembelajaran = Pembelajaran::with(['rombongan_belajar'])->find($this->pembelajaran_id);
+            $this->nama_mapel = $this->pembelajaran->nama_mata_pelajaran;
+            $this->nama_rombel = $this->pembelajaran->rombongan_belajar->nama;
             $data_kompetensi = [
                 ['id' => 1, 'nama' => 'Pengetahuan'],
                 ['id' => 2, 'nama' => 'Keterampilan'],
@@ -127,6 +127,7 @@ class AnalisisNilai extends Component
         }])->find($this->rencana_penilaian_id);
         $this->bobot = $this->rencana_penilaian->bobot;
         $this->nama_rencana = $this->rencana_penilaian->nama_penilaian;
+        $this->kkm = get_kkm($this->pembelajaran->kelompok_id, 0);
         $this->show = TRUE;
         /*$this->data_siswa = Peserta_didik::with(['anggota_rombel' => function($query){
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
