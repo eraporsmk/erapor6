@@ -234,6 +234,11 @@ class GenerateMenus
                         'smt' => collect([1,2]),
                         'cara_penilaian' => collect(['sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
+                    $menu->wali_kelas->add('Unduh Leger', 'leger')->data([
+                        'role' => ['wali'], 
+                        'smt' => collect([1, 2]),
+                        'cara_penilaian' => collect(['sederhana'])
+                    ])->append($this->setAppend())->prepend($this->icon('download'))->link->attr($this->text_class());
                 });
             });
             $menu->group([], function($menu){

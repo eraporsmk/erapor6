@@ -130,6 +130,7 @@ Route::middleware([
         Route::get('/leger-kd/{rombongan_belajar_id}', [UnduhanController::class, 'unduh_leger_kd'])->name('unduh-leger-kd');
         Route::get('/leger-nilai-akhir/{rombongan_belajar_id}', [UnduhanController::class, 'unduh_leger_nilai_akhir'])->name('unduh-leger-nilai-akhir');
         Route::get('/leger-nilai-rapor/{rombongan_belajar_id}', [UnduhanController::class, 'unduh_leger_nilai_rapor'])->name('unduh-leger-nilai-rapor');
+        Route::get('/leger-nilai-kurmer/{rombongan_belajar_id}', [UnduhanController::class, 'unduh_leger_nilai_kurmer'])->name('unduh-leger-nilai-kurmer');
         Route::get('/template-nilai-akhir/{pembelajaran_id?}', [UnduhanController::class, 'template_nilai_akhir'])->name('template-nilai-akhir');
         Route::get('/template-nilai-kd/{rencana_penilaian_id?}', [UnduhanController::class, 'template_nilai_kd'])->name('template-nilai-kd');
         Route::get('/template-nilai-tp/{rencana_penilaian_id?}', [UnduhanController::class, 'template_nilai_tp'])->name('template-nilai-tp');
@@ -140,6 +141,7 @@ Route::middleware([
         Route::get('/prestasi-pd', [EraporController::class, 'prestasi_pd'])->name('wali-kelas.prestasi-pd');
         Route::get('/ketidakhadiran', [EraporController::class, 'ketidakhadiran'])->name('wali-kelas.ketidakhadiran');
         Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekskul'])->name('wali-kelas.nilai-ekstrakurikuler');
+        Route::get('/leger', [EraporController::class, 'leger_kurmer'])->name('laporan.leger-kurmer');
     });
     Route::get('/unduhan', [EraporController::class, 'unduhan'])->name('pusat-unduhan');
     Route::get('/changelog', [EraporController::class, 'changelog'])->name('changelog');

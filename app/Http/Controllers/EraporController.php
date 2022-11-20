@@ -211,6 +211,9 @@ class EraporController extends Controller
     public function leger(){
         return view('content.laporan.leger');
     }
+    public function leger_kurmer(){
+        return view('content.laporan.leger-kurmer');
+    }
     public function rekap_nilai(){
         return view('content.monitoring.rekap-nilai');
     }

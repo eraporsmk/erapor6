@@ -15,6 +15,7 @@ use App\Exports\TemplateNilaiAkhir;
 use App\Exports\TemplateNilaiKd;
 use App\Exports\TemplateNilaiTp;
 use App\Exports\TemplateTp;
+use App\Exports\LeggerNilaiKurmerExport;
 
 class UnduhanController extends Controller
 {
@@ -31,6 +32,13 @@ class UnduhanController extends Controller
 		$nama_file = clean($nama_file);
 		$nama_file = $nama_file . '.xlsx';
 		return (new LeggerNilaiAkhirExport)->query(request()->route('rombongan_belajar_id'))->download($nama_file);
+    }
+	public function unduh_leger_nilai_kurmer(){
+        $rombongan_belajar = Rombongan_belajar::find(request()->route('rombongan_belajar_id'));
+		$nama_file = 'Leger Nilai Akhir Kelas ' . $rombongan_belajar->nama;
+		$nama_file = clean($nama_file);
+		$nama_file = $nama_file . '.xlsx';
+		return (new LeggerNilaiKurmerExport)->query(request()->route('rombongan_belajar_id'))->download($nama_file);
     }
     public function unduh_leger_nilai_rapor(){
         $rombongan_belajar = Rombongan_belajar::find(request()->route('rombongan_belajar_id'));
