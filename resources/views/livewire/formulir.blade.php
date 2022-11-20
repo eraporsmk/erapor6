@@ -51,6 +51,13 @@
         </div>
     </div>
     <div class="row mb-2 {{($show) ? '' : 'd-none'}}">
+        <?php
+        $data_kd = [];
+        foreach($kd_nilai as $kd){
+            $data_kd[str_replace('.','',$kd->id_kompetensi)] = $kd;
+        }
+        ksort($data_kd);
+        ?>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
@@ -60,7 +67,7 @@
                         <th class="text-center align-middle" rowspan="2">Rerata Nilai</th>
                     </tr>
                     <tr>
-                        @foreach ($kd_nilai as $kd)
+                        @foreach ($data_kd as $kd)
                         <th class="text-center">{{$kd->id_kompetensi}}</th>    
                         @endforeach
                     </tr>
@@ -69,7 +76,7 @@
                     @foreach ($data_siswa as $siswa)
                     <tr>
                         <td>{{$siswa->nama}}</td>
-                        @foreach ($kd_nilai as $kd)
+                        @foreach ($data_kd as $kd)
                         <td class="text-center">
                             <input type="number" class="form-control" wire:ignore wire:model.lazy="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$kd->kd_nilai_id}}" wire:change="hitungRerata('{{$siswa->anggota_rombel->anggota_rombel_id}}')">
                         </td>

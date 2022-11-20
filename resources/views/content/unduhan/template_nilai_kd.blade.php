@@ -1,3 +1,9 @@
+<?php
+foreach($kd_nilai as $kd){
+	$data_kd[str_replace('.','',$kd->id_kompetensi)] = $kd;
+}
+ksort($data_kd);
+?>
 <table>
 	<thead>
 		<tr>
@@ -5,8 +11,8 @@
 			<th>PD_ID</th>
 			<th>Nama Peserta Didik</th>
 			<th>NISN</th>
-			@foreach ($kd_nilai as $kd)
-            <th>'{{$kd->id_kompetensi}}</th>    
+			@foreach ($data_kd as $kd)
+            <th>kd_{{$kd->id_kompetensi}}</th>    
             @endforeach
 		</tr>
 	</thead>
