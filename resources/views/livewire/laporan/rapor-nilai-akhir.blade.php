@@ -12,4 +12,5 @@
             </div>
         </div>
     </div>
+    @include('components.loader')
 </div>

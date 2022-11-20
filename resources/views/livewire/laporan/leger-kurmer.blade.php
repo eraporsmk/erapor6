@@ -3,6 +3,18 @@
     <div class="content-body">
         <div class="card">
             <div class="card-body">
+                @role('waka', session('semester_id'))
+                    @include('livewire.formulir-waka')
+                    @if($show && $data_pembelajaran->count())
+                    <div class="row mb-2">
+                        <label for="rombongan_belajar_id" class="col-sm-3 col-form-label">Unduh Legger</label>
+                        <div class="col-sm-9">
+                            <a href="{{route('unduhan.unduh-leger-nilai-kurmer', ['rombongan_belajar_id' => $rombongan_belajar_id])}}" class="btn btn-success">Unduh Legger</a>
+                        </div>
+                    </div>
+                    @endif
+                @endrole
+                @if($show)
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -32,7 +44,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                @endif
             </div>
         </div>
     </div>
+    @include('components.loader')
 </div>
