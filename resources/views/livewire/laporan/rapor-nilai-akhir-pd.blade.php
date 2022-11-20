@@ -11,6 +11,7 @@
             </tr>
         </thead>
         <tbody>
+            @if(Illuminate\Support\Str::of($rombongan_belajar->kurikulum)->contains('Merdeka'))
             @foreach ($data_siswa as $siswa)
             <tr>
                 <td>{{$siswa->nama}}</td>
@@ -37,6 +38,11 @@
                 </td>
             </tr>
             @endforeach
+            @else
+            <tr>
+                <td class="text-center" colspan="6">Tidak ada data untuk ditampilkan</td>
+            </tr>
+            @endif
         </tbody>
     </table>
 </div>
