@@ -169,16 +169,20 @@ class CatatanAkademik extends Component
     }
     public function store(){
         foreach($this->catatan_akademik as $anggota_rombel_id => $uraian_deskripsi){
-            Catatan_wali::updateOrCreate(
-                [
-                    'anggota_rombel_id' => $anggota_rombel_id,
-                ],
-                [
-                    'sekolah_id' => session('sekolah_id'),
-                    'uraian_deskripsi' => $uraian_deskripsi,
-                    'last_sync' => now(),
-                ]
-            );
+            if($uraian_deskripsi){
+                Catatan_wali::updateOrCreate(
+                    [
+                        'anggota_rombel_id' => $anggota_rombel_id,
+                    ],
+                    [
+                        'sekolah_id' => session('sekolah_id'),
+                        'uraian_deskripsi' => $uraian_deskripsi,
+                        'last_sync' => now(),
+                    ]
+                );
+            } else {
+                Catatan_wali::where('anggota_rombel_id', $anggota_rombel_id)->delete();
+            }
         }
         $this->flash('success', 'Catatan Akademik berhasil disimpan', [], '/laporan/catatan-akademik');
         /*$this->alert('success', 'Catatan Akademik berhasil disimpan', [
