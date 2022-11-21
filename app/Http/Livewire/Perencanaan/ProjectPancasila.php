@@ -101,7 +101,7 @@ class ProjectPancasila extends Component
     }
     public function updatedTingkat($value)
     {
-        $this->reset(['rombongan_belajar_id', 'pembelajaran_id']);
+        $this->reset(['rombongan_belajar_id', 'pembelajaran_id', 'show']);
         if($value){
             $this->data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
                 $query->where('tingkat', $this->tingkat);
@@ -113,12 +113,14 @@ class ProjectPancasila extends Component
         }
     }
     public function updatedRombonganBelajarId($value){
+        $this->reset(['pembelajaran_id', 'show']);
         if($value){
             $this->data_pembelajaran = Pembelajaran::where($this->kondisi())->orderBy('mata_pelajaran_id', 'asc')->get();
             $this->dispatchBrowserEvent('data_pembelajaran', ['data_pembelajaran' => $this->data_pembelajaran]);
         }
     }
     public function updatedPembelajaranId($value){
+        $this->reset(['show']);
         if($value){
             $this->budaya_kerja = Budaya_kerja::get();
             $this->show = TRUE;
