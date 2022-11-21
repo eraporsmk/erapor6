@@ -690,25 +690,27 @@ class SinkronDapodik extends Command
         $bar->finish();
     }
     private function insert_jurusan($data, $user, $semester){
-        $jurusan = Jurusan::updateOrCreate(
-            [
-                'jurusan_id' => $data->jurusan_id
-            ],
-            [
-                'nama_jurusan' => $data->nama_jurusan,
-                'untuk_sma' => $data->untuk_sma,
-                'untuk_smk' => $data->untuk_smk,
-                'untuk_pt' => $data->untuk_pt,
-                'untuk_slb' => $data->untuk_slb,
-                'untuk_smklb' => $data->untuk_smklb,
-                'jenjang_pendidikan_id' => $data->jenjang_pendidikan_id,
-                'jurusan_induk' => $data->jurusan_induk,
-                'level_bidang_id' => $data->level_bidang_id,
-                'deleted_at' => $data->expired_date,
-                'last_sync' => now(),
-            ]
-        );
-        return $jurusan;
+        $jurusan = Jurusan::find($data->jurusan_induk);
+        if($jurusan){
+            Jurusan::updateOrCreate(
+                [
+                    'jurusan_id' => $data->jurusan_id
+                ],
+                [
+                    'nama_jurusan' => $data->nama_jurusan,
+                    'untuk_sma' => $data->untuk_sma,
+                    'untuk_smk' => $data->untuk_smk,
+                    'untuk_pt' => $data->untuk_pt,
+                    'untuk_slb' => $data->untuk_slb,
+                    'untuk_smklb' => $data->untuk_smklb,
+                    'jenjang_pendidikan_id' => $data->jenjang_pendidikan_id,
+                    'jurusan_induk' => $data->jurusan_induk,
+                    'level_bidang_id' => $data->level_bidang_id,
+                    'deleted_at' => $data->expired_date,
+                    'last_sync' => now(),
+                ]
+            );
+        }
     }
     private function proses_wilayah($wilayah){
         $kecamatan = NULL;
