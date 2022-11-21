@@ -222,9 +222,12 @@ class Dapodik extends Component
     }
     private function ref_erapor(){
         $sekolah = Sekolah::withCount([
-            'ptk', 
+            'ptk' => function($query){
+                $query->where('is_dapodik', 1);
+            }, 
             'rombongan_belajar' => function($query){
                 $query->where('semester_id', session('semester_aktif'));
+                $query->whereIn('jenis_rombel', [1, 8, 9, 16]);
             },
             'peserta_didik as pd_aktif_count' => function($query){
                 $query->whereHas('anggota_rombel', function($query){
