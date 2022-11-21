@@ -81,13 +81,15 @@ class SinkronErapor extends Command
                 exit;
             }            
         }
+        $created_at = NULL;
         if($satuan == 'wilayah'){
             $created_at = Mst_wilayah::orderBy('created_at', 'DESC')->first();
         } elseif($satuan == 'kompetensi-dasar'){
             $created_at = Kompetensi_dasar::orderBy('created_at', 'DESC')->first();
         } elseif($satuan == 'capaian-pembelajaran'){
             $created_at = Capaian_pembelajaran::orderBy('created_at', 'DESC')->first();
-        } else {
+        }
+        if(!$created_at){
             $created_at = (object) ['created_at' => '2021-10-23 01:47:54'];
         }
         $args = [
