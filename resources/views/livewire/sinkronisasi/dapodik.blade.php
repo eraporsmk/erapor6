@@ -31,7 +31,17 @@
                     <tbody>
                         @foreach ($data_sinkron as $sinkron)
                         <tr>
-                            <td class="ps-2">{{$sinkron['nama']}}</td>
+                            <td class="ps-2">
+                                {{$sinkron['nama']}} 
+                                @if($sinkron['icon'])
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="" data-bs-original-title="Jumlah Rombel Reguler &amp; Rombel Matpel Pilihan">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </a>
+                                @endif
+                                {{--!! ($sinkron['icon']) ? '<span class="text-info"><i class="fa-regular fa-circle-question" data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="Tooltip on top"></i></span>' : '' !!--}}
+                            </td>
                             <td class="text-center">{{$sinkron['dapodik']}}</td>
                             <td class="text-center">{{$sinkron['erapor']}}</td>
                             <td class="text-center">{{$sinkron['sinkron']}}</td>
@@ -85,6 +95,9 @@
 </div>
 @push('scripts')
     <script>
+        $(document).ready(function() {
+            $('[data-bs-toggle="tooltip"]').tooltip()
+        });
         document.addEventListener('livewire:load', function () {
             var myInterval;
             function myTimer() {

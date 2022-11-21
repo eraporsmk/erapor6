@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Semester;
 use App\Models\Sekolah;
 use App\Models\Capaian_pembelajaran;
+use App\Models\Mata_pelajaran;
 use Carbon\Carbon;
 use Storage;
 
@@ -227,29 +228,32 @@ class SinkronErapor extends Command
     }
     
     private function proses_kd($data){
-        Kompetensi_dasar::withTrashed()->updateOrCreate(
-            [
-                'kompetensi_dasar_id' => $data->kompetensi_dasar_id,
-            ],
-            [
-                'id_kompetensi' => $data->id_kompetensi,
-                'kompetensi_id' => $data->kompetensi_id,
-                'mata_pelajaran_id' => $data->mata_pelajaran_id,
-                'kelas_10' => $data->kelas_10,
-                'kelas_11' => $data->kelas_11,
-                'kelas_12' => $data->kelas_12,
-                'kelas_13' => $data->kelas_13,
-                'id_kompetensi_nas' => $data->id_kompetensi_nas,
-                'kompetensi_dasar' => $data->kompetensi_dasar,
-                'kompetensi_dasar_alias' => $data->kompetensi_dasar_alias,
-                'user_id' => $data->user_id,
-                'kurikulum' => $data->kurikulum,
-                'created_at' => $data->created_at,
-                'updated_at' => $data->updated_at,
-                'deleted_at' => $data->deleted_at,
-                'last_sync' => $data->last_sync,
-            ]
-        );
+        $find = Mata_pelajaran::find($data->mata_pelajaran_id);
+        if($find){
+            Kompetensi_dasar::withTrashed()->updateOrCreate(
+                [
+                    'kompetensi_dasar_id' => $data->kompetensi_dasar_id,
+                ],
+                [
+                    'id_kompetensi' => $data->id_kompetensi,
+                    'kompetensi_id' => $data->kompetensi_id,
+                    'mata_pelajaran_id' => $data->mata_pelajaran_id,
+                    'kelas_10' => $data->kelas_10,
+                    'kelas_11' => $data->kelas_11,
+                    'kelas_12' => $data->kelas_12,
+                    'kelas_13' => $data->kelas_13,
+                    'id_kompetensi_nas' => $data->id_kompetensi_nas,
+                    'kompetensi_dasar' => $data->kompetensi_dasar,
+                    'kompetensi_dasar_alias' => $data->kompetensi_dasar_alias,
+                    'user_id' => $data->user_id,
+                    'kurikulum' => $data->kurikulum,
+                    'created_at' => $data->created_at,
+                    'updated_at' => $data->updated_at,
+                    'deleted_at' => $data->deleted_at,
+                    'last_sync' => $data->last_sync,
+                ]
+            );
+        }
     }
     private function proses_wilayah($wilayah){
         $data = Mst_wilayah::updateOrCreate(

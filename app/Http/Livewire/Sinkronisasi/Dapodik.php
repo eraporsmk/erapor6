@@ -85,6 +85,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['jurusan'],
                     'aksi' => 'jurusan',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Kurikulum',
@@ -93,6 +94,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['kurikulum'],
                     'aksi' => 'kurikulum',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Mata Pelajaran',
@@ -101,6 +103,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['mata_pelajaran'],
                     'aksi' => 'mata_pelajaran',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 /*[
                     'nama' => 'Mata Pelajaran Kurikulum',
@@ -117,6 +120,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['wilayah'],
                     'aksi' => 'wilayah',
                     'server' => 'erapor',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Ref. Kompetensi Dasar',
@@ -125,6 +129,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['ref_kd'],
                     'aksi' => 'get-kd',
                     'server' => 'erapor',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Sekolah',
@@ -133,6 +138,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['sekolah'],
                     'aksi' => 'sekolah',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'GTK',
@@ -141,6 +147,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['ptk'],
                     'aksi' => 'ptk',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Rombongan Belajar',
@@ -149,6 +156,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['rombongan_belajar'],
                     'aksi' => 'rombongan_belajar',
                     'server' => 'dapodik',
+                    'icon' => TRUE,
                 ],
                 [
                     'nama' => 'Peserta Didik Aktif',
@@ -157,6 +165,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['peserta_didik_aktif'],
                     'aksi' => 'peserta_didik_aktif',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Peserta Didik Keluar',
@@ -165,6 +174,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['peserta_didik_keluar'],
                     'aksi' => 'peserta_didik_keluar',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Anggota Rombel Matpel Pilihan',
@@ -173,6 +183,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['anggota_rombel_pilihan'],
                     'aksi' => 'anggota_rombel_pilihan',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Pembelajaran (Reguler)',
@@ -181,6 +192,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['pembelajaran'],
                     'aksi' => 'pembelajaran',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 /*[
                     'nama' => 'Pembelajaran (Sub Mapel/Tema P5)',
@@ -197,6 +209,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['ekstrakurikuler'],
                     'aksi' => 'ekstrakurikuler',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Anggota Ekstrakurikuler',
@@ -205,6 +218,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['anggota_ekskul'],
                     'aksi' => 'anggota_ekskul',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
                 [
                     'nama' => 'Relasi Dunia Usaha & Industri',
@@ -213,6 +227,7 @@ class Dapodik extends Component
                     'sinkron' => $erapor['dudi'],
                     'aksi' => 'dudi',
                     'server' => 'dapodik',
+                    'icon' => FALSE,
                 ],
             ],
             'breadcrumbs' => [
