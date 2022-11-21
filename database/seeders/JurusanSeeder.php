@@ -23,7 +23,7 @@ class JurusanSeeder extends Seeder
 		//DB::statement('BEGIN;');
 		//DB::statement('ALTER TABLE ref.jurusan DISABLE TRIGGER ALL;');
         foreach($data as $obj){
-			$find = DB::table('ref.jurusan')->find($obj->jurusan_induk);
+			$find = DB::table('ref.jurusan')->where('jurusan_id', $obj->jurusan_induk)->first();
 			if($find){
 				DB::table('ref.jurusan')->updateOrInsert([
 					'jurusan_id' 			=> trim($obj->jurusan_id),
