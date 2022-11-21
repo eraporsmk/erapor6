@@ -288,26 +288,30 @@ class SinkronDapodik extends Command
         $bar->finish();
     }
     private function simpan_mapel_kur($data){
-        Mata_pelajaran_kurikulum::updateOrCreate(
-            [
-                'kurikulum_id' => $data->kurikulum_id,
-                'mata_pelajaran_id' => $data->mata_pelajaran_id,
-                'tingkat_pendidikan_id' => $data->tingkat_pendidikan_id,
-            ],
-            [
-                'jumlah_jam' => $data->jumlah_jam,
-                'jumlah_jam_maksimum' => $data->jumlah_jam_maksimum,
-                'wajib' => $data->wajib,
-                'sks' => $data->sks,
-                'a_peminatan' => $data->a_peminatan,
-                'area_kompetensi' => $data->area_kompetensi,
-                'gmp_id' => $data->gmp_id,
-                'created_at' => $data->create_date,
-                'updated_at' => $data->last_update,
-                'deleted_at' => $data->expired_date,
-                'last_sync' => $data->last_sync,
-            ]
-        );
+        $kurikulum = Kurikulum::find($data->kurikulum_id);
+        $mata_pelajaran = Mata_pelajaran::find($data->mata_pelajaran_id);
+        if($kurikulum && $mata_pelajaran){
+            Mata_pelajaran_kurikulum::updateOrCreate(
+                [
+                    'kurikulum_id' => $data->kurikulum_id,
+                    'mata_pelajaran_id' => $data->mata_pelajaran_id,
+                    'tingkat_pendidikan_id' => $data->tingkat_pendidikan_id,
+                ],
+                [
+                    'jumlah_jam' => $data->jumlah_jam,
+                    'jumlah_jam_maksimum' => $data->jumlah_jam_maksimum,
+                    'wajib' => $data->wajib,
+                    'sks' => $data->sks,
+                    'a_peminatan' => $data->a_peminatan,
+                    'area_kompetensi' => $data->area_kompetensi,
+                    'gmp_id' => $data->gmp_id,
+                    'created_at' => $data->create_date,
+                    'updated_at' => $data->last_update,
+                    'deleted_at' => $data->expired_date,
+                    'last_sync' => $data->last_sync,
+                ]
+            );
+        }
     }
     private function simpan_peserta_didik_aktif($dapodik, $user, $semester){
         $i=1;
@@ -844,22 +848,24 @@ class SinkronDapodik extends Command
         $bar->finish();
     }
     private function insert_kurikulum($data, $user, $semester){
-        $kurikulum = Kurikulum::updateOrCreate(
-            [
-                'kurikulum_id' => $data->kurikulum_id
-            ],
-            [
-                'nama_kurikulum'			=> $data->nama_kurikulum,
-                'mulai_berlaku'				=> $data->mulai_berlaku,
-                'sistem_sks'				=> $data->sistem_sks,
-                'total_sks'					=> $data->total_sks,
-                'jenjang_pendidikan_id'		=> $data->jenjang_pendidikan_id,
-                'jurusan_id'				=> $data->jurusan_id,
-                'deleted_at'				=> $data->expired_date,
-                'last_sync'					=> now(),
-            ]
-        );
-        return $kurikulum;
+        $jurusan = Jurusan::find($data->jurusan_id);
+        if($jurusan){
+            Kurikulum::updateOrCreate(
+                [
+                    'kurikulum_id' => $data->kurikulum_id
+                ],
+                [
+                    'nama_kurikulum'			=> $data->nama_kurikulum,
+                    'mulai_berlaku'				=> $data->mulai_berlaku,
+                    'sistem_sks'				=> $data->sistem_sks,
+                    'total_sks'					=> $data->total_sks,
+                    'jenjang_pendidikan_id'		=> $data->jenjang_pendidikan_id,
+                    'jurusan_id'				=> $data->jurusan_id,
+                    'deleted_at'				=> $data->expired_date,
+                    'last_sync'					=> now(),
+                ]
+            );
+        }
     }
     private function simpan_anggota_ekskul($dapodik, $user, $semester){
         $i=1;
