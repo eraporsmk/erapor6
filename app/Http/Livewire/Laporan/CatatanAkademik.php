@@ -92,8 +92,8 @@ class CatatanAkademik extends Component
                 $query->with(['pembelajaran' => function($query){
                     $query->select('pembelajaran_id', 'nama_mata_pelajaran');
                 }]);
-                //$query->limit(3);
                 $query->orderBy('total_nilai', 'ASC');
+                $query->limit(3);
             }];
             $this->data_siswa = pd_walas($with);
         }
