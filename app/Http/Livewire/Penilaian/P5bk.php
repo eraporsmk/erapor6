@@ -70,15 +70,10 @@ class P5bk extends Component
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
-            $query->where('guru_id', $this->loggedUser()->guru_id);
-            //$query->whereNotNull('induk_pembelajaran_id');
-            $query->has('tema');
-            $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
-            //$query->whereNotNull('induk_pembelajaran_id');
-            $query->has('tema');
-            if($this->rombongan_belajar_id){
-                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            }
+            $query->whereHas('induk', function($query){
+                $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+            });
         };
     }
     public function updatedRombonganBelajarId($value){

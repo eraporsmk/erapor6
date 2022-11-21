@@ -208,6 +208,9 @@ class Pembelajaran extends Model
 			return false;
 		}
 	}
+	public function induk(){
+		return $this->hasOne(Pembelajaran::class, 'pembelajaran_id', 'induk_pembelajaran_id');
+	}
 	public function tema()
 	{
 		return $this->hasMany(Pembelajaran::class, 'induk_pembelajaran_id', 'pembelajaran_id');
