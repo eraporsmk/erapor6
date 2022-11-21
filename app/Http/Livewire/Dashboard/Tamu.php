@@ -11,7 +11,8 @@ class Tamu extends Component
         return view('livewire.dashboard.tamu', [
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"]
-            ]
+            ],
+            'username' => auth()->user()->name,
         ]);
     }
 }

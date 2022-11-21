@@ -5,14 +5,13 @@
 @section('content')
     @role('admin', session('semester_id'))
         @livewire('dashboard.admin')
-    @endrole
-    @role('guru', session('semester_id'))
+    @elserole('guru', session('semester_id'))
         @livewire('dashboard.guru')
-    @endrole
-    @role('siswa', session('semester_id'))
+    @elserole('siswa', session('semester_id'))
         @livewire('dashboard.siswa') 
-    @endrole
-    @role('user', session('semester_id'))
+    @elserole('user', session('semester_id'))
         @livewire('dashboard.user')
+    @else
+    @livewire('dashboard.tamu')
     @endrole
 @endsection
