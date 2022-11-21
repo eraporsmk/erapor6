@@ -33,7 +33,7 @@
                                     </td>
                                     <td>
                                         <div class="d-grid">
-                                            <button type="button" class="btn btn-sm btn-success waves-effect waves-float waves-light" data-bs-toggle="modal" data-bs-target="#pembelajaranModal" wire:click="getPembelajaran('{{$item->rombongan_belajar_id}}')">Pembelajaran</button>
+                                            <button type="button" class="btn btn-sm btn-success waves-effect waves-float waves-light" wire:click="getPembelajaran('{{$item->rombongan_belajar_id}}')">Pembelajaran</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -63,3 +63,40 @@
     @include('livewire.referensi.modal.pembelajaran')
     @include('components.loader')
 </div>
+@push('scripts')
+<script>
+    Livewire.on('show-pembelajaran', event => {
+        $('#pembelajaranModal').modal('show');
+    })
+    window.addEventListener('pembelajaran', event => {
+        console.log(event.detail);
+        $.each(event.detail.pembelajaran_id, function (i, pembelajaran_id) {
+            $.each(event.detail.data_kelompok, function (i, item) {
+                $('#kelompok_id_'+pembelajaran_id).append($('<option>', { 
+                    value: item.kelompok_id,
+                    text : item.nama_kelompok,
+                }));
+            });
+            $.each(event.detail.kelompok_id, function (i, item) {
+                $('#kelompok_id_'+i).val(item)
+            });
+            $.each(event.detail.guru_pengajar, function (i, item) {
+                $('#pengajar_'+pembelajaran_id).append($('<option>', { 
+                    value: item.guru_id,
+                    text : item.nama_lengkap,
+                }));
+            });
+            if(event.detail.pengajar.constructor.name === 'Object'){
+                $.each(event.detail.pengajar, function (i, item) {
+                    $('#pengajar_'+i).val(item)
+                });
+            } else {
+                var a = $('#pengajar_'+pembelajaran_id).val('')
+                console.log(pembelajaran_id);
+                console.log(a);
+            }
+        });
+        /**/
+    })
+</script>
+@endpush

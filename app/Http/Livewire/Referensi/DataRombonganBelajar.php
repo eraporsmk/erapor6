@@ -134,7 +134,7 @@ class DataRombonganBelajar extends Component
             'nama_mata_pelajaran' => $nama_mata_pelajaran,
             'pembelajaran_id' => $pembelajaran_id,
         ]);
-        //$this->dispatchBrowserEvent('pharaonic.select2.init');
+        $this->dispatchBrowserEvent('pharaonic.select2.init');
     }
     public function simpanPembelajaran(){
         $collection = collect($this->kelompok_id);

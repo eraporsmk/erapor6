@@ -92,7 +92,7 @@ class RombelPilihan extends Component
         })->orderBy('nama')->get();
         $this->getRombel();
     }
-    public function getPembelajaran($rombongan_belajar_id){
+    /*public function getPembelajaran($rombongan_belajar_id){
         $this->rombongan_belajar_id = $rombongan_belajar_id;
         $rombongan_belajar = Rombongan_belajar::find($this->rombongan_belajar_id);
         $merdeka = Str::of($rombongan_belajar->kurikulum->nama_kurikulum)->contains('Merdeka');
@@ -123,6 +123,49 @@ class RombelPilihan extends Component
         $this->nama_mata_pelajaran = $nama_mata_pelajaran;
         $this->dispatchBrowserEvent('pharaonic.select2.init');
         //$this->pengajar
+    }*/
+    public function getPembelajaran($rombongan_belajar_id){
+        $this->reset(['pembelajaran', 'pengajar', 'kelompok_id', 'no_urut', 'nama_mata_pelajaran', 'guru_pengajar', 'data_kelompok']);
+        $this->rombongan_belajar_id = $rombongan_belajar_id;
+        $rombongan_belajar = Rombongan_belajar::find($this->rombongan_belajar_id);
+        $merdeka = Str::of($rombongan_belajar->kurikulum->nama_kurikulum)->contains('Merdeka');
+        if($merdeka){
+            $kurikulum = 2022;
+        } else {
+            $kurikulum = 2017;
+        }
+        $this->getPengajar();
+        $this->getKelompok($kurikulum);
+        $this->getRombel();
+        $this->pembelajaran = Pembelajaran::where('rombongan_belajar_id', $rombongan_belajar_id)->whereNull('induk_pembelajaran_id')->orderBy('kelompok_id')->orderBy('no_urut')->orderBy('mata_pelajaran_id')->get();
+        $pengajar = [];
+        $kelompok_id = [];
+        $no_urut = [];
+        $pembelajaran_id = [];
+        foreach($this->pembelajaran as $pembelajaran){
+            if($pembelajaran->guru_pengajar_id){
+                $pengajar[$pembelajaran->pembelajaran_id] = $pembelajaran->guru_pengajar_id;
+            }
+            $kelompok_id[$pembelajaran->pembelajaran_id] = $pembelajaran->kelompok_id;
+            $no_urut[$pembelajaran->pembelajaran_id] = $pembelajaran->no_urut;
+            $nama_mata_pelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran->nama_mata_pelajaran;
+            $pembelajaran_id[] = $pembelajaran->pembelajaran_id;
+        }
+        $this->pengajar = $pengajar;
+        $this->kelompok_id = $kelompok_id;
+        $this->no_urut = $no_urut;
+        $this->nama_mata_pelajaran = $nama_mata_pelajaran;
+        $this->emit('show-pembelajaran');
+        $this->dispatchBrowserEvent('pembelajaran', [
+            'guru_pengajar' => $this->guru_pengajar,
+            'data_kelompok' => $this->data_kelompok,
+            'kelompok_id' => $kelompok_id,
+            'pengajar' => $pengajar,
+            'no_urut' => $no_urut,
+            'nama_mata_pelajaran' => $nama_mata_pelajaran,
+            'pembelajaran_id' => $pembelajaran_id,
+        ]);
+        $this->dispatchBrowserEvent('pharaonic.select2.init');
     }
     public function simpanPembelajaran(){
         $collection = collect($this->kelompok_id);
