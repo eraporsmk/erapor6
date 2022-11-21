@@ -9,7 +9,6 @@ class Capaian_pembelajaran extends Model
 {
     use HasFactory;
     public $incrementing = false;
-	//public $keyType = 'string';
 	protected $table = 'ref.capaian_pembelajaran';
 	protected $primaryKey = 'cp_id';
 	protected $guarded = [];

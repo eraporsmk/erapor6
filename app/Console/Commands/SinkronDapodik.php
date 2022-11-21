@@ -70,7 +70,10 @@ class SinkronDapodik extends Command
             'jurusan', 
             'kurikulum', 
             'mata_pelajaran', 
-            //'mata_pelajaran_kurikulum', 
+            //'mata_pelajaran_kurikulum',
+            'wilayah', 
+            'kompetensi-dasar', 
+            'capaian-pembelajaran',
             'sekolah', 
             'ptk', 
             'rombongan_belajar', 
@@ -145,6 +148,10 @@ class SinkronDapodik extends Command
             'kurikulum' => 'Referensi Kurikulum', 
             'mata_pelajaran' => 'Referensi Mata Pelajaran', 
             //'mata_pelajaran_kurikulum' => 'Referensi Mata Pelajaran Kurikulum', 
+            'semua_data' => 'Semua Referensi e-Rapor SMK', 
+            'wilayah' => 'Referensi Wilayah', 
+            'kompetensi-dasar' => 'Referensi Kompetensi Dasar', 
+            'capaian-pembelajaran' => 'Referensi Capaian Pembelajaran',
             'sekolah' => 'Data Sekolah',
             'jurusan_sp' => 'Data Jurusan SP',
             'ptk' => 'Data PTK', 
@@ -174,39 +181,48 @@ class SinkronDapodik extends Command
     private function ambil_data($sekolah, $semester, $satuan){
         $this->info("\n".'Mengambil '.$this->get_table($satuan));
         $this->proses_sync('Mengambil', $satuan, 0, 0, $sekolah->sekolah_id);
-        try {
-            $updated_at = NULL;
-            if($satuan == 'mata_pelajaran_kurikulum'){
-                $updated_at = Mata_pelajaran_kurikulum::orderBy('updated_at', 'DESC')->first()->created_at;
-            }
-            if($sekolah->user){
-                $data_sync = [
-                    'username_dapo'		=> $sekolah->user->email,
-                    'password_dapo'		=> $sekolah->user->password,
-                    'npsn'				=> $sekolah->npsn,
-                    'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
-                    'semester_id'		=> $semester->semester_id,
-                    'sekolah_id'		=> $sekolah->sekolah_id,
-                    'updated_at'        => ($updated_at) ? Carbon::parse($updated_at)->format('Y-m-d H:i:s') : NULL,
-                    'last_sync'         => NULL,
-                ];
-                $response = Http::withHeaders([
-                    'x-api-key' => $sekolah->sekolah_id,
-                ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/'.$satuan), $data_sync);
-                if($response->status() == 200){
-                    $this->info('Memproses '.$this->get_table($satuan));
-                    return $response->object();
-                } else {
-                    $this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
-                    return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$response->status());
-                    return false;
+        $server_dashboard = [
+            'wilayah', 
+            'kompetensi-dasar', 
+            'capaian-pembelajaran',
+        ];
+        if(in_array($satuan, $server_dashboard)){
+            $this->call('sinkron:erapor', ['satuan' => $satuan, 'email' => $sekolah->user->email]);
+        } else {
+            try {
+                $updated_at = NULL;
+                if($satuan == 'mata_pelajaran_kurikulum'){
+                    $updated_at = Mata_pelajaran_kurikulum::orderBy('updated_at', 'DESC')->first()->created_at;
                 }
-            } else {
-                return $this->error('Sekolah tidak memiliki pengguna Admin');
+                if($sekolah->user){
+                    $data_sync = [
+                        'username_dapo'		=> $sekolah->user->email,
+                        'password_dapo'		=> $sekolah->user->password,
+                        'npsn'				=> $sekolah->npsn,
+                        'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
+                        'semester_id'		=> $semester->semester_id,
+                        'sekolah_id'		=> $sekolah->sekolah_id,
+                        'updated_at'        => ($updated_at) ? Carbon::parse($updated_at)->format('Y-m-d H:i:s') : NULL,
+                        'last_sync'         => NULL,
+                    ];
+                    $response = Http::withHeaders([
+                        'x-api-key' => $sekolah->sekolah_id,
+                    ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/'.$satuan), $data_sync);
+                    if($response->status() == 200){
+                        $this->info('Memproses '.$this->get_table($satuan));
+                        return $response->object();
+                    } else {
+                        $this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
+                        return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$response->status());
+                        return false;
+                    }
+                } else {
+                    return $this->error('Sekolah tidak memiliki pengguna Admin');
+                }
+            } catch (\Exception $e){
+                $this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
+                return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon 3');
             }
-        } catch (\Exception $e){
-            $this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
-            return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon 3');
         }
     }
     private function proses_data($dapodik, $satuan, $user, $semester){

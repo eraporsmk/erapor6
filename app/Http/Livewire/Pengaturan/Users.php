@@ -85,6 +85,9 @@ class Users extends Component
         $data = Guru::where('sekolah_id', session('sekolah_id'))->whereNotNull('email')->get();
         $jenis_tu = Helper::jenis_gtk('tendik');
 		$asesor = Helper::jenis_gtk('asesor');
+        $PembinaRole = Role::where('name', 'pembina_ekskul')->first();
+        $p5Role = Role::where('name', 'guru-p5')->first();
+        $WalasRole = Role::where('name', 'wali')->first();
         if($data){
             foreach($data as $d){
                 $new_password = strtolower(Str::random(8));
@@ -115,24 +118,27 @@ class Users extends Component
                 }
                 $find_rombel = Rombongan_belajar::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->where('jenis_rombel', 1)->first();
 				if($find_rombel){
-                    $WalasRole = Role::where('name', 'wali')->first();
                     if(!$user->hasRole($WalasRole, session('semester_id'))){
                         $user->attachRole($WalasRole, session('semester_id'));
                     }
+                } else {
+                    $user->detachRole($WalasRole, session('semester_id'));
                 }
                 $find_mapel_p5 = Pembelajaran::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->has('tema')->first();
                 if($find_mapel_p5){
-                    $p5Role = Role::where('name', 'guru-p5')->first();
                     if(!$user->hasRole($p5Role, session('semester_id'))){
                         $user->attachRole($p5Role, session('semester_id'));
                     }
+                } else {
+                    $user->detachRole($p5Role, session('semester_id'));
                 }
                 $find_ekskul = Ekstrakurikuler::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->first();
                 if($find_ekskul){
-                    $PembinaRole = Role::where('name', 'pembina_ekskul')->first();
                     if(!$user->hasRole($PembinaRole, session('semester_id'))){
                         $user->attachRole($PembinaRole, session('semester_id'));
                     }
+                } else {
+                    $user->detachRole($PembinaRole, session('semester_id'));
                 }
             }
         }
