@@ -52,15 +52,7 @@
                                 <td>{{$user->last_login_at}}</td>
                                 <td>{!! (\Illuminate\Support\Facades\Hash::check($user->default_password, $user->password)) ? $user->default_password : '<span class="btn btn-sm btn-success"> Custom </span>' !!}</td>
                                 <td class="text-center">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Aksi
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                            <li><a class="dropdown-item" wire:click="view('{{$user->user_id}}')"><i data-feather="eye"></i> Detil</a></li>
-                                            <li><a class="dropdown-item" wire:click="destroy('{{$user->user_id}}')"><i data-feather="trash-2"></i> Hapus</a></li>
-                                            </ul>
-                                    </div>
+                                    <button class="btn btn-success btn-sm" wire:click="view('{{$user->user_id}}')"><i class="fas fa-eye"></i> Detil</button>
                                 </td>
                             </tr>
                             @endforeach
