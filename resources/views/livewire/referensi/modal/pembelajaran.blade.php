@@ -43,7 +43,7 @@
                                     <td>
                                         <div wire:ignore>
                                             <select id="kelompok_id_{{$item->pembelajaran_id}}" class="form-select" wire:model="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
-                                                <option value="">== Pilih Guru Pengajar ==</option>
+                                                <option value="">== Pilih Kelompok ==</option>
                                                 {{--
                                                 @foreach ($data_kelompok as $kelompok)
                                                     <option value="{{$kelompok->kelompok_id}}">{{$kelompok->nama_kelompok}}</option>

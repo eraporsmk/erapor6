@@ -10,7 +10,7 @@ class EraporController extends Controller
 {
     public function index()
     {
-        return view('content.dashboard');
+        return view('content.dashboard')->with(['user' => auth()->user()]);
     }
     public function set_layout(Request $request){
         $request->session()->put('theme', str_replace('-layout', '', $request->layout));

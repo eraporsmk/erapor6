@@ -3,15 +3,29 @@
 @section('title', 'Beranda')
 
 @section('content')
-    @role('admin', session('semester_id'))
+    @if($user->hasRole('admin', session('semester_id')))
         @livewire('dashboard.admin')
-    @elserole('guru', session('semester_id'))
+    @elseif($user->hasRole('guru', session('semester_id')))
         @livewire('dashboard.guru')
-    @elserole('siswa', session('semester_id'))
-        @livewire('dashboard.siswa') 
-    @elserole('user', session('semester_id'))
+    @elseif($user->hasRole('siswa', session('semester_id')))
+        @livewire('dashboard.siswa')
+    @elseif($user->hasRole('user', session('semester_id')))
         @livewire('dashboard.user')
     @else
-    @livewire('dashboard.tamu')
+        @livewire('dashboard.tamu')
+    @endif
+    {{--
+    @role('admin', session('semester_id'))
+        @livewire('dashboard.admin')
     @endrole
+    @role('guru', session('semester_id'))
+        @livewire('dashboard.guru')
+    @endrole
+    @role('siswa', session('semester_id'))
+        @livewire('dashboard.siswa') 
+    @endrole
+    @role('user', session('semester_id'))
+        @livewire('dashboard.user')
+    @endrole
+    --}}
 @endsection
