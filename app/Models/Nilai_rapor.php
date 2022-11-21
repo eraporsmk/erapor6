@@ -18,4 +18,7 @@ class Nilai_rapor extends Model
 	public function pembelajaran(){
 		return $this->hasOne(Pembelajaran::class, 'pembelajaran_id', 'pembelajaran_id');
 	}
+	public function anggota_rombel(){
+		return $this->hasOne(Anggota_rombel::class, 'anggota_rombel_id', 'anggota_rombel_id');
+	}
 }

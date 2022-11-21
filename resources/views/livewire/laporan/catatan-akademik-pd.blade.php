@@ -26,7 +26,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($siswa->anggota_rombel->nilai_rapor as $nilai)
+                            @forelse ($nilai_rapor[$siswa->anggota_rombel->anggota_rombel_id] as $nilai)
                             <tr>
                                 <td>{{$nilai->pembelajaran->nama_mata_pelajaran}}</td>
                                 <td class="text-center">{{$nilai->nilai_p}}</td>

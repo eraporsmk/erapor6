@@ -13,6 +13,7 @@ use App\Models\Jurusan;
 use App\Models\Kurikulum;
 use App\Models\Mata_pelajaran;
 use App\Models\Mata_pelajaran_kurikulum;
+use Carbon\Carbon;
 use Storage;
 use Artisan;
 use DB;
@@ -71,12 +72,18 @@ class Dapodik extends Component
     }
     public function render()
     {
+        $timezone = config('app.timezone');
+        $start = Carbon::create(date('Y'), date('m'), date('d'), '00', '00', '01', 'Asia/Jakarta');
+        $end = Carbon::create(date('Y'), date('m'), date('d'), '03', '00', '00', 'Asia/Jakarta');
+        $now = Carbon::now()->timezone($timezone);
+        $jam_sinkron = Carbon::now()->timezone($timezone)->isBetween($start, $end, false);
         $dapodik = ($this->data_dapodik()) ?? NULL;
         $referensi = ($this->referensi()) ?? NULL;
         //dd($referensi);
         $erapor = $this->ref_erapor();
         $this->sekolah_id = auth()->user()->sekolah_id;
         return view('livewire.sinkronisasi.dapodik', [
+            'jam_sinkron' => $jam_sinkron,
             'data_sinkron' => [
                 [
                     'nama' => 'Jurusan',

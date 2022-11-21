@@ -8,6 +8,7 @@ use Livewire\Component;
 use App\Models\Rombongan_belajar;
 use App\Models\Peserta_didik;
 use App\Models\Catatan_wali;
+use App\Models\Nilai_rapor;
 use Erapor;
 
 class CatatanAkademik extends Component
@@ -55,18 +56,12 @@ class CatatanAkademik extends Component
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
         })->with(['anggota_rombel' => function($query){
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            $query->with(['nilai_rapor' => function($query){
-                $query->has('pembelajaran');
-                $query->with(['pembelajaran' => function($query){
-                    $query->select('pembelajaran_id', 'nama_mata_pelajaran');
-                }]);
-                //$query->limit(3);
-                $query->orderBy('total_nilai', 'ASC');
-            }]);
         }])->orderBy('nama')->get();
         foreach($this->data_siswa as $siswa){
             $this->catatan_akademik[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_catatan_wali) ? $siswa->anggota_rombel->single_catatan_wali->uraian_deskripsi : 'Belum ada catatan ';
-            //$this->nilai_rapor[$siswa->anggota_rombel->anggota_rombel_id] = $siswa->anggota_rombel->nilai_rapor;
+            $this->nilai_rapor[$siswa->anggota_rombel->anggota_rombel_id] = Nilai_rapor::with(['pembelajaran' => function($query){
+                $query->select('pembelajaran_id', 'nama_mata_pelajaran');
+            }])->where('anggota_rombel_id', $siswa->anggota_rombel->anggota_rombel_id)->orderBy('total_nilai', 'ASC')->take(3)->get();
         }
         $this->show = true;
         $this->form = $this->check_walas($this->rombongan_belajar_id);
@@ -77,25 +72,20 @@ class CatatanAkademik extends Component
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             })->with(['anggota_rombel' => function($query){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-                $query->with(['nilai_rapor' => function($query){
-                    $query->has('pembelajaran');
-                    $query->with(['pembelajaran' => function($query){
-                        $query->select('pembelajaran_id', 'nama_mata_pelajaran');
-                    }]);
-                    //$query->limit(3);
-                    $query->orderBy('total_nilai', 'ASC');
-                }]);
             }])->orderBy('nama')->get();
-        } elseif($this->check_walas()){
-            $with = ['single_catatan_wali', 'nilai_rapor' => function($query){
-                $query->has('pembelajaran');
-                $query->with(['pembelajaran' => function($query){
+            foreach($this->data_siswa as $siswa){
+                $this->nilai_rapor[$siswa->anggota_rombel->anggota_rombel_id] = Nilai_rapor::with(['pembelajaran' => function($query){
                     $query->select('pembelajaran_id', 'nama_mata_pelajaran');
-                }]);
-                $query->orderBy('total_nilai', 'ASC');
-                $query->limit(3);
-            }];
+                }])->where('anggota_rombel_id', $siswa->anggota_rombel->anggota_rombel_id)->orderBy('total_nilai', 'ASC')->take(3)->get();
+            }
+        } elseif($this->check_walas()){
+            $with = ['single_catatan_wali'];
             $this->data_siswa = pd_walas($with);
+            foreach($this->data_siswa as $siswa){
+                $this->nilai_rapor[$siswa->anggota_rombel->anggota_rombel_id] = Nilai_rapor::with(['pembelajaran' => function($query){
+                    $query->select('pembelajaran_id', 'nama_mata_pelajaran');
+                }])->where('anggota_rombel_id', $siswa->anggota_rombel->anggota_rombel_id)->orderBy('total_nilai', 'ASC')->take(3)->get();
+            }
         }
     }
     public function mount(){
@@ -105,47 +95,14 @@ class CatatanAkademik extends Component
         } elseif($this->check_walas()){
             $this->show = TRUE;
             $this->form = TRUE;
-            $with = ['single_catatan_wali', 'nilai_rapor' => function($query){
-                $query->has('pembelajaran');
-                $query->with(['pembelajaran' => function($query){
-                    $query->select('pembelajaran_id', 'nama_mata_pelajaran');
-                }]);
-                //$query->limit(3);
-                $query->orderBy('total_nilai', 'ASC');
-            }];
-            $this->data_siswa = pd_walas($with);
-            foreach($this->data_siswa as $siswa){
-                $this->catatan_akademik[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_catatan_wali) ? $siswa->anggota_rombel->single_catatan_wali->uraian_deskripsi : '';
-            }
-        }
-    }
-    public function mount_salah(){
-        /*if($this->check_walas()){
             $with = ['single_catatan_wali'];
             $this->data_siswa = pd_walas($with);
             foreach($this->data_siswa as $siswa){
                 $this->catatan_akademik[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_catatan_wali) ? $siswa->anggota_rombel->single_catatan_wali->uraian_deskripsi : '';
-            }
-        }*/
-        if($this->check_walas()){
-            $this->show = TRUE;
-            $this->form = TRUE;
-            $with = ['single_catatan_wali', 'nilai_rapor' => function($query){
-                $query->has('pembelajaran');
-                $query->with(['pembelajaran' => function($query){
+                $this->nilai_rapor[$siswa->anggota_rombel->anggota_rombel_id] = Nilai_rapor::with(['pembelajaran' => function($query){
                     $query->select('pembelajaran_id', 'nama_mata_pelajaran');
-                }]);
-                //$query->limit(3);
-                $query->orderBy('total_nilai', 'ASC');
-            }];
-            $this->data_siswa = pd_walas($with);
-            foreach($this->data_siswa as $siswa){
-                $this->nilai_rapor[$siswa->anggota_rombel->anggota_rombel_id] = $siswa->anggota_rombel->nilai_rapor;
+                }])->where('anggota_rombel_id', $siswa->anggota_rombel->anggota_rombel_id)->orderBy('total_nilai', 'ASC')->take(3)->get();
             }
-        }
-        if($this->loggedUser()->hasRole('waka', session('semester_id'))){
-            $this->show = FALSE;
-            $this->form = FALSE;
         }
     }
     public function loggedUser(){
@@ -185,10 +142,5 @@ class CatatanAkademik extends Component
             }
         }
         $this->flash('success', 'Catatan Akademik berhasil disimpan', [], '/laporan/catatan-akademik');
-        /*$this->alert('success', 'Catatan Akademik berhasil disimpan', [
-            'showConfirmButton' => true,
-            'confirmButtonText' => 'OK',
-            'onConfirmed' => 'confirmed' 
-        ]);*/
     }
 }
