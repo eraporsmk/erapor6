@@ -817,22 +817,24 @@ class SinkronDapodik extends Command
         }
     }
     private function insert_mata_pelajaran($data, $user, $semester){
-        $mata_pelajaran = Mata_pelajaran::updateOrCreate(
-            [
-                'mata_pelajaran_id' => $data->mata_pelajaran_id,
-            ],
-            [
-                'jurusan_id' 				=> $data->jurusan_id,
-                'nama'						=> $data->nama,
-                'pilihan_sekolah'			=> $data->pilihan_sekolah,
-                'pilihan_kepengawasan'		=> $data->pilihan_kepengawasan,
-                'pilihan_buku'				=> $data->pilihan_buku,
-                'pilihan_evaluasi'			=> $data->pilihan_evaluasi,
-                'deleted_at'				=> $data->expired_date,
-                'last_sync'					=> now(),
-            ]
-        );
-        return $mata_pelajaran;
+        $jurusan = Jurusan::find($data->jurusan_id);
+        if($jurusan){
+            Mata_pelajaran::updateOrCreate(
+                [
+                    'mata_pelajaran_id' => $data->mata_pelajaran_id,
+                ],
+                [
+                    'jurusan_id' 				=> $data->jurusan_id,
+                    'nama'						=> $data->nama,
+                    'pilihan_sekolah'			=> $data->pilihan_sekolah,
+                    'pilihan_kepengawasan'		=> $data->pilihan_kepengawasan,
+                    'pilihan_buku'				=> $data->pilihan_buku,
+                    'pilihan_evaluasi'			=> $data->pilihan_evaluasi,
+                    'deleted_at'				=> $data->expired_date,
+                    'last_sync'					=> now(),
+                ]
+            );
+        }
     }
     private function simpan_kurikulum($dapodik, $user, $semester){
         $i=1;
