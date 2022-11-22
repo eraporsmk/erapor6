@@ -66,19 +66,23 @@ class LoginController extends Controller
     }
     public function process_login(Request $request)
     {
-        $request->validate([
+        /*$request->validate([
             'email' => 'required',
             'password' => 'required',
             'semester' => 'required'
-        ]);
+        ]);*/
         $messages = [
 			'email.required' => 'Email tidak boleh kosong',
+            //'email.exists' => 'Email tidak terdaftar',
+            'password.required' => 'Password tidak boleh kosong'
 		];
 		$validator = Validator::make(request()->all(), [
 			'email' => 'required|exists:users,nuptk',
+            'password' => 'required',
 		 ],
 		$messages
 		);
+        //->validate();
         $login = $request->email;
 		if ($validator->fails()) {
 			$fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nisn';
@@ -125,21 +129,21 @@ class LoginController extends Controller
     }
     public function process_signup(Request $request)
     {
+        $request->validate(
+            [
+                'npsn' => 'required',
+                'email' => 'required|unique:users,email',
+                'password' => 'required|confirmed'
+            ],
+            [
+                'npsn.required' => 'NPSN Tidak boleh kosong!',
+                'email.unique' => 'Email sudah terdaftar!',
+                'email.required' => 'Email Dapodik Tidak boleh kosong!',
+                'password.required' => 'Password Dapodik Tidak boleh kosong!',
+                'password.confirmed' => 'Konfirmasi password tidak cocok.!',
+            ]
+        );
         try {
-            $request->validate(
-                [
-                    'npsn' => 'required',
-                    'email' => 'required|unique:users,email',
-                    'password' => 'required|confirmed'
-                ],
-                [
-                    'npsn.required' => 'NPSN Tidak boleh kosong!',
-                    'email.unique' => 'Email sudah terdaftar!',
-                    'email.required' => 'Email Dapodik Tidak boleh kosong!',
-                    'password.required' => 'Password Dapodik Tidak boleh kosong!',
-                    'password.confirmed' => 'Konfirmasi password tidak cocok.!',
-                ]
-            );
             $data_sync = [
                 'username_dapo'		=> $request->email,
                 'password_dapo'		=> $request->password,

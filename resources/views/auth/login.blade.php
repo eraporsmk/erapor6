@@ -42,6 +42,20 @@ $configData = Helper::applClasses();
             </h1>
         <!--h2 class="card-title fw-bold mb-0 text-primary text-center">{{config('app.name')}}</h2-->
         <h3 class="card-text judul mb-2 text-center">Versi {{config('global.app_version')}}</h3>
+        @if (session('status'))
+            <div class="alert alert-danger mb-1 rounded-0" role="alert">
+              <div class="alert-body">
+                {{ session('status') }}
+              </div>
+            </div>
+          @endif
+          @if (session('success'))
+            <div class="alert alert-success mb-1 rounded-0" role="alert">
+              <div class="alert-body">
+                {{ session('success') }}
+              </div>
+            </div>
+          @endif
         <form class="auth-login-form mt-2" method="POST" action="{{ route('login') }}">
           @csrf
           <div class="mb-1">
@@ -64,10 +78,15 @@ $configData = Helper::applClasses();
                 </a>
               @endif
             </div>
-            <div class="input-group input-group-merge form-password-toggle">
+            <div class="input-group input-group-merge form-password-toggle @error('password') is-invalid @enderror">
               <input class="form-control form-control-merge" id="login-password" type="password" placeholder="············" aria-describedby="login-password" tabindex="2" name="password" />
               <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
             </div>
+            @error('password')
+                <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                </span>
+              @enderror
           </div>
           <div class="mb-1">
             <label for="semester" class="form-label">Tahun Pelajaran</label>
