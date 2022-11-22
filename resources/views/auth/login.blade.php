@@ -56,7 +56,7 @@ $configData = Helper::applClasses();
               </div>
             </div>
           @endif
-        <form class="auth-login-form mt-2" method="POST" action="{{ route('login') }}">
+        <form class="auth-login-form mt-2" method="POST" action="{{ route('process_login') }}">
           @csrf
           <div class="mb-1">
             <label class="form-label" for="login-email">Email</label>

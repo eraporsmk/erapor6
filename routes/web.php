@@ -18,7 +18,7 @@ use App\Models\User;
 */
 Route::namespace('Auth')->group(function () {
     Route::get('/login',[LoginController::class, 'show_login_form'])->name('login');
-    Route::post('/login',[LoginController::class, 'process_login'])->name('login');
+    Route::post('/login',[LoginController::class, 'process_login'])->name('process_login');
     if(config('erapor.registration')){
         Route::get('/register',[LoginController::class, 'show_signup_form'])->name('register');
         Route::post('/register',[LoginController::class, 'process_signup']);
