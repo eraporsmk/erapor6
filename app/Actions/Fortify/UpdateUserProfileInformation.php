@@ -20,9 +20,17 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id)],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
-        ]);//->validateWithBag('updateProfileInformation');
+        ],
+        [
+            'name.required' => 'Nama Lengkap tidak boleh kosong!',
+            'email.required' => 'Email tidak boleh kosong!',
+            'email.email' => 'Email tidak valid!',
+            'email.unique' => 'Email sudah terdaftar di Database!',
+            'photo.mimes' => 'Foto harus berekstensi jpg/jpeg/png',
+            'photo.max' => 'Ukuran foto tidak boleh lebih dari 1 MB!',
+        ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
