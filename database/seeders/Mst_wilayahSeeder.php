@@ -19,6 +19,7 @@ class Mst_wilayahSeeder extends Seeder
 		//DB::table('ref.mst_wilayah')->truncate();
 		//DB::table('ref.negara')->truncate();
         //DB::table('ref.level_wilayah')->truncate();
+		$this->command->getOutput()->progressStart(99369);
 		$json = File::get('database/data/negara.json');
 		$data = json_decode($json);
         foreach($data as $obj){
@@ -35,6 +36,7 @@ class Mst_wilayahSeeder extends Seeder
 					'last_sync'				=> $obj->last_sync,
 				]
 			);
+			$this->command->getOutput()->progressAdvance();
     	}
 		$json = File::get('database/data/level_wilayah.json');
 		$data = json_decode($json);
@@ -51,6 +53,7 @@ class Mst_wilayahSeeder extends Seeder
 					'last_sync'				=> $obj->last_sync,
 				]
 			);
+			$this->command->getOutput()->progressAdvance();
     	}
 		for($i=0;$i<=4;$i++){
 			//$this->command->info($i);
@@ -77,6 +80,8 @@ class Mst_wilayahSeeder extends Seeder
 					]
 				);
 			}
+			$this->command->getOutput()->progressAdvance();
 		}
+		$this->command->getOutput()->progressFinish();
     }
 }
