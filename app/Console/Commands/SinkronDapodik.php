@@ -458,12 +458,11 @@ class SinkronDapodik extends Command
         if($guru){
             $jurusan = NULL;
             $jurusan_sp = NULL;
-            $kurikulum = NULL;
             if($data->jurusan_sp_id){
                 $jurusan = Jurusan::find($data->jurusan_sp->jurusan_id);
                 $jurusan_sp = Jurusan_sp::find($data->jurusan_sp_id);
-                $kurikulum = Kurikulum::find($data->kurikulum_id);
             }
+            $kurikulum = Kurikulum::find($data->kurikulum_id);
             if($kurikulum){
                 Rombongan_belajar::withTrashed()->updateOrCreate(
                     [
@@ -605,7 +604,6 @@ class SinkronDapodik extends Command
                 $ptk_id = $rwy_pend_formal->ptk_id;
                 $gelar = $this->simpan_gelar($rwy_pend_formal);
                 if($gelar){
-                    $this->info('Gelar '. $data->nama .' berhasil diupdate! => '.$riwayat_pendidikan_formal_id);
                     Gelar_ptk::withTrashed()->updateOrCreate(
                         [
                             'gelar_ptk_id' => $riwayat_pendidikan_formal_id,
@@ -619,15 +617,11 @@ class SinkronDapodik extends Command
                             'last_sync' => now(),
                         ]
                     );
-                } else {
-                    $this->error('REF Gelar '. $data->nama .' : '.$riwayat_pendidikan_formal_id.' tidak ditemukan');
                 }
             }
             if($gelar_ptk_id){
                 Gelar_ptk::where('ptk_id', $data->ptk_id)->whereNotIn('gelar_ptk_id', $gelar_ptk_id)->delete();
             }
-        } else {
-            $this->error($data->nama .' tidak memiliki gelar');
         }
         return $create_guru;
     }
