@@ -79,8 +79,8 @@ class Mst_wilayahSeeder extends Seeder
 						'last_sync'				=> $obj->last_sync,
 					]
 				);
+				$this->command->getOutput()->progressAdvance();
 			}
-			$this->command->getOutput()->progressAdvance();
 		}
 		$this->command->getOutput()->progressFinish();
     }
