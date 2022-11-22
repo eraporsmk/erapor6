@@ -88,8 +88,10 @@ class Users extends Component
         $PembinaRole = Role::where('name', 'pembina_ekskul')->first();
         $p5Role = Role::where('name', 'guru-p5')->first();
         $WalasRole = Role::where('name', 'wali')->first();
+        $new = 0;
         if($data){
             foreach($data as $d){
+                $new++;
                 $new_password = strtolower(Str::random(8));
                 $user = User::where('guru_id', $d->guru_id)->first();
                 if(!$user){
@@ -142,12 +144,21 @@ class Users extends Component
                 }
             }
         }
-        $this->alert('success', 'Berhasil', [
-            'html' => 'Pengguna PTK berhasil diperbaharui',
-            'showCancelButton' => true,
-            'cancelButtonText' => 'OK',
-            'timer' => null
-        ]);
+        if($new){
+            $this->alert('success', 'Berhasil', [
+                'html' => 'Pengguna PTK berhasil diperbaharui',
+                'showCancelButton' => true,
+                'cancelButtonText' => 'OK',
+                'timer' => null
+            ]);
+        } else {
+            $this->alert('success', 'error', [
+                'html' => 'Pengguna PTK gagal diperbaharui. Silahkan coba beberapa saat lagi!',
+                'showCancelButton' => true,
+                'cancelButtonText' => 'OK',
+                'timer' => null
+            ]);
+        }
     }
     public function generatePd(){
         $data = Peserta_didik::where('sekolah_id', session('sekolah_id'))->get();
