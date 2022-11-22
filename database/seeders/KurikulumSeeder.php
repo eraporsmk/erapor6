@@ -19,22 +19,23 @@ class KurikulumSeeder extends Seeder
 		$json = File::get('database/data/kurikulum.json');
 		$data = json_decode($json);
         foreach($data as $obj){
-			$find = DB::table('ref.jurusan')->where('jurusan_id', $obj->jurusan_id)->first();
-			if($find){
-				DB::table('ref.kurikulum')->insert([
-					'kurikulum_id' 			=> $obj->kurikulum_id,
-					'nama_kurikulum' 		=> $obj->nama_kurikulum,
-					'mulai_berlaku'			=> $obj->mulai_berlaku,
-					'sistem_sks'			=> $obj->sistem_sks,
-					'total_sks'				=> $obj->total_sks,
-					'jenjang_pendidikan_id'	=> $obj->jenjang_pendidikan_id,
-					'jurusan_id'			=> $obj->jurusan_id,
-					'created_at' 			=> $obj->create_date,
-					'updated_at' 			=> $obj->last_update,
-					'deleted_at'			=> $obj->expired_date,
-					'last_sync'				=> $obj->last_sync,
-				]);
+			$find = NULL;
+			if($obj->jurusan_id){
+				$find = DB::table('ref.jurusan')->where('jurusan_id', $obj->jurusan_id)->first();
 			}
+			DB::table('ref.kurikulum')->insert([
+				'kurikulum_id' 			=> $obj->kurikulum_id,
+				'nama_kurikulum' 		=> $obj->nama_kurikulum,
+				'mulai_berlaku'			=> $obj->mulai_berlaku,
+				'sistem_sks'			=> $obj->sistem_sks,
+				'total_sks'				=> $obj->total_sks,
+				'jenjang_pendidikan_id'	=> $obj->jenjang_pendidikan_id,
+				'jurusan_id'			=> ($find) ? $obj->jurusan_id : NULL,
+				'created_at' 			=> $obj->create_date,
+				'updated_at' 			=> $obj->last_update,
+				'deleted_at'			=> $obj->expired_date,
+				'last_sync'				=> $obj->last_sync,
+			]);
     	}
     }
 }
