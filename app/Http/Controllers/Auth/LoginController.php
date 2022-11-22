@@ -116,8 +116,8 @@ class LoginController extends Controller
                     return redirect()->route('login');
                 }
             }
-            return redirect()->route('index');
-            //return redirect()->intended($this->redirectPath());
+            //return redirect()->route('index');
+            return redirect()->intended($this->redirectPath());
         } else {
             session()->flash('status', 'Kredensial tidak valid');
             return redirect()->back();
