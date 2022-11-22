@@ -454,29 +454,39 @@ class SinkronDapodik extends Command
         } else {
             $soft_delete = ($data->soft_delete) ? now() : NULL;
         }
-        $find = Guru::withTrashed()->find($data->ptk_id);
-        if($find){
-            Rombongan_belajar::withTrashed()->updateOrCreate(
-                [
-                    'rombongan_belajar_id' => $data->rombongan_belajar_id,
-                ],
-                [
-                    'sekolah_id' => $data->sekolah_id,
-                    'semester_id' => $data->semester_id,
-                    'jurusan_id' => ($data->jurusan_sp_id) ? $data->jurusan_sp->jurusan_id : NULL,
-                    'jurusan_sp_id' => $data->jurusan_sp_id,
-                    'kurikulum_id' => $data->kurikulum_id,
-                    'nama' => ($ekskul) ? $data->nm_ekskul : $data->nama,
-                    'guru_id' => $data->ptk_id,
-                    'ptk_id' => $data->ptk_id,
-                    'tingkat' => $data->tingkat_pendidikan_id,
-                    'jenis_rombel' => $data->jenis_rombel,
-                    'rombel_id_dapodik' => $data->rombongan_belajar_id,
-                    'deleted_at' => $soft_delete,
-                    //'deleted_at' => ($data->soft_delete) ? now() : NULL,
-                    'last_sync' => now(),
-                ]
-            );
+        $guru = Guru::withTrashed()->find($data->ptk_id);
+        if($guru){
+            $jurusan = NULL;
+            $jurusan_sp = NULL;
+            $kurikulum = NULL;
+            if($data->jurusan_sp_id){
+                $jurusan = Jurusan::find($data->jurusan_sp->jurusan_id);
+                $jurusan_sp = Jurusan_sp::find($data->jurusan_sp_id);
+                $kurikulum = Kurikulum::find($data->kurikulum_id);
+            }
+            if($kurikulum){
+                Rombongan_belajar::withTrashed()->updateOrCreate(
+                    [
+                        'rombongan_belajar_id' => $data->rombongan_belajar_id,
+                    ],
+                    [
+                        'sekolah_id' => $data->sekolah_id,
+                        'semester_id' => $data->semester_id,
+                        'jurusan_id' => ($jurusan) ? $data->jurusan_sp->jurusan_id : NULL,
+                        'jurusan_sp_id' => ($jurusan_sp) ? $data->jurusan_sp_id : NULL,
+                        'kurikulum_id' => $data->kurikulum_id,
+                        'nama' => ($ekskul) ? $data->nm_ekskul : $data->nama,
+                        'guru_id' => $data->ptk_id,
+                        'ptk_id' => $data->ptk_id,
+                        'tingkat' => $data->tingkat_pendidikan_id,
+                        'jenis_rombel' => $data->jenis_rombel,
+                        'rombel_id_dapodik' => $data->rombongan_belajar_id,
+                        'deleted_at' => $soft_delete,
+                        //'deleted_at' => ($data->soft_delete) ? now() : NULL,
+                        'last_sync' => now(),
+                    ]
+                );
+            }
         }
     }
     private function simpan_rombongan_belajar($dapodik, $user, $semester){
