@@ -256,28 +256,29 @@ class SinkronErapor extends Command
         }
     }
     private function proses_wilayah($wilayah){
-        $find = Mst_wilayah::find($wilayah->mst_kode_wilayah);
-        if($find){
-            Mst_wilayah::updateOrCreate(
-                [
-                    'kode_wilayah' => $wilayah->kode_wilayah,
-                ],
-                [
-                    'nama' => $wilayah->nama,
-                    'id_level_wilayah' => $wilayah->id_level_wilayah,
-                    'mst_kode_wilayah' => $wilayah->mst_kode_wilayah,
-                    'negara_id' => $wilayah->negara_id,
-                    'asal_wilayah' => $wilayah->asal_wilayah,
-                    'kode_bps' => $wilayah->kode_bps,
-                    'kode_dagri' => $wilayah->kode_dagri,
-                    'kode_keu' => $wilayah->kode_keu,
-                    'created_at' => $wilayah->created_at,
-                    'updated_at' => $wilayah->updated_at,
-                    'deleted_at' => $wilayah->deleted_at,
-                    'last_sync' => $wilayah->last_sync,
-                ]
-            );
+        $find = NULL;
+        if($wilayah->mst_kode_wilayah){
+            $find = Mst_wilayah::find($wilayah->mst_kode_wilayah);
         }
+        Mst_wilayah::updateOrCreate(
+            [
+                'kode_wilayah' => $wilayah->kode_wilayah,
+            ],
+            [
+                'nama' => $wilayah->nama,
+                'id_level_wilayah' => $wilayah->id_level_wilayah,
+                'mst_kode_wilayah' => ($find) ? $wilayah->mst_kode_wilayah : NULL,
+                'negara_id' => $wilayah->negara_id,
+                'asal_wilayah' => $wilayah->asal_wilayah,
+                'kode_bps' => $wilayah->kode_bps,
+                'kode_dagri' => $wilayah->kode_dagri,
+                'kode_keu' => $wilayah->kode_keu,
+                'created_at' => $wilayah->created_at,
+                'updated_at' => $wilayah->updated_at,
+                'deleted_at' => $wilayah->deleted_at,
+                'last_sync' => $wilayah->last_sync,
+            ]
+        );
     }
     private function proses_cp($data){
         $find = Mata_pelajaran::find($data->mata_pelajaran_id);
