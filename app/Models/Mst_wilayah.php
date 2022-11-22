@@ -12,6 +12,7 @@ class Mst_wilayah extends Model
     public $keyType = 'string';
 	protected $table = 'ref.mst_wilayah';
 	protected $primaryKey = 'kode_wilayah';
+    public $timestamps = false;
 	protected $guarded = [];
 	public function get_kabupaten(){
 		return $this->hasOne(Mst_wilayah::class, 'kode_wilayah', 'mst_kode_wilayah');
