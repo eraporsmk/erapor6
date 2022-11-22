@@ -91,7 +91,7 @@ class SinkronErapor extends Command
             $created_at = Capaian_pembelajaran::orderBy('created_at', 'DESC')->first();
         }
         if(!$created_at){
-            $created_at = (object) ['created_at' => '2021-10-23 01:47:54'];
+            $created_at = (object) ['created_at' => '2021-01-01 00:00:01'];
         }
         $args = [
             'created_at' => Carbon::parse($created_at->created_at)->format('Y-m-d H:i:s'),
@@ -104,7 +104,7 @@ class SinkronErapor extends Command
         if(in_array($satuan, $server_dashboard)){
             $this->info('Mengambil data '.$this->get_table($satuan));
             $hitung_data = $this->ambil_data($satuan.'/hitung', $args);
-            $this->hitung_data($hitung_data, $satuan, $sekolah, $semester);
+            $this->hitung_data($hitung_data, $satuan, $sekolah, $semester, $args);
         } else {
             $sync_data = [
                 'wilayah', 
@@ -114,11 +114,11 @@ class SinkronErapor extends Command
             foreach($sync_data as $satuan){
                 $this->info('Mengambil data '.$this->get_table($satuan));
                 $hitung_data = $this->ambil_data($satuan.'/hitung', $args);
-                $this->hitung_data($hitung_data, $satuan, $sekolah, $semester);
+                $this->hitung_data($hitung_data, $satuan, $sekolah, $semester, $args);
             }
         }
     }
-    private function hitung_data($hitung_data, $satuan, $sekolah, $semester){
+    private function hitung_data($hitung_data, $satuan, $sekolah, $semester, $args){
         if($hitung_data && $hitung_data->dapodik){
             $limit = 250;
             $this->info('Memproses data '.$this->get_table($satuan));
@@ -127,7 +127,7 @@ class SinkronErapor extends Command
             if($hitung_data->dapodik > $limit){
                 for ($counter = 0; $counter <= $hitung_data->dapodik; $counter += $limit) {
                     $args = [
-                        'created_at' => '2021-10-23 01:47:54',
+                        'created_at' => $args['created_at'],
                         'offset' => $counter,
                         'limit' => $limit,
                     ];
@@ -136,7 +136,7 @@ class SinkronErapor extends Command
                 }
             } else {
                 $args = [
-                    'created_at' => '2021-10-23 01:47:54',
+                    'created_at' => $args['created_at'],
                     'offset' => 0,
                     'limit' => $limit,
                 ];
