@@ -15,6 +15,7 @@ use App\Models\Mata_pelajaran;
 use App\Models\Capaian_pembelajaran;
 use App\Models\Role;
 use App\Models\Gelar;
+use Carbon\Carbon;
 use File;
 
 class RefCP extends Command
@@ -639,6 +640,8 @@ class RefCP extends Command
                             'fase' => $line['fase'],
                             'elemen' => $line['elemen'],
                             'deskripsi' => $line['deskripsi'],
+                            'created_at' => Carbon::create('2022', '07', '01', '00', '00', '01'),
+                            'updated_at' => now(),
                             'last_sync' => now(),
                         ]
                     );

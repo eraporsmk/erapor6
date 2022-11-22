@@ -153,8 +153,10 @@ class SinkronErapor extends Command
         }
     }
     private function proses_data($referensi, $satuan, $user, $semester, $bar){
-        $function = 'simpan_'.str_replace('-', '_', $satuan);
-        $this->{$function}($referensi->dapodik, $satuan, $user, $semester, $bar);
+        if($referensi){
+            $function = 'simpan_'.str_replace('-', '_', $satuan);
+            $this->{$function}($referensi->dapodik, $satuan, $user, $semester, $bar);
+        }
     }
     private function simpan_wilayah($dapodik, $satuan, $user, $semester, $bar){
         $i=1;
