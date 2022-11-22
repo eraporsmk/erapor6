@@ -861,24 +861,25 @@ class SinkronDapodik extends Command
         $bar->finish();
     }
     private function insert_kurikulum($data, $user, $semester){
-        $jurusan = Jurusan::find($data->jurusan_id);
-        if($jurusan){
-            Kurikulum::updateOrCreate(
-                [
-                    'kurikulum_id' => $data->kurikulum_id
-                ],
-                [
-                    'nama_kurikulum'			=> $data->nama_kurikulum,
-                    'mulai_berlaku'				=> $data->mulai_berlaku,
-                    'sistem_sks'				=> $data->sistem_sks,
-                    'total_sks'					=> $data->total_sks,
-                    'jenjang_pendidikan_id'		=> $data->jenjang_pendidikan_id,
-                    'jurusan_id'				=> $data->jurusan_id,
-                    'deleted_at'				=> $data->expired_date,
-                    'last_sync'					=> now(),
-                ]
-            );
+        $jurusan = NULL;
+        if($data->jurusan_id){
+            $jurusan = Jurusan::find($data->jurusan_id);
         }
+        Kurikulum::updateOrCreate(
+            [
+                'kurikulum_id' => $data->kurikulum_id
+            ],
+            [
+                'nama_kurikulum'			=> $data->nama_kurikulum,
+                'mulai_berlaku'				=> $data->mulai_berlaku,
+                'sistem_sks'				=> $data->sistem_sks,
+                'total_sks'					=> $data->total_sks,
+                'jenjang_pendidikan_id'		=> $data->jenjang_pendidikan_id,
+                'jurusan_id'				=> ($jurusan) ? $data->jurusan_id : NULL,
+                'deleted_at'				=> $data->expired_date,
+                'last_sync'					=> now(),
+            ]
+        );
     }
     private function simpan_anggota_ekskul($dapodik, $user, $semester){
         $i=1;
