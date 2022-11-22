@@ -17,7 +17,7 @@ class KDSeeder extends Seeder
      */
     public function run()
     {
-		DB::table('ref.kompetensi_dasar')->truncate();
+		//DB::table('ref.kompetensi_dasar')->truncate();
 		$this->command->info("Memulai proses import ref. Kompetensi Dasar");
 		for($i=1;$i<=169;$i++){
 			$json = File::get('database/data/kompetensi_dasar-'.$i.'.json');
