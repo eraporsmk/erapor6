@@ -61,8 +61,8 @@ class Mst_wilayahSeeder extends Seeder
 		for($i=0;$i<=3;$i++){
 			$json = File::get('database/data/mst_wilayah_'.$i.'.json');
 			$data = json_decode($json);
-			$this->command->getOutput()->progressStart(count($data));
 			$this->command->info("\n".'database/data/mst_wilayah_'.$i.'.json => '.count($data));
+			$this->command->getOutput()->progressStart(count($data));
 			foreach($data as $obj){
 				DB::table('ref.mst_wilayah')->updateOrinsert(
 					[
@@ -90,8 +90,8 @@ class Mst_wilayahSeeder extends Seeder
 		for($i=1;$i<=183;$i++){
 			$json = File::get('database/data/mst_wilayah_4-'.$i.'.json');
 			$data = json_decode($json);
-			$this->command->getOutput()->progressStart(count($data));
 			$this->command->info("\n".'database/data/mst_wilayah_4-'.$i.'.json => '.count($data));
+			$this->command->getOutput()->progressStart(count($data));
 			foreach($data as $obj){
 				DB::table('ref.mst_wilayah')->updateOrinsert(
 					[
