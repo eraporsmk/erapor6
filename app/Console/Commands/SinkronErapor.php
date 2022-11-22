@@ -278,19 +278,22 @@ class SinkronErapor extends Command
         return $data;
     }
     private function proses_cp($data){
-        Capaian_pembelajaran::updateOrCreate(
-            [
-                'cp_id' => $data->cp_id,
-            ],
-            [
-                'mata_pelajaran_id' => $data->mata_pelajaran_id,
-                'fase' => $data->fase,
-                'elemen' => $data->elemen,
-                'deskripsi' => $data->deskripsi,
-                'created_at' => $data->created_at,
-                'updated_at' => $data->updated_at,
-                'last_sync' => $data->last_sync,
-            ]
-        );
+        $find = Mata_pelajaran::find($data->mata_pelajaran_id);
+        if($find){
+            Capaian_pembelajaran::updateOrCreate(
+                [
+                    'cp_id' => $data->cp_id,
+                ],
+                [
+                    'mata_pelajaran_id' => $data->mata_pelajaran_id,
+                    'fase' => $data->fase,
+                    'elemen' => $data->elemen,
+                    'deskripsi' => $data->deskripsi,
+                    'created_at' => $data->created_at,
+                    'updated_at' => $data->updated_at,
+                    'last_sync' => $data->last_sync,
+                ]
+            );
+        }
     }
 }
