@@ -21,7 +21,7 @@ class SinkronErapor extends Command
      *
      * @var string
      */
-    protected $signature = 'sinkron:erapor {satuan?} {email?}';
+    protected $signature = 'sinkron:erapor {satuan?} {email?} {created_at?}';
 
     /**
      * The console command description.
@@ -92,6 +92,9 @@ class SinkronErapor extends Command
         }
         if(!$created_at){
             $created_at = (object) ['created_at' => '2021-01-01 00:00:01'];
+        }
+        if($this->argument('created_at')){
+            $created_at = (object) ['created_at' => '2010-01-01 00:00:01'];
         }
         $args = [
             'created_at' => Carbon::parse($created_at->created_at)->format('Y-m-d H:i:s'),
