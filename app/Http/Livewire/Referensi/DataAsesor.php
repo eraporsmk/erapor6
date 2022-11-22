@@ -80,6 +80,7 @@ class DataAsesor extends Component
         'file_excel.required' => 'File Excel tidak boleh kosong',
         'file_excel.mimes' => 'File harus berupa file dengan ekstensi: xlsx.',
     ];
+    protected $listeners = ['confirmed'];
     
     public function render()
     {
@@ -296,5 +297,29 @@ class DataAsesor extends Component
         $this->alert('success', 'Data '.$this->data.' berhasil diperbaharui', [
             'position' => 'center'
         ]);
+    }
+    public function hapus(){
+        $this->alert('question', 'Apakah Anda yakin?', [
+            'text' => 'Tindakan ini tidak dapat dikembalikan!',
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'Yakin',
+            'onConfirmed' => 'confirmed',
+            'showCancelButton' => true,
+            'cancelButtonText' => 'Batal',
+            'allowOutsideClick' => false,//'() => !Swal.isLoading()',
+            'timer' => null
+        ]);
+    }
+    public function confirmed(){
+        if($this->guru && $this->guru->delete()){
+            $this->alert('success', 'Data Asesor berhasil dihapus', [
+                'position' => 'center'
+            ]);
+            $this->emit('close-modal');
+        } else {
+            $this->alert('error', 'Data Asesor gagal dihapus. Silahkan coba beberapa saat lagi!', [
+                'position' => 'center'
+            ]);
+        }
     }
 }
