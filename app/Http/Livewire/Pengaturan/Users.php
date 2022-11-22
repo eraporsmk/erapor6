@@ -143,7 +143,7 @@ class Users extends Component
             }
         }
         $this->alert('success', 'Berhasil', [
-            'text' => 'Pengguna PTK berhasil diperbaharui',
+            'html' => 'Pengguna PTK berhasil diperbaharui',
             'showCancelButton' => true,
             'cancelButtonText' => 'OK',
             'timer' => null

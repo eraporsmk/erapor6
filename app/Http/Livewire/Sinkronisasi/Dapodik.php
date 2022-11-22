@@ -84,7 +84,7 @@ class Dapodik extends Component
         $this->sekolah_id = auth()->user()->sekolah_id;
         return view('livewire.sinkronisasi.dapodik', [
             'jam_sinkron' => $jam_sinkron,
-            'data_sinkron' => [
+            'data_sinkron' => (!$jam_sinkron) ? [
                 [
                     'nama' => 'Jurusan',
                     'dapodik' => ($dapodik) ? $dapodik->dapodik->jurusan : 0,
@@ -236,7 +236,7 @@ class Dapodik extends Component
                     'server' => 'dapodik',
                     'icon' => FALSE,
                 ],
-            ],
+            ] : NULL,
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Sinkronisasi'], ['name' => 'Ambil Data Dapodik']
             ]

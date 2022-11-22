@@ -191,8 +191,9 @@ class Index extends Component
             }
             $logo_sekolah = $this->photo->store('public/images');
             $this->sekolah->logo_sekolah = basename($logo_sekolah);
-            $this->sekolah->save();
         }
+        $this->sekolah->guru_id = $this->kepala_sekolah;
+        $this->sekolah->save();
     }
     public function resetLogo(){
         $this->alert('question', 'Apakah Anda yakin?', [
