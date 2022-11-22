@@ -16,13 +16,13 @@ class Mst_wilayahSeeder extends Seeder
      */
     public function run()
     {
-		DB::table('ref.mst_wilayah')->truncate();
-		DB::table('ref.negara')->truncate();
-        DB::table('ref.level_wilayah')->truncate();
+		//DB::table('ref.mst_wilayah')->truncate();
+		//DB::table('ref.negara')->truncate();
+        //DB::table('ref.level_wilayah')->truncate();
 		$json = File::get('database/data/negara.json');
 		$data = json_decode($json);
         foreach($data as $obj){
-    		DB::table('ref.negara')->insert([
+    		DB::table('ref.negara')->updateOrinsert([
     			'negara_id' 			=> $obj->negara_id,
     			'nama' 		=> $obj->nama,
 				'luar_negeri'			=> $obj->luar_negeri,
@@ -35,7 +35,7 @@ class Mst_wilayahSeeder extends Seeder
 		$json = File::get('database/data/level_wilayah.json');
 		$data = json_decode($json);
         foreach($data as $obj){
-    		DB::table('ref.level_wilayah')->insert([
+    		DB::table('ref.level_wilayah')->updateOrinsert([
     			'id_level_wilayah' 			=> $obj->id_level_wilayah,
     			'level_wilayah' 		=> $obj->level_wilayah,
     			'created_at' 			=> $obj->create_date,
@@ -49,7 +49,7 @@ class Mst_wilayahSeeder extends Seeder
 			$json = File::get('database/data/mst_wilayah_'.$i.'.json');
 			$data = json_decode($json);
 			foreach($data as $obj){
-				DB::table('ref.mst_wilayah')->insert([
+				DB::table('ref.mst_wilayah')->updateOrinsert([
 					'kode_wilayah' 	=> $obj->kode_wilayah,
 					'nama' => $obj->nama,
 					'id_level_wilayah' => $obj->id_level_wilayah,
