@@ -136,6 +136,7 @@ class SinkronErapor extends Command
                     ];
                     $referensi = $this->ambil_data($satuan, $args);
                     $this->proses_data($referensi, $satuan, $sekolah->user, $semester, $bar);
+                    sleep(3);
                 }
             } else {
                 $args = [
