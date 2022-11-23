@@ -183,7 +183,6 @@ class Keterampilan extends Component
         $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
         $collection = collect($imported_data);
         //dd($collection);
-        $error = 0;
         foreach($collection as $nilai){
             //$this->rencana_penilaian_id
             $anggota_rombel_id = $nilai['PD_ID'];

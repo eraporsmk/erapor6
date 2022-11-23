@@ -194,7 +194,7 @@ class Pengetahuan extends Component
                     $this->nilai[$anggota_rombel_id][$kd_nilai->kd_nilai_id] = $nilai_kd;
                 }
             }
-            if(count($this->nilai[$anggota_rombel_id])){
+            if(isset($this->nilai[$anggota_rombel_id]) && count($this->nilai[$anggota_rombel_id])){
                 $filtered = collect($this->nilai[$anggota_rombel_id])->filter(function ($value, $key) {
                     return $value > 0;
                 });

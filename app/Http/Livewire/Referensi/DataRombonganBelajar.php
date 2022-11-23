@@ -110,6 +110,7 @@ class DataRombonganBelajar extends Component
         $pengajar = [];
         $kelompok_id = [];
         $no_urut = [];
+        $nama_mata_pelajaran = [];
         $pembelajaran_id = [];
         foreach($this->pembelajaran as $pembelajaran){
             if($pembelajaran->guru_pengajar_id){
