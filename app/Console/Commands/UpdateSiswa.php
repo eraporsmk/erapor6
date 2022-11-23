@@ -139,6 +139,7 @@ class UpdateSiswa extends Command
             foreach($b->prestasi as $prestasi){
                 $this->find_anggota($prestasi, $b->anggota_rombel_id_dapodik);
             }
+            sleep(1);
         }
     }
     private function find_anggota($data, $anggota_rombel_id_dapodik){
