@@ -49,6 +49,7 @@ class UpdateSiswa extends Command
                     Peserta_didik::where('peserta_didik_id_dapodik', $data->peserta_didik_id_dapodik)->where('peserta_didik_id', '<>', $data->peserta_didik_id_dapodik)->delete();
                 }
             }
+            sleep(1);
         }
         Anggota_rombel::onlyTrashed()->where('anggota_rombel_id', DB::raw("anggota_rombel_id_dapodik"))->restore();
         foreach (Anggota_rombel::lazy() as $data) {
@@ -59,6 +60,7 @@ class UpdateSiswa extends Command
                     Anggota_rombel::where('anggota_rombel_id_dapodik', $data->anggota_rombel_id_dapodik)->where('anggota_rombel_id', '<>', $data->anggota_rombel_id_dapodik)->delete();
                 }
             }
+            sleep(1);
         }
         $a = Anggota_rombel::onlyTrashed()->with([
             'all_catatan_budaya_kerja',
