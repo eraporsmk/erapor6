@@ -64,7 +64,9 @@ class EraporUpdate extends Command
         $this->call('cache:clear');
         $this->call('view:clear');
         $this->call('config:cache');
+        $this->info('Menambah referensi Mata Pelajaran');
         $this->call('custom:ref');
+        $this->info('Menambah referensi CP');
         $this->call('ref:cp');
         if(!File::isDirectory(public_path('storage'))){
             $this->call('storage:link');
