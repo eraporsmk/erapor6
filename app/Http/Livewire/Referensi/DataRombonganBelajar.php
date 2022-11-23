@@ -112,28 +112,39 @@ class DataRombonganBelajar extends Component
         $no_urut = [];
         $nama_mata_pelajaran = [];
         $pembelajaran_id = [];
-        foreach($this->pembelajaran as $pembelajaran){
-            if($pembelajaran->guru_pengajar_id){
-                $pengajar[$pembelajaran->pembelajaran_id] = $pembelajaran->guru_pengajar_id;
-            }
+        foreach($this->pembelajaran as $urut => $pembelajaran){
+            $pengajar[$pembelajaran->pembelajaran_id] = $pembelajaran->guru_pengajar_id;
             $kelompok_id[$pembelajaran->pembelajaran_id] = $pembelajaran->kelompok_id;
             $no_urut[$pembelajaran->pembelajaran_id] = $pembelajaran->no_urut;
             $nama_mata_pelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran->nama_mata_pelajaran;
             $pembelajaran_id[] = $pembelajaran->pembelajaran_id;
+            $this->dispatchBrowserEvent('pharaonic.select2.load', [
+                'component' => $this->id,
+                'target'    => '#pengajar_'.$urut,
+            ]);
+            $this->dispatchBrowserEvent('pharaonic.select2.load', [
+                'component' => $this->id,
+                'target'    => '#pengajar_'.$urut,
+            ]);
+            $this->dispatchBrowserEvent('pharaonic.select2.load', [
+                'component' => $this->id,
+                'target'    => '#kelompok_id_'.$urut,
+            ]);
         }
         $this->pengajar = $pengajar;
         $this->kelompok_id = $kelompok_id;
         $this->no_urut = $no_urut;
         $this->nama_mata_pelajaran = $nama_mata_pelajaran;
+        $this->pembelajaran_id = $pembelajaran_id;
         $this->emit('show-pembelajaran');
         $this->dispatchBrowserEvent('pembelajaran', [
             'guru_pengajar' => $this->guru_pengajar,
             'data_kelompok' => $this->data_kelompok,
-            'kelompok_id' => $kelompok_id,
-            'pengajar' => $pengajar,
-            'no_urut' => $no_urut,
-            'nama_mata_pelajaran' => $nama_mata_pelajaran,
-            'pembelajaran_id' => $pembelajaran_id,
+            'kelompok_id' => $this->kelompok_id,
+            'pengajar' => $this->pengajar,
+            'no_urut' => $this->no_urut,
+            'nama_mata_pelajaran' => $this->nama_mata_pelajaran,
+            'pembelajaran_id' => $this->pembelajaran_id,
         ]);
         $this->dispatchBrowserEvent('pharaonic.select2.init');
     }

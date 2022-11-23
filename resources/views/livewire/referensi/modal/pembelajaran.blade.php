@@ -30,7 +30,7 @@
                                 <td>{{$item->guru->nama_lengkap}}</td>
                                 <td>
                                     <div wire:ignore>
-                                        <select id="pengajar_{{$item->pembelajaran_id}}" class="form-select" wire:model="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
+                                        <select id="pengajar_{{$urut}}" class="form-select" wire:model="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
                                             <option value="">== Pilih Guru Pengajar ==</option>
                                             {{--
                                             @foreach ($guru_pengajar as $pengajar)
@@ -42,7 +42,7 @@
                                 </td>
                                 <td>
                                     <div wire:ignore>
-                                        <select id="kelompok_id_{{$item->pembelajaran_id}}" class="form-select" wire:model="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
+                                        <select id="kelompok_id_{{$urut}}" class="form-select" wire:model="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
                                             <option value="">== Pilih Kelompok ==</option>
                                             {{--
                                             @foreach ($data_kelompok as $kelompok)

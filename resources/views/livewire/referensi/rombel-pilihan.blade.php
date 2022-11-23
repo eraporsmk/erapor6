@@ -69,34 +69,30 @@
         $('#pembelajaranModal').modal('show');
     })
     window.addEventListener('pembelajaran', event => {
-        console.log(event.detail);
         $.each(event.detail.pembelajaran_id, function (i, pembelajaran_id) {
-            $.each(event.detail.data_kelompok, function (i, item) {
-                $('#kelompok_id_'+pembelajaran_id).append($('<option>', { 
-                    value: item.kelompok_id,
-                    text : item.nama_kelompok,
-                }));
-            });
-            $.each(event.detail.kelompok_id, function (i, item) {
-                $('#kelompok_id_'+i).val(item)
-            });
-            $.each(event.detail.guru_pengajar, function (i, item) {
-                $('#pengajar_'+pembelajaran_id).append($('<option>', { 
+            $.each(event.detail.guru_pengajar, function (a, item) {
+                $('#pengajar_'+i).append($('<option>', { 
                     value: item.guru_id,
                     text : item.nama_lengkap,
                 }));
             });
-            if(event.detail.pengajar.constructor.name === 'Object'){
-                $.each(event.detail.pengajar, function (i, item) {
-                    $('#pengajar_'+i).val(item)
-                });
+            $.each(event.detail.data_kelompok, function (a, item) {
+                $('#kelompok_id_'+i).append($('<option>', { 
+                    value: item.kelompok_id,
+                    text : item.nama_kelompok,
+                }));
+            });
+            if(event.detail.pengajar[pembelajaran_id]){
+                $('#pengajar_'+i).val(event.detail.pengajar[pembelajaran_id])
             } else {
-                var a = $('#pengajar_'+pembelajaran_id).val('')
-                console.log(pembelajaran_id);
-                console.log(a);
+                $('#pengajar_'+i).val('')
+            }
+            if(event.detail.kelompok_id[pembelajaran_id]){
+                $('#kelompok_id_'+i).val(event.detail.kelompok_id[pembelajaran_id])
+            } else {
+                $('#kelompok_id_'+i).val('')
             }
         });
-        /**/
     })
 </script>
 @endpush
