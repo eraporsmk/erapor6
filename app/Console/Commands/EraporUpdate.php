@@ -66,11 +66,6 @@ class EraporUpdate extends Command
         $this->call('config:cache');
         $this->call('custom:ref');
         $this->call('ref:cp');
-        $this->info('Proses update data GTK');
-        $this->call('update:guru');
-        $this->info('Proses update data Peserta Didik');
-        $this->call('update:siswa');
-        $this->call('hapus:ganda');
         if(!File::isDirectory(public_path('storage'))){
             $this->call('storage:link');
         }
@@ -180,7 +175,6 @@ class EraporUpdate extends Command
                 }
             }
         }
-        Semester::where('semester_id', '<>', '20221')->update(['periode_aktif' => 0]);
         Setting::updateOrCreate(
             [
                 'key' => 'app_version',
@@ -197,6 +191,16 @@ class EraporUpdate extends Command
                 'value' => $db_version,
             ]
         );
+        Semester::where('semester_id', '<>', '20221')->update(['periode_aktif' => 0]);
+        $semester = Semester::where('periode_aktif', 1)->first();
+        $users = User::whereRoleIs('admin', $semester->nama)->get();
+        foreach($users as $user){
+            $this->info('Proses update data GTK ('.$user->sekolah->nama.')');
+            $this->call('update:guru', ['sekolah_id' => $user->sekolah_id]);
+            $this->info('Proses update data Peserta Didik ('.$user->sekolah->nama.')');
+            $this->call('update:siswa', ['sekolah_id' => $user->sekolah_id]);
+        }
+        $this->call('hapus:ganda');
         $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi '.$version);
     }
 }

@@ -20,7 +20,7 @@ class UpdateGuru extends Command
      *
      * @var string
      */
-    protected $signature = 'update:guru';
+    protected $signature = 'update:guru {sekolah_id}';
 
     /**
      * The console command description.
@@ -46,7 +46,7 @@ class UpdateGuru extends Command
      */
     public function handle()
     {
-        foreach (Guru::lazy() as $data) {
+        foreach (Guru::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->guru_id_dapodik){
                 if($data->guru_id != $data->guru_id_dapodik && !Guru::find($data->guru_id_dapodik)){
                     $data->guru_id = $data->guru_id_dapodik;
@@ -55,7 +55,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Rombongan_belajar::lazy() as $data) {
+        foreach (Rombongan_belajar::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->rombel_id_dapodik){
                 if($data->rombongan_belajar_id != $data->rombel_id_dapodik && !Rombongan_belajar::find($data->rombel_id_dapodik)){
                     $data->rombongan_belajar_id = $data->rombel_id_dapodik;
@@ -64,7 +64,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Ekstrakurikuler::lazy() as $data) {
+        foreach (Ekstrakurikuler::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->id_kelas_ekskul){
                 if($data->ekstrakurikuler_id != $data->id_kelas_ekskul && !Ekstrakurikuler::find($data->id_kelas_ekskul)){
                     $data->ekstrakurikuler_id = $data->id_kelas_ekskul;
@@ -73,7 +73,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Pembelajaran::lazy() as $data) {
+        foreach (Pembelajaran::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->pembelajaran_id_dapodik){
                 if($data->pembelajaran_id != $data->pembelajaran_id_dapodik && !Pembelajaran::find($data->pembelajaran_id_dapodik)){
                     $data->pembelajaran_id = $data->pembelajaran_id_dapodik;
@@ -82,7 +82,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Jurusan_sp::lazy() as $data) {
+        foreach (Jurusan_sp::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->jurusan_sp_id_dapodik){
                 if($data->jurusan_sp_id != $data->jurusan_sp_id_dapodik && !Jurusan_sp::find($data->jurusan_sp_id_dapodik)){
                     $data->jurusan_sp_id = $data->jurusan_sp_id_dapodik;
@@ -91,7 +91,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Dudi::lazy() as $data) {
+        foreach (Dudi::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->dudi_id_dapodik){
                 if($data->dudi_id != $data->dudi_id_dapodik && !Dudi::find($data->dudi_id_dapodik)){
                     $data->dudi_id = $data->dudi_id_dapodik;
@@ -100,7 +100,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Mou::lazy() as $data) {
+        foreach (Mou::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->mou_id_dapodik){
                 if($data->mou_id != $data->mou_id_dapodik && !Mou::find($data->mou_id_dapodik)){
                     $data->mou_id = $data->mou_id_dapodik;
@@ -109,7 +109,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Akt_pd::lazy() as $data) {
+        foreach (Akt_pd::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->akt_pd_id_dapodik){
                 if($data->akt_pd_id != $data->akt_pd_id_dapodik && !Akt_pd::find($data->akt_pd_id_dapodik)){
                     $data->akt_pd_id = $data->akt_pd_id_dapodik;
@@ -118,7 +118,7 @@ class UpdateGuru extends Command
                 }
             }
         }
-        foreach (Anggota_akt_pd::lazy() as $data) {
+        foreach (Anggota_akt_pd::where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
             if($data->id_ang_akt_pd){
                 if($data->anggota_akt_pd_id != $data->id_ang_akt_pd && !Anggota_akt_pd::find($data->id_ang_akt_pd)){
                     $data->anggota_akt_pd_id = $data->id_ang_akt_pd;
