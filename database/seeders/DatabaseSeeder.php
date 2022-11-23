@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 			KelompokSeeder::class,
 			KurikulumSeeder::class,
 			MataPelajaranSeeder::class,
-			Mata_pelajaran_kurikulumSeeder::class,
+			//Mata_pelajaran_kurikulumSeeder::class,
 			Mst_wilayahSeeder::class,
 			PekerjaanSeeder::class,
 			SemesterSeeder::class,
