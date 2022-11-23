@@ -71,7 +71,7 @@ class UpdateSiswa extends Command
             }
             $this->bagi($i, 'Anggota Rombel', 500);
         }
-        foreach (Anggota_rombel::onlyTrashed()->where('sekolah_id', $this->argument('sekolah_id'))->with([
+        /*foreach (Anggota_rombel::onlyTrashed()->where('sekolah_id', $this->argument('sekolah_id'))->with([
             'all_catatan_budaya_kerja',
             'catatan_ppk',
             'catatan_wali',
@@ -207,7 +207,7 @@ class UpdateSiswa extends Command
             }
             $this->bagi($i, 'Relasi Data Anggota Rombel', 500);
             $i++;
-        }
+        }*/
     }
     private function find_anggota($data, $anggota_rombel_id_dapodik){
         $find_anggota_lama = Anggota_rombel::withTrashed()->find($data->anggota_rombel_id);
