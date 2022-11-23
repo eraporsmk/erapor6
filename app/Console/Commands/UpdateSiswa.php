@@ -134,11 +134,10 @@ class UpdateSiswa extends Command
                 $this->bagi($a, 'kewirausahaan Anggota Rombel', 50);
                 $a++;
             }
-            $a=0;
-            foreach($b->nilai_kd as $nilai_kd){ 
+            foreach($b->nilai_kd as $c => $nilai_kd){ 
                 $this->find_anggota($nilai_kd, $b->anggota_rombel_id_dapodik);
-                $this->bagi($a, 'nilai_kd Anggota Rombel', 50);
-                $a++;
+                $this->bagi($c, 'nilai_kd Anggota Rombel', 50);
+                $c++;
             }
             $a=0;
             foreach($b->all_nilai_remedial as $all_nilai_remedial){
