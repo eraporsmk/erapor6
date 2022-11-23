@@ -21,47 +21,58 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pembelajaran as $urut => $item)
-                                <tr>
-                                    <td class="text-center">{{$urut + 1}}</td>
-                                    <td>
-                                        <input type="text" wire:model.lazy="nama_mata_pelajaran.{{$item->pembelajaran_id}}" class="form-control">
-                                    </td>
-                                    <td>{{$item->guru->nama_lengkap}}</td>
-                                    <td>
-                                        <div wire:ignore>
-                                            <select id="pengajar_{{$item->pembelajaran_id}}" class="form-select" wire:model="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
-                                                <option value="">== Pilih Guru Pengajar ==</option>
-                                                {{--
-                                                @foreach ($guru_pengajar as $pengajar)
-                                                    <option value="{{$pengajar->guru_id}}">{{$pengajar->nama_lengkap}}</option>
-                                                @endforeach
-                                                --}}
-                                            </select>
+                            @forelse ($pembelajaran as $urut => $item)
+                            <tr>
+                                <td class="text-center">{{$urut + 1}}</td>
+                                <td>
+                                    <input type="text" wire:model.lazy="nama_mata_pelajaran.{{$item->pembelajaran_id}}" class="form-control">
+                                </td>
+                                <td>{{$item->guru->nama_lengkap}}</td>
+                                <td>
+                                    <div wire:ignore>
+                                        <select id="pengajar_{{$item->pembelajaran_id}}" class="form-select" wire:model="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
+                                            <option value="">== Pilih Guru Pengajar ==</option>
+                                            {{--
+                                            @foreach ($guru_pengajar as $pengajar)
+                                                <option value="{{$pengajar->guru_id}}">{{$pengajar->nama_lengkap}}</option>
+                                            @endforeach
+                                            --}}
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div wire:ignore>
+                                        <select id="kelompok_id_{{$item->pembelajaran_id}}" class="form-select" wire:model="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
+                                            <option value="">== Pilih Kelompok ==</option>
+                                            {{--
+                                            @foreach ($data_kelompok as $kelompok)
+                                                <option value="{{$kelompok->kelompok_id}}">{{$kelompok->nama_kelompok}}</option>
+                                            @endforeach
+                                            --}}
+                                        </select>
+                                    </div>
+                                </td>
+                                <td><input type="number" class="form-control" wire:model="no_urut.{{$item->pembelajaran_id}}"></td>
+                                <td class="text-center">
+                                    @if($item->kelompok_id)
+                                    <a href="javascript:void(0)" wire:click="hapusPembelajaran('{{$item->pembelajaran_id}}')"><i class="fas fa-trash text-danger text-lg"></i></a>
+                                    @else
+                                    -
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td class="text-center" colspan="7">
+                                    <div class="alert alert-danger" role="alert">
+                                        <div class="alert-body text-center">
+                                            <h2>Tidak ada data untuk ditampilkan</h2>
+                                            <p>Pastikan Data Pembelajaran telah di input di Aplikasi Dapodik!</p>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <div wire:ignore>
-                                            <select id="kelompok_id_{{$item->pembelajaran_id}}" class="form-select" wire:model="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
-                                                <option value="">== Pilih Kelompok ==</option>
-                                                {{--
-                                                @foreach ($data_kelompok as $kelompok)
-                                                    <option value="{{$kelompok->kelompok_id}}">{{$kelompok->nama_kelompok}}</option>
-                                                @endforeach
-                                                --}}
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td><input type="number" class="form-control" wire:model="no_urut.{{$item->pembelajaran_id}}"></td>
-                                    <td class="text-center">
-                                        @if($item->kelompok_id)
-                                        <a href="javascript:void(0)" wire:click="hapusPembelajaran('{{$item->pembelajaran_id}}')"><i class="fas fa-trash text-danger text-lg"></i></a>
-                                        @else
-                                        -
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
