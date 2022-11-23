@@ -649,8 +649,9 @@ class RefCP extends Command
                     $this->info($line['mata_pelajaran_id'] . ' belum tersedia');
                 }
             } else {
-                $this->error($line['no'] . ' terhapus');
-                Capaian_pembelajaran::where('cp_id', $line['no'])->delete();
+                if(Capaian_pembelajaran::where('cp_id', $line['no'])->delete()){
+                    $this->error($line['no'] . ' terhapus');
+                }
             }
         });
     }

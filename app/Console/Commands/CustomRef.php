@@ -43,8 +43,7 @@ class CustomRef extends Command
 		$data = json_decode($json);
 		foreach($data as $obj){
             $find = DB::table('ref.jurusan')->where('jurusan_id', $obj->jurusan_id)->first();
-			if($find){
-                DB::table('ref.mata_pelajaran')->updateOrInsert(
+			DB::table('ref.mata_pelajaran')->updateOrInsert(
                 [
                     'mata_pelajaran_id' 	=> $obj->mata_pelajaran_id,
                 ],
@@ -54,14 +53,13 @@ class CustomRef extends Command
                     'pilihan_buku' 			=> $obj->pilihan_buku,
                     'pilihan_kepengawasan'	=> $obj->pilihan_kepengawasan,
                     'pilihan_evaluasi'		=> $obj->pilihan_evaluasi,
-                    'jurusan_id'			=> $obj->jurusan_id,
+                    'jurusan_id'			=> ($find) ? $obj->jurusan_id : NULL,
                     'created_at'			=> $obj->create_date,
                     'updated_at'			=> $obj->last_update,
                     'deleted_at'			=> $obj->expired_date,
                     'last_sync'				=> $obj->last_sync,
                 ]
-                );
-            }
+            );
 		}
         $json = File::get(database_path('data/pekerjaan.json'));
 		$data = json_decode($json);
