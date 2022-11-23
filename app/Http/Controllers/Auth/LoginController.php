@@ -57,6 +57,10 @@ class LoginController extends Controller
     }
     public function show_login_form()
     {
+        if(!session()->has('url.intended'))
+        {
+            session(['url.intended' => url()->previous()]);
+        }
         $data = [
             'semester' => Semester::whereHas('tahun_ajaran', function($query){
                 $query->where('periode_aktif', 1);
@@ -113,15 +117,15 @@ class LoginController extends Controller
                 ]);
                 if(!$user->hasRole('admin', $semester->semester_id)){
                     $user->attachRole('admin', $team);
-                    return redirect()->route('login');
                 }
             }
-            return redirect()->route('index');
+            return redirect(session()->get('url.intended'));
+            //return redirect()->intended();
+            //return redirect()->route('index');
             //return redirect()->intended($this->redirectTo());
-        } else {
-            session()->flash('status', 'Kredensial tidak valid');
-            return redirect()->back();
         }
+        session()->flash('status', 'Kredensial tidak valid');
+        return redirect()->back();
     }
     public function show_signup_form()
     {

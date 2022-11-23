@@ -66,5 +66,13 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'role' => \Laratrust\Middleware\LaratrustRole::class,
+        'permission' => \Laratrust\Middleware\LaratrustPermission::class,
+        'ability' => \Laratrust\Middleware\LaratrustAbility::class,
+        //'admin' => \App\Http\Middleware\SessionHasAdmin::class,
+        //'guru' => \App\Http\Middleware\SessionHasGuru::class,
+        //'siswa' => \App\Http\Middleware\SessionHasSiswa::class,
+        'team' => \App\Http\Middleware\SessionSemester::class,
+
     ];
 }
