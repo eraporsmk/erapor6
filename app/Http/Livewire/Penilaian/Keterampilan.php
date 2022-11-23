@@ -180,18 +180,20 @@ class Keterampilan extends Component
             ]
         );
         $file_path = $this->template_excel->store('files', 'public');
-        $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
-        $collection = collect($imported_data);
-        //dd($collection);
-        foreach($collection as $nilai){
-            //$this->rencana_penilaian_id
+        $sheets = (new FastExcel)->importSheets(storage_path('/app/public/'.$file_path));
+        $collection = collect($sheets[0]);
+        $i=0;
+        foreach($collection as $key => $nilai){
             $anggota_rombel_id = $nilai['PD_ID'];
             unset($nilai['No'], $nilai['PD_ID'], $nilai['Nama Peserta Didik'], $nilai['NISN']);
             foreach($nilai as $id_kompetensi => $nilai_kd){
-                $id_kompetensi = str_replace("'", '', $id_kompetensi);
-                $kd_nilai = Kd_nilai::where('rencana_penilaian_id', $this->rencana_penilaian_id)->where('id_kompetensi', $id_kompetensi)->first();
-                if($kd_nilai){
-                    $this->nilai[$anggota_rombel_id][$kd_nilai->kd_nilai_id] = $nilai_kd;
+                if(isset($sheets[1][$key]['ID_KD'])){
+                    $id_kompetensi = str_replace("'", '', $id_kompetensi);
+                    $kd_nilai = Kd_nilai::find($sheets[1][$key]['PD_ID']);
+                    if($kd_nilai && $kd_nilai->id_kompetensi == $id_kompetensi && $sheets[1][$key]['PD_ID'] == $anggota_rombel_id){
+                        $i++;
+                        $this->nilai[$anggota_rombel_id][$sheets[1][$key]['ID_KD']] = $nilai_kd;
+                    }
                 }
             }
             if(isset($this->nilai[$anggota_rombel_id])){
@@ -200,17 +202,13 @@ class Keterampilan extends Component
                 });
                 $nilai = $filtered->all();
                 $this->rerata[$anggota_rombel_id] = ($nilai) ? bilangan_bulat($filtered->avg()) : NULL;
-            } else {
-                $error++;
             }
         }
-        if($error){
-            $this->alert('error', 'Template Excel salah!', [
-                'showConfirmButton' => true,
-                'confirmButtonText' => 'OK',
-                'onConfirmed' => 'confirmed',
-                'allowOutsideClick' => false,
-                'timer' => null
+        if(!$i){
+            $this->alert('error', 'Import Nilai Gagal', [
+                'text' => 'Format template tidak sesuai!',
+                'toast' => false,
+                //'timer' => null
             ]);
         }
         Storage::disk('public')->delete($file_path);

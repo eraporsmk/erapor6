@@ -180,6 +180,38 @@ class Pengetahuan extends Component
             ]
         );
         $file_path = $this->template_excel->store('files', 'public');
+        $sheets = (new FastExcel)->importSheets(storage_path('/app/public/'.$file_path));
+        $collection = collect($sheets[0]);
+        $i=0;
+        foreach($collection as $key => $nilai){
+            $anggota_rombel_id = $nilai['PD_ID'];
+            unset($nilai['No'], $nilai['PD_ID'], $nilai['Nama Peserta Didik'], $nilai['NISN']);
+            foreach($nilai as $id_kompetensi => $nilai_kd){
+                if(isset($sheets[1][$key]['ID_KD'])){
+                    $id_kompetensi = str_replace("'", '', $id_kompetensi);
+                    $kd_nilai = Kd_nilai::find($sheets[1][$key]['PD_ID']);
+                    if($kd_nilai && $kd_nilai->id_kompetensi == $id_kompetensi && $sheets[1][$key]['PD_ID'] == $anggota_rombel_id){
+                        $i++;
+                        $this->nilai[$anggota_rombel_id][$sheets[1][$key]['ID_KD']] = $nilai_kd;
+                    }
+                }
+            }
+            if(isset($this->nilai[$anggota_rombel_id])){
+                $filtered = collect($this->nilai[$anggota_rombel_id])->filter(function ($value, $key) {
+                    return $value > 0;
+                });
+                $nilai = $filtered->all();
+                $this->rerata[$anggota_rombel_id] = ($nilai) ? bilangan_bulat($filtered->avg()) : NULL;
+            }
+        }
+        if(!$i){
+            $this->alert('error', 'Import Nilai Gagal', [
+                'text' => 'Format template tidak sesuai!',
+                'toast' => false,
+                'timer' => null
+            ]);
+        }
+        /*dd($collection);
         $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
         $collection = collect($imported_data);
         //dd($collection);
@@ -194,14 +226,14 @@ class Pengetahuan extends Component
                     $this->nilai[$anggota_rombel_id][$kd_nilai->kd_nilai_id] = $nilai_kd;
                 }
             }
-            if(isset($this->nilai[$anggota_rombel_id]) && count($this->nilai[$anggota_rombel_id])){
+            if(isset($this->nilai[$anggota_rombel_id])){
                 $filtered = collect($this->nilai[$anggota_rombel_id])->filter(function ($value, $key) {
                     return $value > 0;
                 });
                 $nilai = $filtered->all();
                 $this->rerata[$anggota_rombel_id] = ($nilai) ? bilangan_bulat($filtered->avg()) : NULL;
             }
-        }
+        }*/
         Storage::disk('public')->delete($file_path);
     }
 }

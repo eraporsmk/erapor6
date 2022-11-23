@@ -16,6 +16,7 @@ use App\Exports\TemplateNilaiKd;
 use App\Exports\TemplateNilaiTp;
 use App\Exports\TemplateTp;
 use App\Exports\LeggerNilaiKurmerExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UnduhanController extends Controller
 {
@@ -61,10 +62,17 @@ class UnduhanController extends Controller
 	public function template_nilai_kd(){
 		if(request()->route('rencana_penilaian_id')){
 			$rencana_penilaian = Rencana_penilaian::with(['pembelajaran'])->find(request()->route('rencana_penilaian_id'));
-			$nama_file = 'Template Nilai KD '.$rencana_penilaian->nama_penilaian.' Mata Pelajaran ' . $rencana_penilaian->pembelajaran->nama_mata_pelajaran;
+			$kompetensi_id = ($rencana_penilaian->kompetensi_id == 1) ? 'Pengetahuan' : 'Keterampilan';
+			$nama_file = 'Template Nilai KD '.$kompetensi_id.' '.$rencana_penilaian->nama_penilaian.' Mata Pelajaran ' . $rencana_penilaian->pembelajaran->nama_mata_pelajaran;
 			$nama_file = clean($nama_file);
 			$nama_file = $nama_file . '.xlsx';
-			return (new TemplateNilaiKd)->query(request()->route('rencana_penilaian_id'), $rencana_penilaian->pembelajaran->rombongan_belajar_id)->download($nama_file);
+			//return (new TemplateNilaiKd)->query(request()->route('rencana_penilaian_id'), $rencana_penilaian->pembelajaran->rombongan_belajar_id)->download($nama_file);
+			$data = [
+				'rencana_penilaian_id' => request()->route('rencana_penilaian_id'),
+				'rombongan_belajar_id' => $rencana_penilaian->pembelajaran->rombongan_belajar_id
+			];
+			$export = new TemplateNilaiKd($data);
+			return Excel::download($export, $nama_file);
 		} else {
 			echo 'Akses tidak sah!';
 		}

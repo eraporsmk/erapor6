@@ -119,9 +119,9 @@ class LoginController extends Controller
                     $user->attachRole('admin', $team);
                 }
             }
-            return redirect(session()->get('url.intended'));
+            //return redirect(session()->get('url.intended'));
             //return redirect()->intended();
-            //return redirect()->route('index');
+            return redirect()->route('index');
             //return redirect()->intended($this->redirectTo());
         }
         session()->flash('status', 'Kredensial tidak valid');

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class SessionSemester
 {
@@ -14,9 +15,10 @@ class SessionSemester
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->hasRole($role, session('semester_id'))) {
+        $roles = Arr::except(func_get_args(), [0,1]);
+        if ($request->user()->hasRole($roles, session('semester_id'))) {
             return $next($request);
         }
         return abort(403);

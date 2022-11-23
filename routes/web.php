@@ -57,7 +57,7 @@ Route::middleware([
         Route::get('/ekstrakurikuler', [EraporController::class, 'ekstrakurikuler'])->name('ekstrakurikuler');
         Route::get('/teknik-penilaian', [EraporController::class, 'teknik_penilaian'])->name('teknik-penilaian')->middleware('team:admin');
         Route::get('/acuan-sikap', [EraporController::class, 'acuan_sikap'])->name('acuan-sikap')->middleware('team:admin');
-        Route::get('/kompetensi-dasar', [EraporController::class, 'kompetensi_dasar'])->name('kompetensi-dasar');
+        Route::get('/kompetensi-dasar', [EraporController::class, 'kompetensi_dasar'])->name('kompetensi-dasar')->middleware('team:guru');
         Route::get('/kompetensi-dasar/tambah', [EraporController::class, 'tambah_kompetensi_dasar'])->name('kompetensi-dasar.tambah');
         Route::get('/capaian-pembelajaran', [EraporController::class, 'capaian_pembelajaran'])->name('capaian-pembelajaran');
         Route::get('/capaian-pembelajaran/tambah', [EraporController::class, 'tambah_capaian_pembelajaran'])->name('capaian-pembelajaran.tambah');
