@@ -95,60 +95,79 @@ class UpdateSiswa extends Command
         foreach($a as $b){
             foreach($b->all_catatan_budaya_kerja as $catatan_budaya_kerja){
                 $this->find_anggota($catatan_budaya_kerja, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'catatan_budaya_kerja Anggota Rombel');
             }
             foreach($b->catatan_ppk as $catatan_ppk){
                 $this->find_anggota($catatan_ppk, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'catatan_ppk Anggota Rombel');
             }
             foreach($b->catatan_wali as $catatan_wali){
                 $this->find_anggota($catatan_wali, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'catatan_wali Anggota Rombel');
             }
             foreach($b->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran){
                 $this->find_anggota($deskripsi_mata_pelajaran, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'deskripsi_mata_pelajaran Anggota Rombel');
             }
             foreach($b->deskripsi_sikap as $deskripsi_sikap){
                 $this->find_anggota($deskripsi_sikap, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'deskripsi_sikap Anggota Rombel');
             }
             foreach($b->kenaikan_kelas as $kenaikan_kelas){
                 $this->find_anggota($kenaikan_kelas, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'kenaikan_kelas Anggota Rombel');
             }
             foreach($b->kewirausahaan as $kewirausahaan){
                 $this->find_anggota($kewirausahaan, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'kewirausahaan Anggota Rombel');
             }
             foreach($b->nilai_kd as $nilai_kd){ 
                 $this->find_anggota($nilai_kd, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_kd Anggota Rombel');
             }
             foreach($b->all_nilai_remedial as $all_nilai_remedial){
                 $this->find_anggota($all_nilai_remedial, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_remedial Anggota Rombel');
             }
             foreach($b->nilai_akhir as $nilai_akhir){
                 $this->find_anggota($nilai_akhir, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_akhir Anggota Rombel');
             }
             foreach($b->nilai_budaya_kerja as $nilai_budaya_kerja){
                 $this->find_anggota($nilai_budaya_kerja, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_budaya_kerja Anggota Rombel');
             }
             foreach($b->nilai_ekstrakurikuler as $nilai_ekstrakurikuler){
                 $this->find_anggota($nilai_ekstrakurikuler, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_ekstrakurikuler Anggota Rombel');
             }
             foreach($b->nilai_rapor as $nilai_rapor){
                 $this->find_anggota($nilai_rapor, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_rapor Anggota Rombel');
             }
             foreach($b->nilai_sikap as $nilai_sikap){
                 $this->find_anggota($nilai_sikap, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_sikap Anggota Rombel');
             }
             foreach($b->nilai_ukk as $nilai_ukk){
                 $this->find_anggota($nilai_ukk, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_ukk Anggota Rombel');
             }
             foreach($b->nilai_un as $nilai_un){
                 $this->find_anggota($nilai_un, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_un Anggota Rombel');
             }
             foreach($b->nilai_us as $nilai_us){
                 $this->find_anggota($nilai_us, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'nilai_us Anggota Rombel');
             }
             foreach($b->prakerin as $prakerin){
                 $this->find_anggota($prakerin, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'prakerin Anggota Rombel');
             }
             foreach($b->prestasi as $prestasi){
                 $this->find_anggota($prestasi, $b->anggota_rombel_id_dapodik);
+                $this->bagi($i, 'prestasi Anggota Rombel');
             }
             $this->bagi($i, 'Relasi Data Anggota Rombel');
         }
