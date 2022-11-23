@@ -71,7 +71,7 @@ class UpdateSiswa extends Command
             }
             $this->bagi($i, 'Anggota Rombel', 500);
         }
-        $a = Anggota_rombel::onlyTrashed()->where('sekolah_id', $this->argument('sekolah_id'))->with([
+        foreach (Anggota_rombel::onlyTrashed()->where('sekolah_id', $this->argument('sekolah_id'))->with([
             'all_catatan_budaya_kerja',
             'catatan_ppk',
             'catatan_wali',
@@ -91,8 +91,7 @@ class UpdateSiswa extends Command
             'nilai_us',
             'prakerin',
             'prestasi',
-        ])->get();
-        foreach($a as $b){
+        ])->lazy() as $i => $b) {
             foreach($b->all_catatan_budaya_kerja as $catatan_budaya_kerja){
                 $this->find_anggota($catatan_budaya_kerja, $b->anggota_rombel_id_dapodik);
                 $this->bagi($i, 'catatan_budaya_kerja Anggota Rombel', 50);
