@@ -169,6 +169,7 @@ class UpdateSiswa extends Command
                 $this->bagi($i, 'prestasi Anggota Rombel', 50);
             }
             $this->bagi($i, 'Relasi Data Anggota Rombel', 500);
+            $i++;
         }
     }
     private function find_anggota($data, $anggota_rombel_id_dapodik){
