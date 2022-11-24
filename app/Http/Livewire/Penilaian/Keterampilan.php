@@ -187,7 +187,7 @@ class Keterampilan extends Component
             $anggota_rombel_id = $nilai['PD_ID'];
             unset($nilai['No'], $nilai['PD_ID'], $nilai['Nama Peserta Didik'], $nilai['NISN']);
             foreach($nilai as $id_kompetensi => $nilai_kd){
-                $id_kompetensi = str_replace("_kd", '', $id_kompetensi);
+                $id_kompetensi = str_replace("kd_", '', $id_kompetensi);
                 if(isset($sheets[1][$key]['ID_KD_'.$id_kompetensi])){
                     $kd_nilai = Kd_nilai::find($sheets[1][$key]['ID_KD_'.$id_kompetensi]);
                     if($kd_nilai && $kd_nilai->id_kompetensi == $id_kompetensi && $sheets[1][$key]['PD_ID'] == $anggota_rombel_id){
