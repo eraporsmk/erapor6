@@ -10,7 +10,7 @@ ksort($data_kd);
 			<th>No</th>
 			<th>PD_ID</th>
 			@foreach ($data_kd as $kd)
-            <th>ID_KD</th>    
+            <th>ID_KD_{{$kd->id_kompetensi}}</th>    
             @endforeach
 		</tr>
 	</thead>
