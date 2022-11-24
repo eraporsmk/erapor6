@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Dashboard;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\Pembelajaran;
 use App\Models\Rombongan_belajar;
@@ -16,9 +17,22 @@ use App\Models\Nilai_rapor;
 use App\Models\Nilai_sumatif;
 class Guru extends Component
 {
-    use LivewireAlert;
+    use WithPagination, LivewireAlert;
     public $pembelajaran_id;
     public $kompentesi_id;
+
+    protected $paginationTheme = 'bootstrap';
+    public $search_kurtilas = '';
+    public $search_kurmer = '';
+    public $per_page_kurtilas = 10;
+    public $per_page_kurmer = 10;
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    public function loadPerPage(){
+        $this->resetPage();
+    }
 
     public function getListeners()
     {
@@ -138,6 +152,60 @@ class Guru extends Component
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                 })->first() : NULL,
+            'collection_kurtilas' => ($this->loggedUser()->hasRole('waka', session('semester_id'))) ? Pembelajaran::where(function($query){
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->where('jenis_rombel', 1);
+                        $query->where('semester_id', session('semester_aktif'));
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                        });
+                    });
+                })
+                ->with(['rombongan_belajar' => function($query){
+                    $query->orderBy('tingkat', 'ASC');
+                }])
+                ->withCount([
+                    'rencana_penilaian as rencana_pengetahuan' => function($query){
+                        $query->where('kompetensi_id', 1);
+                    },
+                    'rencana_penilaian as rencana_keterampilan' => function($query){
+                        $query->where('kompetensi_id', 2);
+                    },
+                    'rencana_penilaian as pengetahuan_dinilai' => function($query){
+                        $query->where('kompetensi_id', 1);
+                        $query->has('nilai');
+                    },
+                    'rencana_penilaian as keterampilan_dinilai' => function($query){
+                        $query->where('kompetensi_id', 2);
+                        $query->has('nilai');
+                    },
+                    'nilai_akhir as na_pengetahuan' => function($query){
+                        $query->where('kompetensi_id', 1);
+                    },
+                    'nilai_akhir as na_keterampilan' => function($query){
+                        $query->where('kompetensi_id', 2);
+                    },
+                ])
+                ->paginate($this->per_page_kurtilas) : collect([]),
+            'collection_kurmer' => ($this->loggedUser()->hasRole('waka', session('semester_id'))) ? Pembelajaran::where(function($query){
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->where('jenis_rombel', 1);
+                        $query->where('semester_id', session('semester_aktif'));
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                        });
+                    });
+                })
+                ->with(['rombongan_belajar' => function($query){
+                    $query->orderBy('tingkat', 'ASC');
+                }])
+                ->paginate($this->per_page_kurmer) : collect([]),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"]
             ],
@@ -236,21 +304,22 @@ class Guru extends Component
                         $find_nilai_rapor->nilai_p = $nilai_akhir;
                         $find_nilai_rapor->rasio_p = $rasio_p;
                         $find_nilai_rapor->total_nilai = bilangan_bulat($total_nilai);
-                        $find_nilai_rapor->save();
                     } else {
                         $total_nilai = (($nilai_akhir * $rasio_k) + ($find_nilai_rapor->nilai_p * $rasio_p)) / 100;
                         $find_nilai_rapor->nilai_k = $nilai_akhir;
                         $find_nilai_rapor->rasio_k = $rasio_k;
                         $find_nilai_rapor->total_nilai = bilangan_bulat($total_nilai);
-                        $find_nilai_rapor->save();
                     }
+                    $find_nilai_rapor->save();
                 } else {
                     Nilai_rapor::create([
                         'anggota_rombel_id'	=> $anggota_rombel->anggota_rombel_id,
                         'pembelajaran_id'	=> $this->pembelajaran_id,
                         'sekolah_id' 		=> session('sekolah_id'),
-                        'nilai_p' => ($this->kompetensi_id == 1 || $this->kompentesi_id == 3) ? $nilai_akhir : NULL,
-                        'nilai_k' => ($this->kompetensi_id != 1 || $this->kompentesi_id != 3) ? $nilai_akhir : NULL,
+                        //'nilai_p' => ($this->kompetensi_id == 1 || $this->kompentesi_id == 3) ? $nilai_akhir : NULL,
+                        //'nilai_k' => ($this->kompetensi_id != 1 || $this->kompentesi_id != 3) ? $nilai_akhir : NULL,
+                        'nilai_p' => ($this->kompetensi_id == 1) ? $nilai_akhir : NULL,
+                        'nilai_k' => ($this->kompetensi_id == 2) ? $nilai_akhir : NULL,
                         'rasio_p' => $pembelajaran->rasio_p,
                         'rasio_k' => $pembelajaran->rasio_k,
                         'total_nilai' => $nilai_akhir,
