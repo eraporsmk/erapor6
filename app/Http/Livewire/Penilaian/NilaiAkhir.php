@@ -174,7 +174,13 @@ class NilaiAkhir extends Component
             })->orderBy('created_at')->get();
             $pembelajaran = Pembelajaran::where('rombongan_belajar_id', $this->rombongan_belajar_id)->where('mata_pelajaran_id', $this->mata_pelajaran_id)->first();
             $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
-            $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', $callback)->with(['anggota_rombel' => $callback])->orderBy('nama')->get();
+            $get_mapel_agama = filter_agama_siswa($this->pembelajaran_id, $this->rombongan_belajar_id);
+            $this->data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama, $callback){
+                $query->whereHas('anggota_rombel', $callback);
+                if($get_mapel_agama){
+                    $query->where('agama_id', $get_mapel_agama);
+                }
+            })->with(['anggota_rombel' => $callback])->orderBy('nama')->get();
             foreach($this->data_siswa as $data_siswa){
                 $this->nilai[$data_siswa->anggota_rombel->anggota_rombel_id] = ($data_siswa->anggota_rombel->nilai_akhir_mapel) ? $data_siswa->anggota_rombel->nilai_akhir_mapel->nilai : NULL;
                 foreach($data_siswa->anggota_rombel->tp_kompeten as $tp_kompeten){
