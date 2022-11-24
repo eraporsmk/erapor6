@@ -70,6 +70,8 @@
     })
     window.addEventListener('pembelajaran', event => {
         $.each(event.detail.pembelajaran_id, function (i, pembelajaran_id) {
+            $('#pengajar_'+i).html('<option>== Pilih Guru Pengajar ==</option>');
+            $('#kelompok_id_'+i).html('<option>== Pilih Kelompok ==</option>');
             $.each(event.detail.guru_pengajar, function (a, item) {
                 $('#pengajar_'+i).append($('<option>', { 
                     value: item.guru_id,
@@ -82,6 +84,7 @@
                     text : item.nama_kelompok,
                 }));
             });
+            console.log(event.detail.pengajar[pembelajaran_id]);
             if(event.detail.pengajar[pembelajaran_id]){
                 $('#pengajar_'+i).val(event.detail.pengajar[pembelajaran_id])
             } else {
