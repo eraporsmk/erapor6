@@ -54,28 +54,30 @@ class Pkl extends Component
         }
     }
     public function mount(){
-        $rombel = Rombongan_belajar::with(['kurikulum'])->where(function($query){
-            $query->where('sekolah_id', session('sekolah_id'));
-            $query->where('semester_id', session('semester_aktif'));
-            $query->where('guru_id', $this->loggedUser()->guru_id);
-        })->first();
-        if(Str::contains($rombel->kurikulum->nama_kurikulum, '2013')){
-            $tingkat_allowed = 11;
-        } elseif(Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka')){
-            $tingkat_allowed = 12;
-        }
-        $this->tingkat = $tingkat_allowed;
-        if($rombel->tingkat == $tingkat_allowed){
-            $this->allowed = TRUE;
-            $this->data_dudi = Dudi::where('sekolah_id', session('sekolah_id'))->whereHas('akt_pd', function($query){
-                $query->whereHas('anggota_akt_pd', function($query){
-                    $query->whereHas('siswa', function($query){
-                        $query->whereHas('anggota_rombel', $this->callback_anggota_rombel());
+        if(!$this->check_walas()){
+            $rombel = Rombongan_belajar::with(['kurikulum'])->where(function($query){
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('semester_id', session('semester_aktif'));
+                $query->where('guru_id', $this->loggedUser()->guru_id);
+            })->first();
+            if(Str::contains($rombel->kurikulum->nama_kurikulum, '2013')){
+                $tingkat_allowed = 11;
+            } elseif(Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka')){
+                $tingkat_allowed = 12;
+            }
+            $this->tingkat = $tingkat_allowed;
+            if($rombel->tingkat == $tingkat_allowed){
+                $this->allowed = TRUE;
+                $this->data_dudi = Dudi::where('sekolah_id', session('sekolah_id'))->whereHas('akt_pd', function($query){
+                    $query->whereHas('anggota_akt_pd', function($query){
+                        $query->whereHas('siswa', function($query){
+                            $query->whereHas('anggota_rombel', $this->callback_anggota_rombel());
+                        });
                     });
-                });
-            })->orderBy('nama')->get();
+                })->orderBy('nama')->get();
+            }
+            $this->nama_kurikulum = $rombel->kurikulum->nama_kurikulum;
         }
-        $this->nama_kurikulum = $rombel->kurikulum->nama_kurikulum;
     }
     private function callback_anggota_rombel(){
         return function($query){

@@ -188,8 +188,8 @@ class Keterampilan extends Component
             unset($nilai['No'], $nilai['PD_ID'], $nilai['Nama Peserta Didik'], $nilai['NISN']);
             foreach($nilai as $id_kompetensi => $nilai_kd){
                 if(isset($sheets[1][$key]['ID_KD'])){
-                    $id_kompetensi = str_replace("'", '', $id_kompetensi);
-                    $kd_nilai = Kd_nilai::find($sheets[1][$key]['PD_ID']);
+                    $id_kompetensi = str_replace("_kd", '', $id_kompetensi);
+                    $kd_nilai = Kd_nilai::find($sheets[1][$key]['ID_KD']);
                     if($kd_nilai && $kd_nilai->id_kompetensi == $id_kompetensi && $sheets[1][$key]['PD_ID'] == $anggota_rombel_id){
                         $i++;
                         $this->nilai[$anggota_rombel_id][$sheets[1][$key]['ID_KD']] = $nilai_kd;

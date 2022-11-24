@@ -171,6 +171,16 @@ class GenerateMenus
                         'smt' => collect([1,2]),
                         'cara_penilaian' => collect(['lengkap', 'sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
+                    $menu->referensi->add('Uji Kompetensi Keahlian', 'uji-kompetensi-keahlian')->data([
+                        'role' => ['kaprog'], 
+                        'smt' => collect([1,2]),
+                        'cara_penilaian' => collect(['lengkap', 'sederhana'])
+                    ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
+                    $menu->referensi->add('DUDI', 'dudi')->data([
+                        'role' => ['admin'], 
+                        'smt' => collect([1,2]),
+                        'cara_penilaian' => collect(['lengkap', 'sederhana'])
+                    ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
                 });
             });
             $menu->add('Nilai Akhir', 'penilaian/nilai-akhir')->data([

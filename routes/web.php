@@ -48,8 +48,8 @@ Route::middleware([
         Route::get('/tendik', [EraporController::class, 'tendik'])->name('tendik');
         Route::get('/instruktur', [EraporController::class, 'instruktur'])->name('instruktur');
         Route::get('/asesor', [EraporController::class, 'asesor'])->name('asesor');
-        Route::get('/rombongan-belajar', [EraporController::class, 'rombongan_belajar'])->name('rombongan-belajar')->middleware('team:admin');
-        Route::get('/rombel-pilihan', [EraporController::class, 'rombel_pilihan'])->name('rombel-pilihan')->middleware('team:admin');
+        Route::get('/rombongan-belajar', [EraporController::class, 'rombongan_belajar'])->name('rombongan-belajar')->middleware('team:admin,waka');
+        Route::get('/rombel-pilihan', [EraporController::class, 'rombel_pilihan'])->name('rombel-pilihan')->middleware('team:admin,waka');
         Route::get('/peserta-didik-aktif', [EraporController::class, 'peserta_didik_aktif'])->name('peserta-didik-aktif');
         Route::get('/peserta-didik-keluar', [EraporController::class, 'peserta_didik_keluar'])->name('peserta-didik-keluar');
         Route::get('/password-peserta-didik', [EraporController::class, 'password_peserta_didik'])->name('password-peserta-didik');
@@ -63,7 +63,7 @@ Route::middleware([
         Route::get('/capaian-pembelajaran/tambah', [EraporController::class, 'tambah_capaian_pembelajaran'])->name('capaian-pembelajaran.tambah');
         Route::get('/tujuan-pembelajaran', [EraporController::class, 'tujuan_pembelajaran'])->name('tujuan-pembelajaran');
         Route::get('/tujuan-pembelajaran/tambah', [EraporController::class, 'tambah_tujuan_pembelajaran'])->name('tujuan-pembelajaran.tambah');
-        Route::get('/uji-kompetensi-keahlian', [EraporController::class, 'uji_kompetensi_keahlian'])->name('uji-kompetensi-keahlian');
+        Route::get('/uji-kompetensi-keahlian', [EraporController::class, 'uji_kompetensi_keahlian'])->name('uji-kompetensi-keahlian')->middleware('team:kaprog');
         Route::get('/dudi', [EraporController::class, 'dudi'])->name('dudi')->middleware('team:admin');
     });
     Route::prefix('perencanaan')->name('perencanaan.')->middleware('team:guru')->group( function(){
