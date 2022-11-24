@@ -6,7 +6,7 @@
             <div class="card-body">
                 @include('livewire.formulir')
             </div>
-            <div class="card-footer">
+            <div class="card-footer" wire:loading.remove>
                 <button type="submit" class="btn btn-primary {{($show) ? '' : 'd-none'}}">Simpan</button>
             </div>
             </form>

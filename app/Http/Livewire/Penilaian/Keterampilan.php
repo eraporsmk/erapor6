@@ -131,7 +131,13 @@ class Keterampilan extends Component
                 }]);
             }])->orderBy('nama')->get();
             $this->show = TRUE;
-            $this->kd_nilai = Kd_nilai::where('rencana_penilaian_id', $this->rencana_penilaian_id)->select('kd_nilai_id', 'rencana_penilaian_id', 'id_kompetensi')->get();
+            $kd_nilai = Kd_nilai::where('rencana_penilaian_id', $this->rencana_penilaian_id)->select('kd_nilai_id', 'rencana_penilaian_id', 'id_kompetensi')->get();
+            $data_kd = [];
+            foreach($kd_nilai as $kd){
+                $data_kd[str_replace('.','',$kd->id_kompetensi)] = $kd;
+            }
+            ksort($data_kd);
+            $this->kd_nilai = $data_kd;
             foreach($this->data_siswa as $siswa){
                 $cek_nilai = FALSE;
                 foreach($siswa->anggota_rombel->nilai_kd as $nilai_kd){
@@ -146,6 +152,13 @@ class Keterampilan extends Component
     }
     public function hitungRerata($anggota_rombel_id)
     {
+        $kd_nilai = Kd_nilai::where('rencana_penilaian_id', $this->rencana_penilaian_id)->select('kd_nilai_id', 'rencana_penilaian_id', 'id_kompetensi')->get();
+        $data_kd = [];
+        foreach($kd_nilai as $kd){
+            $data_kd[str_replace('.','',$kd->id_kompetensi)] = $kd;
+        }
+        ksort($data_kd);
+        $this->kd_nilai = $data_kd;
         $this->rerata[$anggota_rombel_id] = bilangan_bulat(collect($this->nilai[$anggota_rombel_id])->avg());
     }
     public function store(){
@@ -179,6 +192,13 @@ class Keterampilan extends Component
                 'template_excel.mimes' => 'File harus berupa file dengan ekstensi: xlsx.',
             ]
         );
+        $kd_nilai = Kd_nilai::where('rencana_penilaian_id', $this->rencana_penilaian_id)->select('kd_nilai_id', 'rencana_penilaian_id', 'id_kompetensi')->get();
+        $data_kd = [];
+        foreach($kd_nilai as $kd){
+            $data_kd[str_replace('.','',$kd->id_kompetensi)] = $kd;
+        }
+        ksort($data_kd);
+        $this->kd_nilai = $data_kd;
         $file_path = $this->template_excel->store('files', 'public');
         $sheets = (new FastExcel)->importSheets(storage_path('/app/public/'.$file_path));
         $collection = collect($sheets[0]);
@@ -189,7 +209,7 @@ class Keterampilan extends Component
             foreach($nilai as $id_kompetensi => $nilai_kd){
                 $id_kompetensi = str_replace("kd_", '', $id_kompetensi);
                 if(isset($sheets[1][$key]['ID_KD_'.$id_kompetensi])){
-                    $kd_nilai = Kd_nilai::find($sheets[1][$key]['ID_KD_'.$id_kompetensi]);
+                    $kd_nilai = Kd_nilai::where('rencana_penilaian_id', $this->rencana_penilaian_id)->find($sheets[1][$key]['ID_KD_'.$id_kompetensi]);
                     if($kd_nilai && $kd_nilai->id_kompetensi == $id_kompetensi && $sheets[1][$key]['PD_ID'] == $anggota_rombel_id){
                         $i++;
                         $this->nilai[$anggota_rombel_id][$sheets[1][$key]['ID_KD_'.$id_kompetensi]] = $nilai_kd;

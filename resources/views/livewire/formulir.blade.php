@@ -50,25 +50,20 @@
             <a target="_blank" class="btn btn-primary" href="{{route('unduhan.template-nilai-kd', ['rencana_penilaian_id' => $rencana_penilaian_id])}}">Unduh Template Nilai KD</a>
         </div>
     </div>
-    <div class="row mb-2 {{($show) ? '' : 'd-none'}}">
-        <?php
-        $data_kd = [];
-        foreach($kd_nilai as $kd){
-            $data_kd[str_replace('.','',$kd->id_kompetensi)] = $kd;
-        }
-        ksort($data_kd);
-        ?>
+    <div class="row mb-2 {{($show) ? '' : 'd-none'}}" wire:loading.remove>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th class="text-center align-middle" rowspan="2">Nama Peserta Didik</th>
-                        <th class="text-center" colspan="{{($kd_nilai && $kd_nilai->count()) ? $kd_nilai->count() : 1}}">KD/CP</th>
+                        <th class="text-center" colspan="{{($kd_nilai && count($kd_nilai)) ? count($kd_nilai) : 1}}">KD/CP</th>
                         <th class="text-center align-middle" rowspan="2">Rerata Nilai</th>
                     </tr>
                     <tr>
-                        @foreach ($data_kd as $kd)
-                        <th class="text-center">{{$kd->id_kompetensi}}</th>    
+                        @foreach ($kd_nilai as $kd)
+                        @isset($kd->id_kompetensi)
+                        <th class="text-center">{{($kd) ? $kd->id_kompetensi : '-'}}</th>
+                        @endisset
                         @endforeach
                     </tr>
                 </thead>
@@ -76,13 +71,19 @@
                     @foreach ($data_siswa as $siswa)
                     <tr>
                         <td>{{$siswa->nama}}</td>
-                        @foreach ($data_kd as $kd)
+                        @foreach ($kd_nilai as $kd)
                         <td class="text-center">
-                            <input type="number" class="form-control" wire:ignore wire:model.lazy="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$kd->kd_nilai_id}}" wire:change="hitungRerata('{{$siswa->anggota_rombel->anggota_rombel_id}}')">
+                            <div wire:ignore.self>
+                                @isset($kd->kd_nilai_id)
+                                <input type="number" class="form-control" wire:model.lazy="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$kd->kd_nilai_id}}" wire:change="hitungRerata('{{$siswa->anggota_rombel->anggota_rombel_id}}')">
+                                @endisset
+                            </div>
                         </td>
                         @endforeach
                         <td class="text-center">
-                            <input type="text" class="form-control" wire:ignore wire:model.lazy="rerata.{{$siswa->anggota_rombel->anggota_rombel_id}}" readonly>
+                            <div wire:ignore.self>
+                                <input type="text" class="form-control" wire:model.lazy="rerata.{{$siswa->anggota_rombel->anggota_rombel_id}}" readonly>
+                            </div>
                         </td>
                     </tr>
                     @endforeach      
