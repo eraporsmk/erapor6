@@ -21,7 +21,7 @@ class SinkronErapor extends Command
      *
      * @var string
      */
-    protected $signature = 'sinkron:erapor {satuan?} {email?} {created_at?}';
+    protected $signature = 'sinkron:erapor {satuan?} {email?} {created_at?} {akses?}';
 
     /**
      * The console command description.
@@ -147,6 +147,9 @@ class SinkronErapor extends Command
                 $referensi = $this->ambil_data($satuan, $args);
                 $this->proses_data($referensi, $satuan, $sekolah->user, $semester, $bar);
             }
+            if($this->argument('akses')){
+                $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => 'Sinkronisasi '.$this->get_table($satuan).' berhasil']);
+            }
             $this->info("\n".'Sinkronisasi '.$this->get_table($satuan).' berhasil'."\n"."\n");
         } else {
             return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Data Anda telah lengkap!');
@@ -221,6 +224,9 @@ class SinkronErapor extends Command
             if($response->status() == 200){
                 return $response->object();
             } else {
+                if($this->argument('akses')){
+                    $this->call('respon:artisan', ['status' => 'info', 'title' => 'Gagal', 'respon' => 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$response->status()]);
+                }
                 return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$response->status());
                 return false;
             }

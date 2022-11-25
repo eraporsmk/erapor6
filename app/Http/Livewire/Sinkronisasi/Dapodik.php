@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Sinkronisasi;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use App\Models\Sekolah;
 use App\Models\Semester;
@@ -27,6 +28,7 @@ class Dapodik extends Component
     public $satuan = 'all';
     public $prosesSync = FALSE;
     public $sekolah_id;
+    public $respon_artisan;
 
     public function getListeners()
     {
@@ -319,7 +321,6 @@ class Dapodik extends Component
         $this->server = $server;
         $this->satuan = $satuan;
         $this->emit('delaySync');
-        //Artisan::call('sinkron:'.$server, ['satuan' => $aksi]);
     }
     public function prosesSync(){
         $this->prosesSync = TRUE;
@@ -340,12 +341,16 @@ class Dapodik extends Component
                 'dudi'
             ];
             foreach($list_data as $data){
-                Artisan::call('sinkron:dapodik', ['satuan' => $data]);
+                Artisan::call('sinkron:dapodik', ['satuan' => $data, 'akses' => 1]);
             }
         } else {
-            Artisan::call('sinkron:'.$this->server, ['satuan' => $this->satuan]);
+            Artisan::call('sinkron:'.$this->server, ['satuan' => $this->satuan, 'email' => $this->loggedUser()->email, 'akses' => 1]);
         }
+        $this->respon_artisan = Artisan::output();
         $this->emit('finishSync');
+    }
+    private function loggedUser(){
+        return auth()->user();
     }
     private function hapus_file(){
         Storage::disk('public')->delete('proses_sync.json');
@@ -353,14 +358,18 @@ class Dapodik extends Component
 		Storage::disk('public')->delete($json_files);*/
     }
     public function finishSync(){
+        $response = Str::of($this->respon_artisan)->between('{', '}');
+        $response = json_decode('{'.$response.'}');
         $this->reset(['prosesSync', 'server', 'satuan']);
         $this->hapus_file();
-        $this->alert('success', 'Proses sinkronisasi selesai!', [
+        $this->alert($response->status, $response->title, [
+            'text' => $response->message,
+            'allowOutsideClick' => false,
+            'toast' => false,
+            'timer' => null,
             'showConfirmButton' => true,
             'confirmButtonText' => 'OK',
             'onConfirmed' => 'confirmed',
-            'allowOutsideClick' => false,
-            'timer' => null
         ]);
     }
     /*

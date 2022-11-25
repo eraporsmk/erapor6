@@ -39,7 +39,7 @@ class SinkronDapodik extends Command
      *
      * @var string
      */
-    protected $signature = 'sinkron:dapodik {satuan?}';
+    protected $signature = 'sinkron:dapodik {satuan?} {akses?}';
 
     /**
      * The console command description.
@@ -121,6 +121,9 @@ class SinkronDapodik extends Command
                     $dapodik = $this->ambil_data($sekolah, $semester, $satuan);
                     if($dapodik){
                         $this->proses_data($dapodik, $satuan, $sekolah->user, $semester);
+                        if($this->argument('akses')){
+                            $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => 'Sinkronisasi '.$this->get_table($satuan).' berhasil']);
+                        }
                         $this->info("\n".'Sinkronisasi '.$this->get_table($satuan).' berhasil');
                     }
                 } else {
@@ -132,6 +135,9 @@ class SinkronDapodik extends Command
                     $dapodik = $this->ambil_data($sekolah, $semester, $d);
                     if($dapodik){
                         $this->proses_data($dapodik, $d, $sekolah->user, $semester);
+                        if($this->argument('akses')){
+                            $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => 'Sinkronisasi '.$this->get_table($satuan).' berhasil']);
+                        }
                         $this->info("\n".'Sinkronisasi '.$this->get_table($d).' berhasil');
                     } else {
                         $this->error('Pengambilan data '.$this->get_table($d).' gagal. Server tidak merespon 1');
@@ -212,6 +218,9 @@ class SinkronDapodik extends Command
                         $this->info('Memproses '.$this->get_table($satuan));
                         return $response->object();
                     } else {
+                        if($this->argument('akses')){
+                            $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$response->status()]);
+                        }
                         $this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
                         return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$response->status());
                         return false;
