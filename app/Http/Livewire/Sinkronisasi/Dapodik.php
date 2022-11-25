@@ -294,7 +294,8 @@ class Dapodik extends Component
             'ekstrakurikuler' => $sekolah->ekstrakurikuler_count,
             'anggota_ekskul' => $sekolah->anggota_ekskul_count,
             'dudi' => $sekolah->mou_count,
-            'jurusan' => Jurusan::count(),
+            'jurusan' => Jurusan::select(DB::raw('TRIM(jurusan_id)'))
+            ->groupByRaw('TRIM(jurusan_id)')->get()->count(),
             'kurikulum' => Kurikulum::count(),
             'mata_pelajaran' => Mata_pelajaran::count(),
             'mata_pelajaran_kurikulum' => Mata_pelajaran_kurikulum::count(),
