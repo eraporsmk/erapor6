@@ -29,7 +29,11 @@
                 <div class="alert alert-danger alert-block">
                     <div class="alert-body">
                         <p><i class="fas fa-ban"></i> <strong>Akses Ditutup!</strong></p>
+                        @if(!$semester_allowed)
+                        <p>Kurikulum <strong>{{$nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{$tingkat}}</strong>, Semester Genap</p>
+                        @else
                         <p>Kurikulum <strong>{{$nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{$tingkat}}</strong></p>
+                        @endif
                     </div>
                 </div>
             </div>

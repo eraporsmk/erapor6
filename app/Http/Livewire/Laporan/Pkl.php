@@ -16,6 +16,7 @@ class Pkl extends Component
     public $allowed;
     public $show = FALSE;
     public $form = FALSE;
+    public $semester_allowed = TRUE;
     public $tingkat;
     public $nama_kurikulum;
     public $data_siswa = [];
@@ -54,7 +55,7 @@ class Pkl extends Component
         }
     }
     public function mount(){
-        if(!$this->check_walas()){
+        if($this->check_walas()){
             $rombel = Rombongan_belajar::with(['kurikulum'])->where(function($query){
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('semester_id', session('semester_aktif'));
@@ -64,9 +65,13 @@ class Pkl extends Component
                 $tingkat_allowed = 11;
             } elseif(Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka')){
                 $tingkat_allowed = 12;
+                $semester_aktif = Str::substr(session('semester_aktif'), 4, 1);
+                if($semester_aktif == 2){
+                    $this->semester_allowed = FALSE;
+                }
             }
             $this->tingkat = $tingkat_allowed;
-            if($rombel->tingkat == $tingkat_allowed){
+            if($rombel->tingkat >= $tingkat_allowed && $this->semester_allowed){
                 $this->allowed = TRUE;
                 $this->data_dudi = Dudi::where('sekolah_id', session('sekolah_id'))->whereHas('akt_pd', function($query){
                     $query->whereHas('anggota_akt_pd', function($query){
