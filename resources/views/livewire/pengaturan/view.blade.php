@@ -62,7 +62,7 @@
                           @endfor
                         </tbody>
                     </table>
-                        @if(!$pengguna->hasRole('siswa', session('semester_id')) || !$pengguna->hasRole('tu', session('semester_id')))
+                        @if($roles)
                         <h4>Tambah Hak Akses di Tahun Pelajaran {{session('semester_id')}}</h4>
                         @foreach ($roles as $item)
                         <div class="form-check mb-1">
@@ -80,7 +80,9 @@
                     @if($pengguna)
                     <button type="submit" class="btn btn-danger" wire:click.prevent="resetPassword('{{$pengguna->user_id}}')">Reset Password</button>
                     @endif
+                    @if($roles)
                     <button type="submit" class="btn btn-primary" wire:click.prevent="update()">Simpan</button>
+                    @endif
                 </div>
             </div>
         </div>

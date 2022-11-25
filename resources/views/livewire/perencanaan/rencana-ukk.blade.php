@@ -19,6 +19,9 @@
                             <option value="12">Kelas 12</option>
                             <option value="13">Kelas 13</option>
                         </select>
+                        @error('tingkat')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -27,6 +30,9 @@
                         <select id="rombongan_belajar_id" class="form-select" wire:model="rombongan_belajar_id" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Rombongan Belajar ==">
                             <option value="">== Pilih Rombongan Belajar ==</option>
                         </select>
+                        @error('rombongan_belajar_id')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -35,6 +41,9 @@
                         <select id="penguji_internal" class="form-select" wire:model="penguji_internal" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Penguji Internal ==">
                             <option value="">== Pilih Penguji Internal ==</option>
                         </select>
+                        @error('penguji_internal')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -43,6 +52,9 @@
                         <select id="penguji_eksternal" class="form-select" wire:model="penguji_eksternal" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Penguji Eksternal ==">
                             <option value="">== Pilih Penguji Eksternal ==</option>
                         </select>
+                        @error('penguji_eksternal')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -51,6 +63,9 @@
                         <select id="paket_kompetensi" class="form-select" wire:model="paket_kompetensi" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Paket Kompetensi ==">
                             <option value="">== Pilih Paket Kompetensi ==</option>
                         </select>
+                        @error('paket_kompetensi')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -76,11 +91,14 @@
                                 @foreach ($collection as $siswa)
                                 <tr>
                                     <td class="text-center">
+                                        <input wire:model="siswa_dipilih.{{$siswa->anggota_rombel->anggota_rombel_id}}" value="{{$siswa->peserta_didik_id}}" type="checkbox">
+                                        {{--
                                         @if($siswa->nilai_ukk && $rencana_ukk)
                                         <input type="checkbox" checked="checked" disabled="disabled" />
                                         @else
                                         <input wire:model="siswa_dipilih.{{$siswa->anggota_rombel->anggota_rombel_id}}" value="{{$siswa->peserta_didik_id}}" type="checkbox">
                                         @endif
+                                        --}}
                                     </td>
                                     <td>{{$siswa->nama}}</td>
                                     <td>{{($rencana_ukk) ? $rencana_ukk->paket_ukk->nama_paket_id : '-'}}</td>

@@ -39,6 +39,7 @@ class Users extends Component
     public $pengguna;
     public $roles = [];
     public $akses;
+    public $is_guru;
     public function render()
     {
         $loggedUser = auth()->user();
@@ -221,7 +222,9 @@ class Users extends Component
     public function view($user_id){
         $this->reset(['akses']);
         $this->pengguna = User::find($user_id);
-        $this->roles = Role::find([7,8,9]);
+        if($this->pengguna->guru_id){
+            $this->roles = Role::find([7,8,9]);   
+        }
         $this->emit('openView');
     }
     public function hapusAkses($user_id, $role){

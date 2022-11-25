@@ -217,11 +217,11 @@ class GenerateMenus
                 'smt' => collect([1,2]),
                 'cara_penilaian' => collect(['sederhana'])
             ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
-            $menu->add('Nilai UKK', 'penilaian/ukk')->data([
+            /*$menu->add('Nilai UKK', 'penilaian/ukk')->data([
                 'role' => ['internal'], 
                 'smt' => collect([1,2]),
                 'cara_penilaian' => collect(['sederhana'])
-            ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
+            ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());*/
             $menu->group([], function($menu){
                 $menu->add('Wali Kelas', 'javascript:void(0)')->data([
                     'role' => ['wali'], 

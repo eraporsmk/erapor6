@@ -107,17 +107,64 @@ class RencanaUkk extends Component
                 $this->rencana_ukk_id = $this->rencana_ukk->rencana_ukk_id;
                 $this->tanggal = $this->rencana_ukk->tanggal_sertifikat;
             }
-            $this->collection = Peserta_didik::with(['nilai_ukk' => function($query){
-                $query->where('rencana_ukk_id', $this->rencana_ukk_id);
-            }])->whereHas('anggota_rombel', function($query){
+            $this->collection = Peserta_didik::with([
+                'anggota_rombel' => function($query){
+                    $query->with(['nilai_ukk_satuan' => function($query){
+                        $query->where('rencana_ukk_id', $this->rencana_ukk_id);
+                    }]);
+                }
+            ])->whereHas('anggota_rombel', function($query){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             })->orderBy('nama')->get();
+            foreach($this->collection as $siswa){
+                if($siswa->nilai_ukk && $this->rencana_ukk){
+                    $this->siswa_dipilih[$siswa->anggota_rombel->anggota_rombel_id] = $siswa->peserta_didik_id;
+                }
+            }
             $this->show = TRUE;
         }
     }
+    public function updatedSiswaDipilih(){
+        $this->collection = Peserta_didik::with([
+            'anggota_rombel' => function($query){
+                $query->with(['nilai_ukk_satuan' => function($query){
+                    $query->where('rencana_ukk_id', $this->rencana_ukk_id);
+                }]);
+            }
+        ])->whereHas('anggota_rombel', function($query){
+            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+        })->orderBy('nama', 'ASC')->get();
+        /*Peserta_didik::with(['nilai_ukk' => function($query){
+            $query->where('rencana_ukk_id', $this->rencana_ukk_id);
+        }])->whereHas('anggota_rombel', function($query){
+            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+        })->orderBy('nama')->get();*/
+        
+    }
     public function store(){
+        $this->validate(
+            [
+                'tingkat' => 'required',
+                'rombongan_belajar_id' => 'required',
+                'penguji_internal' => 'required',
+                'penguji_eksternal' => 'required',
+                'paket_kompetensi' => 'required',
+                'tanggal' => 'required',
+            ],
+            [
+                'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
+                'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!',
+                'penguji_internal.required' => 'Penguji Internal tidak boleh kosong!',
+                'penguji_eksternal.required' => 'Penguji Eksternal tidak boleh kosong!',
+                'paket_kompetensi.required' => 'Paket Kompetensi Kelas tidak boleh kosong!',
+                'tanggal.required' => 'Tanggal Sertifikat tidak boleh kosong!',
+            ]
+        );
         if($this->rencana_ukk){
             $rencana_ukk = $this->rencana_ukk;
+            $rencana_ukk->paket_ukk_id = $this->paket_ukk_id;
+            $rencana_ukk->internal = $this->penguji_internal;
+            $rencana_ukk->eksternal = $this->penguji_eksternal;
             $rencana_ukk->tanggal_sertifikat = $this->tanggal;
             $rencana_ukk->save();
         } else {
@@ -131,19 +178,27 @@ class RencanaUkk extends Component
                 'last_sync' 			=> now(), 
             ]);
         }
+        $deleted = [];
         foreach($this->siswa_dipilih as $anggota_rombel_id => $peserta_didik_id){
-            Nilai_ukk::firstOrCreate(
-                [
-                'rencana_ukk_id'		=> $rencana_ukk->rencana_ukk_id,
-                'anggota_rombel_id'		=> $anggota_rombel_id,
-                'peserta_didik_id'		=> $peserta_didik_id,
-                ],
-                [
-                'sekolah_id' 			=> session('sekolah_id'),
-                'nilai'					=> 0,
-                'last_sync' 			=> now(), 
-                ]
-            );
+            if($peserta_didik_id){
+                Nilai_ukk::firstOrCreate(
+                    [
+                    'rencana_ukk_id'		=> $rencana_ukk->rencana_ukk_id,
+                    'anggota_rombel_id'		=> $anggota_rombel_id,
+                    'peserta_didik_id'		=> $peserta_didik_id,
+                    ],
+                    [
+                    'sekolah_id' 			=> session('sekolah_id'),
+                    'nilai'					=> 0,
+                    'last_sync' 			=> now(), 
+                    ]
+                );
+            } else {
+                $deleted[] = $anggota_rombel_id;
+            }
+        }
+        if($deleted){
+            Nilai_ukk::where('rencana_ukk_id', $rencana_ukk->rencana_ukk_id)->whereIn('anggota_rombel_id', $deleted)->delete();
         }
         $this->flash('success', 'Rencana Penilaian UKK berhasil disimpan', [], '/perencanaan/penilaian-ukk');
     }
