@@ -162,6 +162,7 @@ class Users extends Component
     }
     public function generatePd(){
         $data = Peserta_didik::where('sekolah_id', session('sekolah_id'))->get();
+        $role = Role::where('name', 'siswa')->first();
         if($data){
             foreach($data as $d){
                 $new_password = strtolower(Str::random(8));
@@ -180,7 +181,6 @@ class Users extends Component
 						'default_password' => $new_password,
                     ]);
                 }
-                $role = Role::where('name', 'siswa')->first();
                 if(!$user->hasRole($role, session('semester_id'))){
                     $user->attachRole($role, session('semester_id'));
                 }

@@ -13,6 +13,7 @@
                             <th class="text-center">Tempat, Tanggal Lahir</th>
                             <th class="text-center">Agama</th>
                             <th class="text-center">Kelas</th>
+                            <th class="text-center">Detil</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,6 +26,7 @@
                                 <td>{{$item->tempat_lahir}}, {{$item->tanggal_lahir}}</td>
                                 <td>{{$item->agama->nama}}</td>
                                 <td>{{($item->anggota_rombel) ? $item->anggota_rombel->rombongan_belajar->nama : '-'}}</td>
+                                <td class="text-center"><button class="btn btn-info btn-sm" wire:click="getID('{{$item->peserta_didik_id}}')">Detil</button></td>
                             </tr>
                             @endforeach
                         @else
@@ -47,5 +49,16 @@
             </div>
         </div>
     </div>
+    @include('livewire.referensi.modal.detil-pd')
     @include('components.loader')
 </div>
+@push('scripts')
+<script>
+    Livewire.on('show-modal', event => {
+        $('#detilPD').modal('show');
+    })
+    Livewire.on('close-modal', event => {
+        $('#detilPD').modal('hide');
+    })
+</script>
+@endpush
