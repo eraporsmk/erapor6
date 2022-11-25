@@ -344,6 +344,9 @@ class CetakController extends Controller
 			);
 			//return view('cetak.rapor_nilai', $params);
 			//return view('cetak.rapor_catatan', $params);
+			if(!$get_siswa->peserta_didik){
+				return view('cetak.no_pd');
+			}
 			$pdf = PDF::loadView('cetak.blank', $params, [], [
 				'format' => 'A4',
 				'margin_left' => 15,
