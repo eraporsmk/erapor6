@@ -386,6 +386,7 @@ class SinkronDapodik extends Command
                 'nama' 				=> $data->nama,
                 'no_induk' 			=> ($data->nipd) ?? 0,
                 'nisn' 				=> $data->nisn,
+                'nik'               => $data->nik,
                 'jenis_kelamin' 	=> ($data->jenis_kelamin) ?? 0,
                 'tempat_lahir' 		=> ($data->tempat_lahir) ?? 0,
                 'tanggal_lahir' 	=> $data->tanggal_lahir,
@@ -520,12 +521,15 @@ class SinkronDapodik extends Command
         $bar = $this->output->createProgressBar(count($dapodik));
         $bar->start();
         $this->proses_sync('Memperoses', 'ptk', $i, count($dapodik), $user->sekolah_id);
+        $guru_id = [];
         foreach($dapodik as $data){
+            $guru_id[] = $data->ptk_id;
             $this->simpan_guru($data, $user, $semester);
             $this->proses_sync('Memperoses', 'ptk', $i, count($dapodik), $user->sekolah_id);
             $bar->advance();
             $i++;
         }
+        Ptk::where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('ptk_id', $guru_id)->delete();
         $bar->finish();
     }
     private function ambil_referensi($data_sync){

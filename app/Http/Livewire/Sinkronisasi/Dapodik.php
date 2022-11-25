@@ -263,6 +263,7 @@ class Dapodik extends Component
             },
             'peserta_didik as pd_keluar_count' => function($query){
                 $query->whereHas('pd_keluar', function($query){
+                    $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
                 });
             },

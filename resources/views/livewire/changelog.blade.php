@@ -6,7 +6,7 @@
                 <div id="form">
                     <legend><h3>Versi 6.0.0</h3></legend>
                     <ol>
-                        <li><b class="text-primary">[Pembaharuan]</b> Rilis Aplikasi baru menggunakan Framework Laravel 8</li>
+                        <li><b class="text-primary">[Pembaharuan]</b> Rilis Aplikasi baru menggunakan Framework Laravel 8 &amp; Livewire 2</li>
                     </ol>
                     <legend><h3>Versi 5.1.6</h3></legend>
                     <ol>

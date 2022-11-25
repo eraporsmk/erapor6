@@ -130,7 +130,7 @@ class PesertaDidikAktif extends Component
         $this->pd_id = $pd_id;
         $this->pd = Peserta_didik::find($this->pd_id);
         $this->nama = $this->pd->nama;
-        $this->nis = $this->pd->nis; 
+        $this->nis = $this->pd->no_induk; 
         $this->nisn = $this->pd->nisn;
         $this->nik = $this->pd->nik;
         $this->jenis_kelamin = $this->pd->jenis_kelamin;

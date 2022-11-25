@@ -10,4 +10,6 @@ return [
   'dapodik' => $dapodik,
   'dashboard' => 'http://app.erapor-smk.net/',
   'registration' => env('REGISTRATION', FALSE),
+  'user_erapor' => 'masadi',
+  'pass_erapor' => '@Bismill4h#',
 ];

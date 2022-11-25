@@ -25,7 +25,8 @@ class PesertaDidikKeluar extends Component
     public function render()
     {
         return view('livewire.referensi.peserta-didik-keluar', [
-            'collection' => Peserta_didik::whereDoesntHave('anggota_rombel', function($query){
+            'collection' => Peserta_didik::whereHas('pd_keluar', function($query){
+                $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('semester_id', session('semester_aktif'));
             })->orderBy($this->sortby, $this->sortbydesc)
                 ->when($this->search, function($ptk) {
