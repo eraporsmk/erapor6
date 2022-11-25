@@ -10,17 +10,21 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($data_siswa as $siswa)
+            @forelse ($data_siswa as $urut => $siswa)
             <tr>
-                <td>{{$siswa->nama}}</td>
-                <td>
-                    
-                    <input type="text" class="form-control" wire:model.defer="lokasi_prakerin.{{$siswa->anggota_rombel->anggota_rombel_id}}" id="lokasi_prakerin">
-                    
-                </td>
-                <td>
+                <td class="align-top">{{$siswa->nama}}: {{$urut}}</td>
+                <td class="align-top">
                     @role('wali', session('semester_id'))
-                    
+                    <input type="text" class="form-control" wire:model.defer="lokasi_prakerin.{{$siswa->anggota_rombel->anggota_rombel_id}}" id="lokasi_prakerin">
+                    @if($errors->has('lokasi_prakerin.'.$siswa->anggota_rombel->anggota_rombel_id))
+                    <span class="text-danger">{{ $errors->first('lokasi_prakerin.'.$siswa->anggota_rombel->anggota_rombel_id) }}</span>
+                    @endif
+                    @else
+                    {{$lokasi_prakerin[$siswa->anggota_rombel->anggota_rombel_id]}}
+                    @endrole
+                </td>
+                <td class="align-top">
+                    @role('wali', session('semester_id'))
                         <select id="skala_{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-select" wire:model.defer="skala.{{$siswa->anggota_rombel->anggota_rombel_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Skala ==" data-search-off="true">
                             <option value="">== Pilih Skala ==</option>
                             <option value="1">1</option>
@@ -34,25 +38,29 @@
                             <option value="9">9</option>
                             <option value="10">10</option>
                         </select>
-                    
+                        @if($errors->has('skala.'.$siswa->anggota_rombel->anggota_rombel_id))
+                        <span class="text-danger">{{ $errors->first('skala.'.$siswa->anggota_rombel->anggota_rombel_id) }}</span>
+                        @endif
                     @else
                     {{$skala[$siswa->anggota_rombel->anggota_rombel_id]}}
                     @endrole
                 </td>
-                <td>
+                <td class="align-top">
                     @role('wali', session('semester_id'))
-                    
                     <input type="number" class="form-control" wire:model.defer="lama_prakerin.{{$siswa->anggota_rombel->anggota_rombel_id}}">
-                    
+                    @if($errors->has('lama_prakerin.'.$siswa->anggota_rombel->anggota_rombel_id))
+                        <span class="text-danger">{{ $errors->first('lama_prakerin.'.$siswa->anggota_rombel->anggota_rombel_id) }}</span>
+                    @endif
                     @else
                     {{$lama_prakerin[$siswa->anggota_rombel->anggota_rombel_id]}}
                     @endrole
                 </td>
-                <td>
+                <td class="align-top">
                     @role('wali', session('semester_id'))
-                    
                     <input type="text" class="form-control" wire:model.defer="keterangan_prakerin.{{$siswa->anggota_rombel->anggota_rombel_id}}">
-                    
+                    @if($errors->has('keterangan_prakerin.'.$siswa->anggota_rombel->anggota_rombel_id))
+                        <span class="text-danger">{{ $errors->first('keterangan_prakerin.'.$siswa->anggota_rombel->anggota_rombel_id) }}</span>
+                    @endif
                     @else
                     {{$keterangan_prakerin[$siswa->anggota_rombel->anggota_rombel_id]}}
                     @endrole

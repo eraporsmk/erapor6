@@ -54,7 +54,7 @@
                                 </td>
                                 <td><input type="number" class="form-control" wire:model="no_urut.{{$item->pembelajaran_id}}"></td>
                                 <td class="text-center">
-                                    @if($item->kelompok_id)
+                                    @if($item->kelompok_id || $item->no_urut)
                                     <a href="javascript:void(0)" wire:click="hapusPembelajaran('{{$item->pembelajaran_id}}')"><i class="fas fa-trash text-danger text-lg"></i></a>
                                     @else
                                     -

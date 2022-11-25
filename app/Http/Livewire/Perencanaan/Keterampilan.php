@@ -245,8 +245,8 @@ class Keterampilan extends Component
     public function getID($rencana_penilaian_id, $query){
         $this->emit($query);
         $this->rencana = Rencana_penilaian::with(['kd_nilai'])->find($rencana_penilaian_id);
+        $this->tingkat = $this->rencana->rombongan_belajar->tingkat;
         if($query == 'copyModal'){
-            $this->tingkat = $this->rencana->rombongan_belajar->tingkat;
             $this->data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
                 $query->where('tingkat', $this->tingkat);
                 $query->where('semester_id', session('semester_aktif'));
@@ -255,6 +255,17 @@ class Keterampilan extends Component
                 $query->where('rombongan_belajar_id', '<>', $this->rencana->rombongan_belajar->rombongan_belajar_id);
             })->get();
             $this->dispatchBrowserEvent('data_rombongan_belajar_copy', ['data_rombongan_belajar' => $this->data_rombongan_belajar]);
+        }
+        if($query == 'editModal'){
+            $this->data_kd = Kompetensi_dasar::where(function($query){
+                $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
+                $query->where('kompetensi_id', $this->kompetensi_id);
+                $query->where('kelas_'.$this->tingkat, 1);
+                $query->where('aktif', 1);
+            })->orderBy('id_kompetensi')->get();
+            foreach ($this->rencana->kd_nilai as $item){
+                $this->kd_select[$item->kompetensi_dasar_id] = $item->kompetensi_dasar_id;
+            }
         }
     }
     public function delete(){
@@ -307,5 +318,32 @@ class Keterampilan extends Component
                 'timer' => null
             ]);
         }
+    }
+    public function perbaharui(){
+        $kd_select = [];
+        foreach($this->kd_select as $kd_id => $selected){
+            if($selected){
+                $kd_select[] = $kd_id;
+                $kd = Kompetensi_dasar::find($kd_id);
+                Kd_nilai::updateOrcreate([
+                    'sekolah_id' => session('sekolah_id'),
+                    'rencana_penilaian_id' => $this->rencana->rencana_penilaian_id,
+                    'kompetensi_dasar_id' => $kd_id,
+                    'id_kompetensi' => $kd->id_kompetensi
+                ]);
+            }
+        }
+        Kd_nilai::where('rencana_penilaian_id', $this->rencana->rencana_penilaian_id)->whereNotIn('kompetensi_dasar_id', $kd_select)->forceDelete();
+        $this->alert('info', 'Berhasil', [
+            'text' => 'Rencana Penilaian '.$this->nama.' berhasil di perbaharui',
+            'position' => 'center',
+            'allowOutsideClick' => false,
+            'timer' => null,
+            'toast' => false,
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'OK',
+            'onConfirmed' => 'confirmed',
+        ]);
+        $this->emit('close-modal');
     }
 }

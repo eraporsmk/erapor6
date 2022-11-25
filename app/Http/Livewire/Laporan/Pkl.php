@@ -125,6 +125,20 @@ class Pkl extends Component
         $this->lokasi_prakerin[$value[0]] = $value[2];
     }
     public function store(){
+        $this->validate(
+            [
+                'lokasi_prakerin.*' => 'required',
+                'lama_prakerin.*' => 'required',
+                'skala.*' => 'required',
+                'keterangan_prakerin.*' => 'required',
+            ],
+            [
+                'lokasi_prakerin.*.required' => 'Lokasi Prakerin tidak boleh kosong!',
+                'lama_prakerin.*.required' => 'Lama Prakerin tidak boleh kosong!',
+                'skala.*.required' => 'Skala tidak boleh kosong!',
+                'keterangan_prakerin.*.required' => 'Keterangan tidak boleh kosong!',
+            ]
+        );
         foreach($this->lokasi_prakerin as $anggota_rombel_id => $lokasi_prakerin){
             if($this->lama_prakerin[$anggota_rombel_id] && $this->skala[$anggota_rombel_id] && $this->keterangan_prakerin[$anggota_rombel_id]){
                 Prakerin::UpdateOrCreate(
@@ -146,6 +160,7 @@ class Pkl extends Component
         $this->emit('showAlert');
     }
     public function showAlert(){
+        $this->dudi_id = NULL;
         $this->reset(['dudi_id', 'dudi', 'data_siswa', 'show', 'lokasi_prakerin', 'lama_prakerin', 'skala', 'keterangan_prakerin']);
         $this->alert('success', 'Data Praktik Kerja Lapangan berhasil disimpan');
         $this->emit('confirmed');

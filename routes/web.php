@@ -101,7 +101,7 @@ Route::middleware([
         Route::get('/nilai-karakter', [EraporController::class, 'nilai_karakter'])->name('nilai-karakter');
         Route::get('/ketidakhadiran', [EraporController::class, 'ketidakhadiran'])->name('ketidakhadiran');
         Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekstrakurikuler'])->name('nilai-ekstrakurikuler');
-        Route::get('/pkl', [EraporController::class, 'pkl'])->name('pkl');
+        Route::get('/prakerin', [EraporController::class, 'pkl'])->name('pkl');
         Route::get('/prestasi-pd', [EraporController::class, 'prestasi_pd'])->name('prestasi-pd');
         Route::get('/kenaikan-kelas', [EraporController::class, 'kenaikan_kelas'])->name('kenaikan-kelas');
         Route::get('/rapor-uts', [EraporController::class, 'rapor_uts'])->name('rapor-uts');

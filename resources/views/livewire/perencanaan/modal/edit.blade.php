@@ -1,8 +1,8 @@
-<div wire:ignore.self class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+<div wire:ignore.self class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewModalLabel">Detil Data Perencanaan</h5>
+                    <h5 class="modal-title" id="editModalLabel">Edit Perencanaan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -34,15 +34,21 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
+                                                <th class="text-center">#</th>
                                                 <th class="text-center">Kode</th>
                                                 <th class="text-center">Deskripsi Kompetensi Dasar</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($rencana->kd_nilai as $item)
+                                            @foreach ($data_kd as $item)
                                             <tr>
+                                                <td class="text-center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" wire:model="kd_select.{{$item->kompetensi_dasar_id}}" id="flexCheckDefault">
+                                                    </div>
+                                                </td>
                                                 <td>{{$item->id_kompetensi}}</td>
-                                                <td>{{($item->kompetensi_dasar->kompetensi_dasar_alias) ?? $item->kompetensi_dasar->kompetensi_dasar}}</td>
+                                                <td>{{($item->kompetensi_dasar_alias) ?? $item->kompetensi_dasar}}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -56,6 +62,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary" wire:click.prevent="perbaharui()">Perbaharui</button>
                 </div>
             </div>
         </div>

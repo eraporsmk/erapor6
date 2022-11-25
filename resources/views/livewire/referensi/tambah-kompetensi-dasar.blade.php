@@ -80,7 +80,7 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <label for="id_kompetensi" class="col-sm-3 col-form-label">Kode KD/CP</label>
+                    <label for="id_kompetensi" class="col-sm-3 col-form-label">Kode Kompetensi Dasar</label>
                     <div class="col-sm-9">
                         <input type="text" wire:model="id_kompetensi" id="id_kompetensi" class="form-control" aria-describedby="id_kompetensi"/>
                         @error('id_kompetensi')
@@ -91,7 +91,7 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <label for="kompetensi_dasar" class="col-sm-3 col-form-label">Isi KD/CP</label>
+                    <label for="kompetensi_dasar" class="col-sm-3 col-form-label">Deskripsi Kompetensi Dasar</label>
                     <div class="col-sm-9">
                         <textarea rows="5" wire:model="kompetensi_dasar" id="kompetensi_dasar" class="form-control" aria-describedby="kompetensi_dasar"></textarea>
                         @error('kompetensi_dasar')

@@ -416,7 +416,7 @@ class GenerateMenus
                         'smt' => collect([1, 2]),
                         'cara_penilaian' => collect(['lengkap', 'sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
-                    $menu->laporan->add('Praktik Kerja Lapangan', 'pkl')->data([
+                    $menu->laporan->add('Praktik Kerja Industri', 'prakerin')->data([
                         'role' => ['wali', 'waka'], 
                         'smt' => collect([1, 2]),
                         'cara_penilaian' => collect(['lengkap', 'sederhana'])

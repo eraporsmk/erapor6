@@ -64,6 +64,7 @@
     @include('livewire.perencanaan.modal.create')
     @include('livewire.perencanaan.modal.read')
     @include('livewire.perencanaan.modal.copy')
+    @include('livewire.perencanaan.modal.edit')
     @include('livewire.perencanaan.modal.delete')
     @include('components.loader')
 </div>
@@ -87,6 +88,9 @@
     })
     Livewire.on('viewModal', event => {
         $('#viewModal').modal('show');
+    })
+    Livewire.on('editModal', event => {
+        $('#editModal').modal('show')
     })
     Livewire.on('addModal', event => {
         $('#addModal').modal('show');
