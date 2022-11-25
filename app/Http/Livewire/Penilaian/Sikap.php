@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Penilaian;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\WithPagination;
 use Livewire\Component;
+use App\Models\Sikap as Sikap_model;
 use App\Models\Nilai_sikap;
 
 class Sikap extends Component
@@ -23,6 +24,10 @@ class Sikap extends Component
     public $sortbydesc = 'DESC';
     public $per_page = 10;
     public $nilai_sikap_id;
+    public $data;
+    public $sikap_id;
+    public $opsi_sikap;
+    public $uraian_sikap;
 
     public function getListeners()
     {
@@ -37,6 +42,7 @@ class Sikap extends Component
         ];
         if(!status_penilaian()){
             return view('components.non-aktif', [
+                'all_sikap' => Sikap_model::whereHas('sikap')->with('sikap')->orderBy('sikap_id')->get(),
                 'breadcrumbs' => $breadcrumbs,
             ]);
         }
@@ -60,6 +66,7 @@ class Sikap extends Component
                         ->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');
                     });
             })->paginate($this->per_page),
+            'all_sikap' => Sikap_model::whereHas('sikap')->with('sikap')->orderBy('sikap_id')->get(),
             'breadcrumbs' => $breadcrumbs,
             'tombol_add' => [
                 'wire' => NULL,
@@ -75,6 +82,11 @@ class Sikap extends Component
     }
     public function getID($id){
         $this->nilai_sikap_id = $id;
+        $this->data = Nilai_sikap::find($this->nilai_sikap_id);
+        $this->sikap_id = $this->data->sikap_id;
+        $this->opsi_sikap = $this->data->getRawOriginal('opsi_sikap');
+        $this->uraian_sikap = $this->data->uraian_sikap;
+        $this->emit('show-modal');
     }
     public function delete($id){
         $this->nilai_sikap_id = $id;
@@ -95,5 +107,32 @@ class Sikap extends Component
         $a = Nilai_sikap::find($this->nilai_sikap_id);
         $a->delete();
         $this->alert('success', 'Nilai sikap berhasil dihapus');
+    }
+    public function update(){
+        $this->data->sikap_id = $this->sikap_id;
+        $this->data->opsi_sikap = $this->opsi_sikap;
+        $this->data->uraian_sikap = $this->uraian_sikap;
+        if($this->data->save()){
+            $this->alert('success', 'Berhasil', [
+                'text' => 'Nilai Sikap berhasil diperbaharui',
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'Yakin',
+                'onConfirmed' => 'salah',
+                'allowOutsideClick' => false,
+                'timer' => null,
+                'toast' => false,
+            ]);
+        } else {
+            $this->alert('error', 'Gagal', [
+                'html' => 'Nilai Sikap gagal diperbaharui.<br>Silahkan coba beberapa saat lagi!',
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'Yakin',
+                'onConfirmed' => 'salah',
+                'allowOutsideClick' => false,
+                'timer' => null,
+                'toast' => false,
+            ]);
+        }
+        $this->emit('close-modal');
     }
 }

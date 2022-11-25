@@ -102,6 +102,7 @@
             </form>
         </div>
     </div>
+    @include('components.loader')
 </div>
 @push('styles')
 <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">

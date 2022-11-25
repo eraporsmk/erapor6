@@ -30,7 +30,7 @@
                                         Aksi
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="btnGroupDrop1">
-                                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="getID('{{$item->nilai_sikap_id}}')" title="Edit Data"><i class="fas fa-pencil"></i> Edit</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->nilai_sikap_id}}')" title="Edit Data"><i class="fas fa-pencil"></i> Edit</a></li>
                                             <li><a class="dropdown-item" href="javascript:void(0)" wire:click="delete('{{$item->nilai_sikap_id}}')" title="Hapus Data"><i class="fas fa-trash"></i> Hapus</a></li>
                                         </ul>
                                     </div>
@@ -58,4 +58,15 @@
         </div>
     </div>
     @include('livewire.penilaian.modal-sikap.edit')
+    @include('components.loader')
 </div>
+@push('scripts')
+<script>
+    Livewire.on('show-modal', event => {
+        $('#editModal').modal('show')
+    })
+    Livewire.on('close-modal', event => {
+        $('#editModal').modal('hide')
+    })
+</script>
+@endpush
