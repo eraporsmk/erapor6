@@ -41,8 +41,8 @@ class TambahKompetensiDasar extends Component
         'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!!',
         'mata_pelajaran_id.required' => 'Mata Pelajaran tidak boleh kosong!!',
         'kompetensi_id.required' => 'Aspek Penilaian tidak boleh kosong!!',
-        'id_kompetensi.required' => 'Kode KD tidak boleh kosong!!',
-        'kompetensi_dasar.required' => 'Isi KD/CP tidak boleh kosong!!',
+        'id_kompetensi.required' => 'Kode Kompetensi Dasar tidak boleh kosong!!',
+        'kompetensi_dasar.required' => 'Deskripsi Kompetensi Dasar tidak boleh kosong!!',
     ];
     public function loggedUser(){
         return auth()->user();

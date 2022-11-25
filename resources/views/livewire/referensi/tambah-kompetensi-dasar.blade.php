@@ -3,7 +3,7 @@
     <div class="content-body">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Tambah Data Referensi KD/CP</h4>
+                <h4 class="card-title">Tambah Data Referensi KD</h4>
                 <div class="row mb-2">
                     <label for="semester_id" class="col-sm-3 col-form-label">Tahun Pelajaran</label>
                     <div class="col-sm-9">

@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Tambah Data KD/CP')
+@section('title', 'Tambah Data KD')
 
 @section('content')
 @livewire('referensi.tambah-kompetensi-dasar')
