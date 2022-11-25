@@ -20,21 +20,21 @@
                         <tr>
                             <td>Nomor Paket</td>
                             <td>
-                                <input type="text" class="form-control" wire:model="nomor_paket_satuan">
+                                <input type="text" class="form-control" wire:model.lazy="nomor_paket_satuan">
                                 @error('nomor_paket_satuan') <div class="text-danger">{{$message}}</div> @enderror
                             </td>
                         </tr>
                         <tr>
                             <td>Judul Paket (ID)</td>
                             <td>
-                                <input type="text" class="form-control" wire:model="nama_paket_id_satuan">
+                                <input type="text" class="form-control" wire:model.lazy="nama_paket_id_satuan">
                                 @error('nama_paket_id_satuan') <div class="text-danger">{{$message}}</div> @enderror
                             </td>
                         </tr>
                         <tr>
                             <td>Judul Paket (EN)</td>
                             <td>
-                                <input type="text" class="form-control" wire:model="nama_paket_en_satuan">
+                                <input type="text" class="form-control" wire:model.lazy="nama_paket_en_satuan">
                                 @error('nama_paket_en_satuan') <div class="text-danger">{{$message}}</div> @enderror
                             </td>
                         </tr>
@@ -64,11 +64,11 @@
                                         @foreach ($paket_ukk_satuan as $unit)
                                             <tr>
                                                 <td>
-                                                    <input type="text" class="form-control" wire:model="kode_unit_satuan.{{$unit->unit_ukk_id}}">
+                                                    <input type="text" class="form-control" wire:model.lazy="kode_unit_satuan.{{$unit->unit_ukk_id}}">
                                                     @error('kode_unit_satuan.'.$unit->unit_ukk_id) <div class="text-danger">{{$message}}</div> @enderror
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control" wire:model="nama_unit_satuan.{{$unit->unit_ukk_id}}">
+                                                    <input type="text" class="form-control" wire:model.lazy="nama_unit_satuan.{{$unit->unit_ukk_id}}">
                                                     @error('nama_unit_satuan.'.$unit->unit_ukk_id) <div class="text-danger">{{$message}}</div> @enderror
                                                 </td>
                                             </tr>
