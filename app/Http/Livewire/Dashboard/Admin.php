@@ -45,7 +45,9 @@ class Admin extends Component
         })->count();
         $this->status_penilaian = ($this->status->status) ? TRUE: FALSE;
         $this->sekolah = Sekolah::withCount([
-            'ptk',
+            'ptk' => function($query){
+                $query->where('is_dapodik', 1);
+            },
             'rombongan_belajar' => function($query){
                 $query->where('semester_id', session('semester_aktif'));
             },

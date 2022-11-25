@@ -529,7 +529,7 @@ class SinkronDapodik extends Command
             $bar->advance();
             $i++;
         }
-        Ptk::where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('ptk_id', $guru_id)->delete();
+        Guru::where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('guru_id_dapodik', $guru_id)->delete();
         $bar->finish();
     }
     private function ambil_referensi($data_sync){
