@@ -46,6 +46,15 @@ class UjiKompetensiKeahlian extends Component
     public $nama_paket_en = [];
     public $status = [];
 
+    //edit
+    public $paket_ukk_satuan = [];
+    public $nomor_paket_satuan;
+    public $nama_paket_id_satuan;
+    public $nama_paket_en_satuan;
+    public $status_satuan;
+    public $kode_unit_satuan = [];
+    public $nama_unit_satuan = [];
+
     protected $listeners = ['postAdded' => 'incrementRow'];
     public function incrementRow(){
         $this->jml++;
@@ -84,8 +93,8 @@ class UjiKompetensiKeahlian extends Component
         return auth()->user();
     }
     public function getUnit($id, $aksi){
-        $this->reset(['paket_ukk_id', 'paket_ukk', 'nama_jurusan', 'kode_kompetensi', 'nomor_paket', 'judul_paket', 'all_nomor_paket', 'nama_paket_id', 'nama_paket_en', 'status', 'collection_unit']);
-        $this->paket_ukk = Paket_ukk::find($id);
+        $this->reset(['paket_ukk_id', 'paket_ukk', 'nama_jurusan', 'kode_kompetensi', 'nomor_paket', 'judul_paket', 'all_nomor_paket', 'nama_paket_id', 'nama_paket_en', 'status', 'collection_unit', 'paket_ukk_satuan']);
+        $this->paket_ukk = Paket_ukk::with('unit_ukk')->find($id);
         $this->paket_ukk_id = $id;
         $this->nama_jurusan = $this->paket_ukk->jurusan->nama_jurusan;
         $this->kode_kompetensi = $this->paket_ukk->kode_kompetensi;
@@ -112,20 +121,24 @@ class UjiKompetensiKeahlian extends Component
                 ]);
             }
         } elseif($aksi == 'edit'){
+            $this->nomor_paket_satuan = $this->paket_ukk->nomor_paket;
+            $this->nama_paket_id_satuan = $this->paket_ukk->nama_paket_id;
+            $this->nama_paket_en_satuan = $this->paket_ukk->nama_paket_en;
+            $this->status_satuan = $this->paket_ukk->status;
+            foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+                $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+                $this->kode_unit_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk->kode_unit;
+                $this->nama_unit_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk->nama_unit;
+            }
             $this->emit('editModal');
         }
     }
     public function tambahModal(){
+        $this->reset(['paket_ukk_satuan']);
         $this->jml = 5;
         $this->emit('tambahModal');
     }
     public function store(){
-        /*
-        public $all_nomor_paket = [];
-        public $nama_paket_id = [];
-        public $nama_paket_en = [];
-        public $status = [];
-        */
         foreach($this->all_nomor_paket as $key => $nomor_paket){
             Paket_ukk::create([
                 'paket_ukk_id'      => Str::uuid(),
@@ -161,12 +174,80 @@ class UjiKompetensiKeahlian extends Component
         $this->emit('close-modal');
     }
     public function perbaharui(){
+        $this->validate(
+            [
+                'nomor_paket_satuan' => 'required',
+                'nama_paket_id_satuan' => 'required',
+                'nama_paket_en_satuan' => 'required',
+                'status_satuan' => 'required',
+                'kode_unit_satuan.*' => 'required',
+                'nama_unit_satuan.*' => 'required',
+            ],
+            [
+                'nomor_paket_satuan.required' => 'Nomor Paket tidak boleh kosong!',
+                'nama_paket_id_satuan.required' => 'Nama Paket (ID) tidak boleh kosong!',
+                'nama_paket_en_satuan.required' => 'Nama Paket (EN) tidak boleh kosong!',
+                'status_satuan.required' => 'Status tidak boleh kosong!',
+                'kode_unit_satuan.*.required' => 'Kode Unit tidak boleh kosong!',
+                'nama_unit_satuan.*.required' => 'Nama Unit tidak boleh kosong!',
+            ]
+        );
+        $this->paket_ukk->nomor_paket = $this->nomor_paket_satuan;
+        $this->paket_ukk->nama_paket_id = $this->nama_paket_id_satuan;
+        $this->paket_ukk->nama_paket_en = $this->nama_paket_en_satuan;
+        $this->paket_ukk->status = $this->status_satuan;
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            Unit_ukk::where('unit_ukk_id', $unit_ukk->unit_ukk_id)->update([
+                'kode_unit' => $this->kode_unit_satuan[$unit_ukk->unit_ukk_id],
+                'nama_unit' => $this->nama_unit_satuan[$unit_ukk->unit_ukk_id],
+                'last_sync'		=> now(),
+            ]);
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
+        $this->paket_ukk->save();
         $this->alert('success', 'Berhasil', [
             'text' => 'Data Paket UKK berhasil diperbaharui!'
         ]);
+        $this->emit('close-modal');
     }
     public function updatedJurusanId($value){
         $data_kurikulum = Kurikulum::where('jurusan_id', $value)->get();
         $this->dispatchBrowserEvent('data_kurikulum', ['data_kurikulum' => $data_kurikulum]);
+    }
+    public function updatedNomorPaketSatuan()
+    {
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
+    }
+    public function updatedNamaPaketIdSatuan()
+    {
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
+    }
+    public function updatedNamaPaketEnSatuan()
+    {
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
+    }
+    public function updatedStatusSatuan()
+    {
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
+    }
+    public function updatedKodeUnitSatuan()
+    {
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
+    }
+    public function updatedNamaUnitSatuan()
+    {
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
     }
 }

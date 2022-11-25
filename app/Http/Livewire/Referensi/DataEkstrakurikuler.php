@@ -72,7 +72,7 @@ class DataEkstrakurikuler extends Component
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
         }])->whereHas('anggota_rombel', function($query){
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-        })->get();
+        })->orderBy('nama')->get();
         $this->getRombel();
     }
     public function syncAnggota($rombongan_belajar_id){
