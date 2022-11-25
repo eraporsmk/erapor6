@@ -20,7 +20,7 @@
                 <div class="row mb-2">
                     <label for="opsi_sikap" class="col-sm-3 col-form-label">Opsi Sikap</label>
                     <div class="col-sm-9">
-                        <select wire:model="opsi_sikap" class="form-control" id="opsi_sikap" wire:change="showButton">
+                        <select wire:model="opsi_sikap" class="form-control" id="opsi_sikap">
                             <option value="">== Pilih Opsi Sikap ==</option>
                             <option value="1">Positif</option>
                             <option value="2">Negatif</option>
