@@ -48,7 +48,6 @@ class PrestasiIndividu extends Component
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
-            $query->where('guru_id', $this->loggedUser()->guru_id);
             $query->whereHas('rombongan_belajar', function($query){
                 $query->whereHas('kurikulum', function($query){
                     $query->where('nama_kurikulum', 'ILIKE', '%REV%');
@@ -56,17 +55,20 @@ class PrestasiIndividu extends Component
             });
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
-            $query->whereHas('rombongan_belajar', function($query){
-                $query->whereHas('kurikulum', function($query){
-                    $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+            if(!$this->loggedUser()->hasRole('waka', session('semester_id'))){
+                $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+                $query->whereHas('rombongan_belajar', function($query){
+                    $query->whereHas('kurikulum', function($query){
+                        $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                    });
                 });
-            });
-            if($this->rombongan_belajar_id){
-                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                if($this->rombongan_belajar_id){
+                    $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                }
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
             }
-            $query->whereNotNull('kelompok_id');
-            $query->whereNotNull('no_urut');
         };
     }
     public function updatedRombonganBelajarId($value){

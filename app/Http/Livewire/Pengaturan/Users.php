@@ -39,17 +39,24 @@ class Users extends Component
     public $pengguna;
     public $roles = [];
     public $akses;
-
     public function render()
     {
         $loggedUser = auth()->user();
+        $where = function($query){
+            $query->whereRoleIs(['guru', 'siswa'], session('semester_id'));
+            $query->where('sekolah_id', session('sekolah_id'));
+        };
         return view('livewire.pengaturan.users', [
-            'data_user' => User::whereRoleIs(['guru', 'siswa'], session('semester_id'))->where('sekolah_id', $loggedUser->sekolah_id)->orderBy($this->sortby, $this->sortbydesc)
-            ->when($this->search, function($ptk) {
-                $ptk->where('name', 'ILIKE', '%' . $this->search . '%')
-                ->orWhere('nuptk', 'ILIKE', '%' . $this->search . '%')
-                ->orWhere('nisn', 'ILIKE', '%' . $this->search . '%')
-                ->orWhere('email', 'ILIKE', '%' . $this->search . '%');
+            'data_user' => User::where($where)->orderBy($this->sortby, $this->sortbydesc)
+            ->when($this->search, function($query) use ($where){
+                $query->where($where);
+                $query->where('name', 'ILIKE', '%' . $this->search . '%');
+                $query->orWhere('nuptk', 'ILIKE', '%' . $this->search . '%');
+                $query->where($where);
+                $query->orWhere('nisn', 'ILIKE', '%' . $this->search . '%');
+                $query->where($where);
+                $query->orWhere('email', 'ILIKE', '%' . $this->search . '%');
+                $query->where($where);
             })->when($this->role_id, function($ptk) {
                 $ptk->whereRoleIs($this->role_id, session('semester_id'));
             })->paginate($this->per_page),
