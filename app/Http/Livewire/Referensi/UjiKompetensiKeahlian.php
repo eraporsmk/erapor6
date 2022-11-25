@@ -174,6 +174,9 @@ class UjiKompetensiKeahlian extends Component
         $this->emit('close-modal');
     }
     public function perbaharui(){
+        foreach($this->paket_ukk->unit_ukk as $unit_ukk){
+            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
+        }
         $this->validate(
             [
                 'nomor_paket_satuan' => 'required',
@@ -202,7 +205,6 @@ class UjiKompetensiKeahlian extends Component
                 'nama_unit' => $this->nama_unit_satuan[$unit_ukk->unit_ukk_id],
                 'last_sync'		=> now(),
             ]);
-            $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
         }
         $this->paket_ukk->save();
         $this->alert('success', 'Berhasil', [
