@@ -344,7 +344,12 @@ class Dapodik extends Component
                 Artisan::call('sinkron:dapodik', ['satuan' => $data, 'akses' => 1]);
             }
         } else {
-            Artisan::call('sinkron:'.$this->server, ['satuan' => $this->satuan, 'email' => $this->loggedUser()->email, 'akses' => 1]);
+            if($this->server == 'erapor'){
+                $argumen = ['satuan' => $this->satuan, 'email' => $this->loggedUser()->email, 'akses' => 1];
+            } else {
+                $argumen = ['satuan' => $this->satuan, 'akses' => 1];
+            }
+            Artisan::call('sinkron:'.$this->server, $argumen);
         }
         $this->respon_artisan = Artisan::output();
         $this->emit('finishSync');
