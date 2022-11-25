@@ -3,6 +3,35 @@
     <div class="content-body">
         <div class="card">
             <div class="card-body">
+                @role(['admin', 'waka'], session('semester_id'))
+                <div class="row justify-content-between mb-2">
+                    <div class="col-4">
+                        <div class="d-inline" wire:ignore>
+                            <select class="form-select" wire:model="filter_tingkat" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-search-off="true" data-placeholder="== Filter Tingkat ==">
+                                <option value="">== Filter Tingkat ==</option>
+                                <option value="10">Kelas 10</option>
+                                <option value="11">Kelas 11</option>
+                                <option value="12">Kelas 12</option>
+                                <option value="13">Kelas 13</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-inline" wire:ignore>
+                            <select class="form-select" id="filter_jurusan" wire:model="filter_jurusan" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-search-off="true" data-placeholder="== Filter Jurusan ==">
+                                <option value="">== Filter Jurusan ==</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-inline" wire:ignore>
+                            <select class="form-select" id="filter_rombel" wire:model="filter_rombel" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-search-off="true" data-placeholder="== Filter Rombel ==">
+                                <option value="">== Filter Rombel ==</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                @endrole
                 @include('components.navigasi-table')
                 <table class="table table-bordered">
                     <thead>
@@ -31,7 +60,7 @@
                             @endforeach
                         @else
                         <tr>
-                            <td class="text-center" colspan="5">Tidak ada data untuk ditampilkan</td>
+                            <td class="text-center" colspan="7">Tidak ada data untuk ditampilkan</td>
                         </tr>
                         @endif
                     </tbody>
@@ -59,6 +88,26 @@
     })
     Livewire.on('close-modal', event => {
         $('#detilPD').modal('hide');
+    })
+    window.addEventListener('data_jurusan', event => {
+        console.log(event.detail.data_jurusan);
+        $('#filter_jurusan').html('<option value="">== Filter Jurusan ==</option>')
+        $('#filter_rombel').html('<option value="">== Filter Rombel ==</option>')
+        $.each(event.detail.data_jurusan, function (i, item) {
+            $('#filter_jurusan').append($('<option>', { 
+                value: item.jurusan_sp_id,
+                text : item.nama_jurusan_sp
+            }));
+        });
+    })
+    window.addEventListener('data_rombel', event => {
+        $('#filter_rombel').html('<option value="">== Filter Rombel ==</option>')
+        $.each(event.detail.data_rombel, function (i, item) {
+            $('#filter_rombel').append($('<option>', { 
+                value: item.rombongan_belajar_id,
+                text : item.nama
+            }));
+        });
     })
 </script>
 @endpush

@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\Peserta_didik;
+use App\Models\Rombongan_belajar;
+use App\Models\Jurusan_sp;
 use App\Models\Pekerjaan;
 use App\Models\User;
 use App\Models\Role;
@@ -60,6 +62,9 @@ class PesertaDidikAktif extends Component
         $alamat_wali,
         $telp_wali,
         $kerja_wali;
+    public $filter_tingkat;
+    public $filter_jurusan;
+    public $filter_rombel;
 
     public function render()
     {
@@ -84,6 +89,22 @@ class PesertaDidikAktif extends Component
                 $query->whereHas('anggota_rombel', $this->kondisi());
                 $query->orWhere('tempat_lahir', 'ILIKE', '%' . $this->search . '%');
                 $query->whereHas('anggota_rombel', $this->kondisi());
+            })->when($this->filter_tingkat, function($query){
+                $query->whereHas('anggota_rombel', function($query){
+                    $query->wherehas('rombongan_belajar', function($query){
+                        $query->where('tingkat', $this->filter_tingkat);
+                    });
+                });
+            })->when($this->filter_jurusan, function($query){
+                $query->whereHas('anggota_rombel', function($query){
+                    $query->wherehas('rombongan_belajar', function($query){
+                        $query->where('jurusan_sp_id', $this->filter_jurusan);
+                    });
+                });
+            })->when($this->filter_rombel, function($query){
+                $query->whereHas('anggota_rombel', function($query){
+                    $query->where('rombongan_belajar_id', $this->filter_rombel);
+                });
             })->paginate($this->per_page),
             'pekerjaan_wali' => Pekerjaan::get(),
             'breadcrumbs' => [
@@ -93,6 +114,7 @@ class PesertaDidikAktif extends Component
     }
     public function kondisi(){
         return function($query){
+            $query->where('sekolah_id', session('sekolah_id'));
             $query->where('semester_id', session('semester_aktif'));
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
@@ -229,5 +251,21 @@ class PesertaDidikAktif extends Component
     }
     private function url_server($server, $ep){
         return config('erapor.'.$server).$ep;
+    }
+    public function updatedFilterTingkat(){
+        $this->reset(['filter_jurusan', 'filter_rombel']);
+        if($this->filter_tingkat){
+            $data_jurusan = Jurusan_sp::whereHas('rombongan_belajar', function($query){
+                $query->where('tingkat', $this->filter_tingkat);
+            })->where('sekolah_id', session('sekolah_id'))->get();
+            $this->dispatchBrowserEvent('data_jurusan', ['data_jurusan' => $data_jurusan]);
+        }
+    }
+    public function updatedFilterJurusan(){
+        $this->reset(['filter_rombel']);
+        if($this->filter_jurusan){
+            $data_rombel = Rombongan_belajar::where('jurusan_sp_id', $this->filter_jurusan)->where('tingkat', $this->filter_tingkat)->get();
+            $this->dispatchBrowserEvent('data_rombel', ['data_rombel' => $data_rombel]);
+        }
     }
 }
