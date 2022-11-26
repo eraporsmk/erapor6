@@ -368,24 +368,6 @@ class SinkronDapodik extends Command
         }
         $bar->finish();
     }
-    private function simpan_ptk_keluar($dapodik, $user, $semester){
-        if($dapodik){
-            $guru = Guru::where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('guru_id_dapodik', $dapodik)->get();
-            foreach($guru as $data){
-                Ptk_keluar::updateOrCreate(
-                    [
-                        'guru_id' => $data->guru_id,
-                    ],
-                    [
-                        'sekolah_id' => $data->sekolah_id,
-                        'semester_id' => $semester->semester_id,
-                        'last_sync' => now(),
-                    ]
-                );
-            }
-            Guru::onlyTrashed()->where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereIn('guru_id_dapodik', $dapodik)->restore();
-        }
-    }
     private function simpan_pd($data, $user, $semester, $deleted_at){
         $wilayah = NULL;
         if(isset($data->wilayah)){
@@ -554,6 +536,25 @@ class SinkronDapodik extends Command
             $this->simpan_ptk_keluar($guru_id, $user, $semester);
         }
         $bar->finish();
+    }
+    private function simpan_ptk_keluar($dapodik, $user, $semester){
+        if($dapodik){
+            $guru = Guru::withTrashed()->where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('guru_id_dapodik', $dapodik)->get();
+			foreach($guru as $data){
+                Ptk_keluar::updateOrCreate(
+                    [
+                        'guru_id' => $data->guru_id,
+                    ],
+                    [
+                        'sekolah_id' => $data->sekolah_id,
+                        'semester_id' => $semester->semester_id,
+                        'last_sync' => now(),
+                    ]
+                );
+            }
+			Ptk_keluar::whereIn('guru_id', $dapodik)->where('sekolah_id', $user->sekolah_id)->delete();
+            Guru::onlyTrashed()->where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereIn('guru_id_dapodik', $dapodik)->restore();
+        }
     }
     private function ambil_referensi($data_sync){
         return NULL;
