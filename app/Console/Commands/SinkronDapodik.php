@@ -370,18 +370,20 @@ class SinkronDapodik extends Command
     }
     private function simpan_ptk_keluar($dapodik, $user, $semester){
         if($dapodik){
-            foreach($dapodik as $guru_id){
+            $guru = Guru::where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('guru_id_dapodik', $dapodik)->get();
+            foreach($guru as $data){
                 Ptk_keluar::updateOrCreate(
                     [
-                        'guru_id' => $guru_id,
+                        'guru_id' => $data->guru_id,
                     ],
                     [
-                        'sekolah_id' => $user->sekolah_id,
+                        'sekolah_id' => $data->sekolah_id,
                         'semester_id' => $semester->semester_id,
                         'last_sync' => now(),
                     ]
                 );
             }
+            Guru::onlyTrashed()->where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereIn('guru_id_dapodik', $dapodik)->restore();
         }
     }
     private function simpan_pd($data, $user, $semester, $deleted_at){

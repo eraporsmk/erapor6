@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Pengaturan;
 use Livewire\WithPagination;
 use Livewire\Component;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Guru;
