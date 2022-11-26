@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Guru;
 use App\Models\Rombongan_belajar;
 use App\Models\Ekstrakurikuler;
@@ -20,7 +21,7 @@ class UpdateGuru extends Command
      *
      * @var string
      */
-    protected $signature = 'update:guru {sekolah_id}';
+    protected $signature = 'update:guru {sekolah_id} {semester_id}';
 
     /**
      * The console command description.
@@ -125,6 +126,21 @@ class UpdateGuru extends Command
                     $data->save();
                     Anggota_akt_pd::where('id_ang_akt_pd', $data->id_ang_akt_pd)->where('anggota_akt_pd_id', '<>', $data->id_ang_akt_pd)->delete();
                 }
+            }
+        }
+        if(Schema::hasTable('ptk_keluar')){
+            foreach (Guru::onlyTrashed()->where('sekolah_id', $this->argument('sekolah_id'))->lazy() as $data) {
+                \App\Models\Ptk_keluar::updateOrCreate(
+                    [
+                        'guru_id' => $data->guru_id,
+                    ],
+                    [
+                        'sekolah_id' => $this->argument('sekolah_id'),
+                        'semester_id' => $this->argument('semester_id'),
+                        'last_sync' => now(),
+                    ]
+                );
+                $data->restore();
             }
         }
     }

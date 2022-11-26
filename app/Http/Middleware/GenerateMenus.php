@@ -224,7 +224,7 @@ class GenerateMenus
             ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());*/
             $menu->group([], function($menu){
                 $menu->add('Wali Kelas', 'javascript:void(0)')->data([
-                    'role' => ['wali'], 
+                    'role' => ['wali', 'waka'], 
                     'smt' => collect([1,2]),
                     'cara_penilaian' => collect(['sederhana'])
                 ])->append($this->setAppend())->prepend($this->icon('copy'))->nickname('wali_kelas')->link->attr($this->text_class());

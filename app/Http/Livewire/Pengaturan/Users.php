@@ -90,7 +90,15 @@ class Users extends Component
         return $user->email;
     }
     public function generatePtk(){
-        $data = Guru::where('sekolah_id', session('sekolah_id'))->whereNotNull('email')->get();
+        $data = Guru::where(function($query){
+            if(Schema::hasTable('ptk_keluar')){
+                $query->whereDoesntHave('ptk_keluar', function($query){
+                    $query->where('semester_id', session('semester_aktif'));
+                });
+            }
+            $query->where('sekolah_id', session('sekolah_id'));
+            $query->whereNotNull('email');
+        })->get();
         $jenis_tu = Helper::jenis_gtk('tendik');
 		$asesor = Helper::jenis_gtk('asesor');
         $PembinaRole = Role::where('name', 'pembina_ekskul')->first();
@@ -169,7 +177,12 @@ class Users extends Component
         }
     }
     public function generatePd(){
-        $data = Peserta_didik::where('sekolah_id', session('sekolah_id'))->get();
+        $data = Peserta_didik::where(function($query){
+            $query->whereDoesntHave('pd_keluar', function($query){
+                $query->where('semester_id', session('semester_aktif'));
+            });
+            $query->where('sekolah_id', session('sekolah_id'));
+        })->get();
         $role = Role::where('name', 'siswa')->first();
         if($data){
             foreach($data as $d){

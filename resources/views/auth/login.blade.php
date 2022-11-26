@@ -70,6 +70,7 @@ $configData = Helper::applClasses();
               @enderror
           </div>
           <div class="mb-1">
+            {{--
             <div class="d-flex justify-content-between">
               <label class="form-label" for="login-password">Password</label>
               @if (Route::has('password.request'))
@@ -78,6 +79,7 @@ $configData = Helper::applClasses();
                 </a>
               @endif
             </div>
+            --}}
             <div class="input-group input-group-merge form-password-toggle @error('password') is-invalid @enderror">
               <input class="form-control form-control-merge" id="login-password" type="password" placeholder="············" aria-describedby="login-password" tabindex="2" name="password" />
               <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>

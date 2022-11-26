@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Sinkronisasi;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use App\Models\Sekolah;
@@ -248,6 +249,11 @@ class Dapodik extends Component
         $sekolah = Sekolah::withCount([
             'ptk' => function($query){
                 $query->where('is_dapodik', 1);
+                if(Schema::hasTable('ptk_keluar')){
+                    $query->whereDoesntHave('ptk_keluar', function($query){
+                        $query->where('semester_id', session('semester_aktif'));
+                    });
+                }
             }, 
             'rombongan_belajar' => function($query){
                 $query->where('semester_id', session('semester_aktif'));
@@ -263,7 +269,6 @@ class Dapodik extends Component
             },
             'peserta_didik as pd_keluar_count' => function($query){
                 $query->whereHas('pd_keluar', function($query){
-                    $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
                 });
             },

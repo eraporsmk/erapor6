@@ -198,7 +198,7 @@ class EraporUpdate extends Command
         $users = User::whereRoleIs('admin', $semester->nama)->get();
         foreach($users as $user){
             $this->info('Proses update data GTK ('.$user->sekolah->nama.')');
-            $this->call('update:guru', ['sekolah_id' => $user->sekolah_id]);
+            $this->call('update:guru', ['sekolah_id' => $user->sekolah_id, 'semester_id' => $semester->semester_id]);
             $this->info('Proses update data Peserta Didik ('.$user->sekolah->nama.')');
             $this->call('update:siswa', ['sekolah_id' => $user->sekolah_id]);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Dashboard;
 
+use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 use App\Models\Sekolah;
 use App\Models\Status_penilaian;
@@ -47,6 +48,11 @@ class Admin extends Component
         $this->sekolah = Sekolah::withCount([
             'ptk' => function($query){
                 $query->where('is_dapodik', 1);
+                if(Schema::hasTable('ptk_keluar')){
+                    $query->whereDoesntHave('ptk_keluar', function($query){
+                        $query->where('semester_id', session('semester_aktif'));
+                    });
+                }
             },
             'rombongan_belajar' => function($query){
                 $query->where('semester_id', session('semester_aktif'));

@@ -73,4 +73,7 @@ class Guru extends Model
             'dudi_id' // Local key on users table...
         );
 	}
+	public function ptk_keluar(){
+		return $this->hasOne(Ptk_keluar::class, 'guru_id', 'guru_id');
+	}
 }

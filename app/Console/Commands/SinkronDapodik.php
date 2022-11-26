@@ -5,10 +5,12 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Sekolah;
 use App\Models\Semester;
 use App\Models\Mst_wilayah;
 use App\Models\Guru;
+use App\Models\Ptk_keluar;
 use App\Models\Jurusan;
 use App\Models\Jurusan_sp;
 use App\Models\Gelar;
@@ -366,6 +368,22 @@ class SinkronDapodik extends Command
         }
         $bar->finish();
     }
+    private function simpan_ptk_keluar($dapodik, $user, $semester){
+        if($dapodik){
+            foreach($dapodik as $guru_id){
+                Ptk_keluar::updateOrCreate(
+                    [
+                        'guru_id' => $guru_id,
+                    ],
+                    [
+                        'sekolah_id' => $user->sekolah_id,
+                        'semester_id' => $semester->semester_id,
+                        'last_sync' => now(),
+                    ]
+                );
+            }
+        }
+    }
     private function simpan_pd($data, $user, $semester, $deleted_at){
         $wilayah = NULL;
         if(isset($data->wilayah)){
@@ -529,7 +547,10 @@ class SinkronDapodik extends Command
             $bar->advance();
             $i++;
         }
-        Guru::where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('guru_id_dapodik', $guru_id)->delete();
+        //Guru::where('sekolah_id', $user->sekolah_id)->where('is_dapodik', 1)->whereNotIn('guru_id_dapodik', $guru_id)->delete();
+        if(Schema::hasTable('ptk_keluar')){
+            $this->simpan_ptk_keluar($guru_id, $user, $semester);
+        }
         $bar->finish();
     }
     private function ambil_referensi($data_sync){

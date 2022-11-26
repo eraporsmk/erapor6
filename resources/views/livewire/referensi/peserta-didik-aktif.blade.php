@@ -42,7 +42,9 @@
                             <th class="text-center">Tempat, Tanggal Lahir</th>
                             <th class="text-center">Agama</th>
                             <th class="text-center">Kelas</th>
+                            @role(['admin', 'waka'], session('semester_id'))
                             <th class="text-center">Detil</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -55,7 +57,9 @@
                                 <td>{{$item->tempat_lahir}}, {{$item->tanggal_lahir}}</td>
                                 <td>{{$item->agama->nama}}</td>
                                 <td>{{($item->anggota_rombel) ? $item->anggota_rombel->rombongan_belajar->nama : '-'}}</td>
+                                @role(['admin', 'waka'], session('semester_id'))
                                 <td class="text-center"><button class="btn btn-info btn-sm" wire:click="getID('{{$item->peserta_didik_id}}')">Detil</button></td>
+                                @endrole
                             </tr>
                             @endforeach
                         @else
