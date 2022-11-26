@@ -137,12 +137,4 @@ class Helper
             }
         }
     }
-    public static function jenis_gtk($query)
-	{
-		$data['tendik'] = collect(array(11, 30, 40, 41, 42, 43, 44, 57, 58, 59));
-		$data['guru'] = collect(array(3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 20, 25, 26, 51, 52, 53, 54, 56));
-		$data['instruktur'] = collect(array(97));
-		$data['asesor'] = collect(array(98));
-		return $data[$query];
-	}
 }

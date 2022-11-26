@@ -14,7 +14,6 @@ use App\Models\Role;
 use App\Models\Rombongan_belajar;
 use App\Models\Ekstrakurikuler;
 use App\Models\Pembelajaran;
-use Helper;
 
 class Users extends Component
 {
@@ -45,7 +44,7 @@ class Users extends Component
     {
         $loggedUser = auth()->user();
         $where = function($query){
-            $query->whereRoleIs(['guru', 'siswa'], session('semester_id'));
+            $query->whereRoleIs(['guru', 'siswa', 'tu'], session('semester_id'));
             $query->where('sekolah_id', session('sekolah_id'));
         };
         return view('livewire.pengaturan.users', [
@@ -60,7 +59,9 @@ class Users extends Component
                 $query->orWhere('email', 'ILIKE', '%' . $this->search . '%');
                 $query->where($where);
             })->when($this->role_id, function($ptk) {
-                $ptk->whereRoleIs($this->role_id, session('semester_id'));
+                if($this->role_id !== 'all'){
+                    $ptk->whereRoleIs($this->role_id, session('semester_id'));
+                }
             })->paginate($this->per_page),
             'hak_akses' => Role::whereNotIn('id', [1,2,6])->get(),
             'breadcrumbs' => [
@@ -100,8 +101,8 @@ class Users extends Component
             $query->where('sekolah_id', session('sekolah_id'));
             $query->whereNotNull('email');
         })->get();
-        $jenis_tu = Helper::jenis_gtk('tendik');
-		$asesor = Helper::jenis_gtk('asesor');
+        $jenis_tu = jenis_gtk('tendik');
+		$asesor = jenis_gtk('asesor');
         $PembinaRole = Role::where('name', 'pembina_ekskul')->first();
         $p5Role = Role::where('name', 'guru-p5')->first();
         $WalasRole = Role::where('name', 'wali')->first();

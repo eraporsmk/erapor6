@@ -145,7 +145,13 @@
 	$pembelajaran = (object) $pembelajaran; 
 	$rowspan = 1;
 	if($pembelajaran->deskripsi_mata_pelajaran->count()){
-		$rowspan = $pembelajaran->deskripsi_mata_pelajaran->count() + 2;
+		foreach ($pembelajaran->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran){
+			if($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan){
+				$rowspan = $pembelajaran->deskripsi_mata_pelajaran->count() + 2;
+			} elseif($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$deskripsi_mata_pelajaran->deskripsi_keterampilan || $deskripsi_mata_pelajaran && !$deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan){
+				$rowspan = $pembelajaran->deskripsi_mata_pelajaran->count() + 1;
+			}
+		}
 	}
 	?>
 		<tr>
@@ -165,12 +171,25 @@
 		</tr>
 		<?php if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') !== false) { ?>
 			@foreach ($pembelajaran->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran)
+			@if($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan)
 			<tr>
 				<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_pengetahuan : '-' !!}</td>
 			</tr>
 			<tr>
 				<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_keterampilan : '-' !!}</td>
 			</tr>
+			@else
+				@if($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$deskripsi_mata_pelajaran->deskripsi_keterampilan)
+				<tr>
+					<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_pengetahuan : '-' !!}</td>
+				</tr>
+				@endif
+				@if($deskripsi_mata_pelajaran && !$deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan)
+				<tr>
+					<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_keterampilan : '-' !!}</td>
+				</tr>
+				@endif
+			@endif
 			@endforeach
 		<?php } ?>
 	@endforeach

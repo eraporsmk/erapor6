@@ -17,7 +17,6 @@ use App\Models\Status_kepegawaian;
 use App\Models\Dudi;
 use App\Models\Asesor;
 use Carbon\Carbon;
-use Helper;
 
 class DataAsesor extends Component
 {
@@ -86,7 +85,7 @@ class DataAsesor extends Component
     {
         return view('livewire.referensi.data-asesor', [
             'data_ptk' => Guru::where(function($query){
-                $query->whereIn('jenis_ptk_id', Helper::jenis_gtk('asesor'));
+                $query->whereIn('jenis_ptk_id', jenis_gtk('asesor'));
                 $query->where('sekolah_id', session('sekolah_id'));
             })->with(['sekolah' => function($query){
                 $query->select('sekolah_id', 'nama');

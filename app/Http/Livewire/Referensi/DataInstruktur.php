@@ -15,7 +15,6 @@ use App\Models\Agama;
 use App\Models\Jenis_ptk;
 use App\Models\Status_kepegawaian;
 use Carbon\Carbon;
-use Helper;
 
 class DataInstruktur extends Component
 {
@@ -83,7 +82,7 @@ class DataInstruktur extends Component
     {
         return view('livewire.referensi.data-instruktur', [
             'data_ptk' => Guru::where(function($query){
-                $query->whereIn('jenis_ptk_id', Helper::jenis_gtk('instruktur'));
+                $query->whereIn('jenis_ptk_id', jenis_gtk('instruktur'));
                 $query->where('sekolah_id', session('sekolah_id'));
             })->with(['sekolah' => function($query){
                 $query->select('sekolah_id', 'nama');

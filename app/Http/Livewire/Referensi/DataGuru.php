@@ -12,7 +12,6 @@ use App\Models\Gelar_ptk;
 use App\Models\Agama;
 use App\Models\Jenis_ptk;
 use App\Models\Status_kepegawaian;
-use Helper;
 
 class DataGuru extends Component
 {
@@ -65,7 +64,7 @@ class DataGuru extends Component
     {
         return view('livewire.referensi.data-guru', [
             'data_ptk' => Guru::where(function($query){
-                $query->whereIn('jenis_ptk_id', Helper::jenis_gtk('guru'));
+                $query->whereIn('jenis_ptk_id', jenis_gtk('guru'));
                 $query->where('sekolah_id', session('sekolah_id'));
             })->with(['sekolah' => function($query){
                 $query->select('sekolah_id', 'nama');

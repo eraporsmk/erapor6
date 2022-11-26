@@ -17,8 +17,9 @@
                         </div>
                         <div class="col-4">
                             <div class="d-inline" wire:ignore>
-                                <select class="form-select" wire:model="role_id" wire:change="filterAkses" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-search-off="true" data-placeholder="-- Filter Hak Akses --">
-                                    <option value="">-- Filter Hak Akses --</option>
+                                <select class="form-select" wire:model="role_id" wire:change="filterAkses" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-search-off="true" data-placeholder="== Filter Hak Akses ==">
+                                    <option value="">== Filter Hak Akses ==</option>
+                                    <option value="all">Semua Hak Akses</option>
                                     @foreach($hak_akses as $akses)
                                     <option value="{{$akses->name}}">{{$akses->display_name}}</option>
                                     @endforeach
