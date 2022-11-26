@@ -40,7 +40,7 @@
                         <td class="ps-2">
                             {{$sinkron['nama']}} 
                             @if($sinkron['icon'])
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="" data-bs-original-title="Jumlah Rombel Reguler &amp; Rombel Matpel Pilihan">
+                            <a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="" data-bs-original-title="{!! $sinkron['html'] !!}">
                                 <i class="fa-regular fa-circle-question"></i>
                             </a>
                             @endif

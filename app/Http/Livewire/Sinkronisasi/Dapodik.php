@@ -80,10 +80,14 @@ class Dapodik extends Component
         $end = Carbon::create(date('Y'), date('m'), date('d'), '03', '00', '00', 'Asia/Jakarta');
         $now = Carbon::now()->timezone($timezone);
         $jam_sinkron = Carbon::now()->timezone($timezone)->isBetween($start, $end, false);
-        $dapodik = ($this->data_dapodik()) ?? NULL;
-        $referensi = ($this->referensi()) ?? NULL;
-        //dd($referensi);
-        $erapor = $this->ref_erapor();
+        $dapodik = NULL;
+        $referensi = NULL;
+        $erapor = NULL;
+        if(!$jam_sinkron){
+            $dapodik = ($this->data_dapodik()) ?? NULL;
+            $referensi = ($this->referensi()) ?? NULL;
+            $erapor = $this->ref_erapor();
+        }
         $this->sekolah_id = auth()->user()->sekolah_id;
         return view('livewire.sinkronisasi.dapodik', [
             'jam_sinkron' => $jam_sinkron,
@@ -96,6 +100,7 @@ class Dapodik extends Component
                     'aksi' => 'jurusan',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Kurikulum',
@@ -105,6 +110,7 @@ class Dapodik extends Component
                     'aksi' => 'kurikulum',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Mata Pelajaran',
@@ -114,6 +120,7 @@ class Dapodik extends Component
                     'aksi' => 'mata_pelajaran',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 /*[
                     'nama' => 'Mata Pelajaran Kurikulum',
@@ -131,6 +138,7 @@ class Dapodik extends Component
                     'aksi' => 'wilayah',
                     'server' => 'erapor',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Ref. Kompetensi Dasar',
@@ -140,6 +148,7 @@ class Dapodik extends Component
                     'aksi' => 'get-kd',
                     'server' => 'erapor',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Sekolah',
@@ -149,6 +158,7 @@ class Dapodik extends Component
                     'aksi' => 'sekolah',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'GTK',
@@ -158,6 +168,7 @@ class Dapodik extends Component
                     'aksi' => 'ptk',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Rombongan Belajar',
@@ -167,6 +178,7 @@ class Dapodik extends Component
                     'aksi' => 'rombongan_belajar',
                     'server' => 'dapodik',
                     'icon' => TRUE,
+                    'html' => 'Jumlah Rombel Reguler &amp; Rombel Matpel Pilihan',
                 ],
                 [
                     'nama' => 'Peserta Didik Aktif',
@@ -176,6 +188,7 @@ class Dapodik extends Component
                     'aksi' => 'peserta_didik_aktif',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Peserta Didik Keluar',
@@ -185,6 +198,7 @@ class Dapodik extends Component
                     'aksi' => 'peserta_didik_keluar',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Anggota Rombel Matpel Pilihan',
@@ -194,15 +208,17 @@ class Dapodik extends Component
                     'aksi' => 'anggota_rombel_pilihan',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
-                    'nama' => 'Pembelajaran (Reguler)',
+                    'nama' => 'Pembelajaran',
                     'dapodik' => ($dapodik) ? $dapodik->dapodik->pembelajaran_dapodik : 0,
                     'erapor' => $erapor['pembelajaran'],
                     'sinkron' => $erapor['pembelajaran'],
                     'aksi' => 'pembelajaran',
                     'server' => 'dapodik',
-                    'icon' => FALSE,
+                    'icon' => TRUE,
+                    'html' => 'Jumlah Pembelajaran Reguler &amp; Pembelajaran Matpel Pilihan',
                 ],
                 /*[
                     'nama' => 'Pembelajaran (Sub Mapel/Tema P5)',
@@ -220,6 +236,7 @@ class Dapodik extends Component
                     'aksi' => 'ekstrakurikuler',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Anggota Ekstrakurikuler',
@@ -229,6 +246,7 @@ class Dapodik extends Component
                     'aksi' => 'anggota_ekskul',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
                 [
                     'nama' => 'Relasi Dunia Usaha & Industri',
@@ -238,6 +256,7 @@ class Dapodik extends Component
                     'aksi' => 'dudi',
                     'server' => 'dapodik',
                     'icon' => FALSE,
+                    'html' => NULL,
                 ],
             ] : NULL,
             'breadcrumbs' => [
