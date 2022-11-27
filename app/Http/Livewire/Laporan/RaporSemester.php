@@ -99,19 +99,22 @@ class RaporSemester extends Component
         $this->emit('preview-nilai');
     }
     public function updatedTingkat(){
-        $this->reset(['data_rombongan_belajar', 'rombongan_belajar_id', 'data_siswa', 'get_siswa']);
+        $this->reset(['data_rombongan_belajar', 'rombongan_belajar_id', 'data_siswa', 'get_siswa', 'show']);
         if($this->tingkat){
             $data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
                 $query->where('tingkat', $this->tingkat);
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('jenis_rombel', 1);
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                });
             })->get();
             $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $data_rombongan_belajar]);
         }
     }
     public function updatedRombonganBelajarId(){
-        $this->reset(['data_siswa', 'get_siswa']);
+        $this->reset(['data_siswa', 'get_siswa', 'show']);
         $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
         })->with(['anggota_rombel' => function($query){
