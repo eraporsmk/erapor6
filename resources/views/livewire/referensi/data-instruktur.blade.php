@@ -20,7 +20,7 @@
                             <tr>
                                 <td>{{$ptk->nama_lengkap}}</td>
                                 <td class="text-center">{{$ptk->jenis_kelamin}}</td>
-                                <td>{{$ptk->tempat_lahir}}, {{$ptk->tanggal_lahir}}</td>
+                                <td>{{$ptk->tempat_lahir}}, {{$ptk->tanggal_lahir_indo}}</td>
                                 <td>{{$ptk->email}}</td>
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-primary" wire:click="detil('{{$ptk->guru_id}}')">Detil</button>

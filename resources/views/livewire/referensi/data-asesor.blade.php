@@ -21,7 +21,7 @@
                             <tr>
                                 <td>{{$ptk->nama_lengkap}}</td>
                                 <td class="text-center">{{$ptk->jenis_kelamin}}</td>
-                                <td>{{$ptk->tempat_lahir}}, {{$ptk->tanggal_lahir}}</td>
+                                <td>{{$ptk->tempat_lahir}}, {{$ptk->tanggal_lahir_indo}}</td>
                                 <td>{{$ptk->email}}</td>
                                 <td>{{($ptk->dudi) ? $ptk->dudi->nama : '-'}}</td>
                                 <td class="text-center">
