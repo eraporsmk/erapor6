@@ -245,6 +245,7 @@ class Pengetahuan extends Component
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
+                    $query->where($this->kondisi());
                 });
                 $query->where('rombongan_belajar_id', '<>', $this->rencana->rombongan_belajar->rombongan_belajar_id);
             })->get();
@@ -317,13 +318,21 @@ class Pengetahuan extends Component
             $this->alert('info', 'Rencana Penilaian Pengetahuan berhasil di duplikasi', [
                 'position' => 'center',
                 'allowOutsideClick' => false,
-                'timer' => null
+                'timer' => null,
+                'toast' => false,
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'ok',
             ]);
         } else {
             $this->alert('info', 'Rencana Penilaian Pengetahuan gagal duplikasi! Silahkan coba beberapa saat lagi', [
                 'position' => 'center',
                 'allowOutsideClick' => false,
-                'timer' => null
+                'timer' => null,
+                'toast' => false,
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'ok',
             ]);
         }
     }

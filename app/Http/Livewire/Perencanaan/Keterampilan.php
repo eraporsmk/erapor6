@@ -253,6 +253,7 @@ class Keterampilan extends Component
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
+                    $query->where($this->kondisi());
                 });
                 $query->where('rombongan_belajar_id', '<>', $this->rencana->rombongan_belajar->rombongan_belajar_id);
             })->get();
