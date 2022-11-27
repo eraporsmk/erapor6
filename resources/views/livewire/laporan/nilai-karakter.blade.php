@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <label class="col-sm-3 col-form-label">Catatan Penilaian Sikap Integritas <br> @json($nama_siswa)</label>
+                        <label class="col-sm-3 col-form-label">Catatan Penilaian Sikap Integritas <br> <strong>{{$nama_siswa}}</strong></label>
                         <div class="col-sm-9">
                             Catatan nilai sikap dari guru:
                             @if(count($nilai_sikap))
@@ -96,14 +96,14 @@
                             </ul>
                         </label>
                         <div class="col-sm-9">
-                            <textarea wire:ignore wire:model="deskripsi.{{$sikap->sikap_id}}" id="deskripsi" class="form-control"></textarea>
+                            <textarea wire:ignore.self wire:model.lazy="deskripsi.{{$sikap->sikap_id}}" id="deskripsi" class="form-control"></textarea>
                         </div>
                     </div>
                     @endforeach
                     <div class="row mb-2">
                         <label for="capaian" class="col-sm-3 control-label">Catatan Perkembangan Karakter</label>
                         <div class="col-sm-9">
-                            <textarea wire:ignore wire:model="capaian" id="capaian" class="form-control"></textarea>
+                            <textarea wire:ignore.self wire:model.lazy="capaian" id="capaian" class="form-control"></textarea>
                         </div>
                     </div>
                 </div>
@@ -155,6 +155,7 @@
             </div>
         </div>
     </div>
+    @include('components.loader')
 </div>
 @push('scripts')
 <script>

@@ -53,11 +53,11 @@ class NilaiKarakter extends Component
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Laporan'], ['name' => "Nilai Karakter"]
             ],
-            'tombol_add' => [
+            'tombol_add' => ($this->loggedUser()->hasRole('wali', session('semester_id'))) ? [
                 'wire' => 'addModal',
                 'color' => 'primary',
                 'text' => 'Tambah Data',
-            ],
+            ] : NULL,
             'collection' => Catatan_ppk::whereHas('anggota_rombel', function($query){
                 if($this->loggedUser()->hasRole('waka')){
                     $query->where('sekolah_id', session('sekolah_id'));
@@ -100,6 +100,7 @@ class NilaiKarakter extends Component
         ]);
     }
     public function addModal(){
+        $this->reset(['deskripsi', 'capaian', 'nama_siswa']);
         $this->emit('showModal');
     }
     public function showModal(){
