@@ -12,10 +12,10 @@
             @foreach ($data_siswa as $siswa)
             <tr>
                 <td>{{$siswa->nama}}</td>
-                @role('wali', session('semester_id'))
-                <td><input type="number" class="form-control" wire:ignore wire:model="sakit.{{$siswa->anggota_rombel->anggota_rombel_id}}" /></td>
-				<td><input type="number" class="form-control" wire:ignore wire:model="izin.{{$siswa->anggota_rombel->anggota_rombel_id}}" /></td>
-				<td><input type="number" class="form-control" wire:ignore wire:model="alpa.{{$siswa->anggota_rombel->anggota_rombel_id}}" /></td>
+                @if($form)
+                <td><input type="number" class="form-control" wire:ignore wire:model.lazy="sakit.{{$siswa->anggota_rombel->anggota_rombel_id}}" /></td>
+				<td><input type="number" class="form-control" wire:ignore wire:model.lazy="izin.{{$siswa->anggota_rombel->anggota_rombel_id}}" /></td>
+				<td><input type="number" class="form-control" wire:ignore wire:model.lazy="alpa.{{$siswa->anggota_rombel->anggota_rombel_id}}" /></td>
                 @else
                 <td class="text-center">
                     {{$sakit[$siswa->anggota_rombel->anggota_rombel_id]}}
@@ -26,7 +26,7 @@
                 <td class="text-center">
                     {{$alpa[$siswa->anggota_rombel->anggota_rombel_id]}}
                 </td>
-                @endrole
+                @endif
             </tr>
             @endforeach
         </tbody>
