@@ -15,6 +15,7 @@
                             </select>
                         </div>
                     </div>
+                    {{--
                     <div class="row mb-2">
                         <label for="mata_pelajaran_id" class="col-sm-3 col-form-label">Mata Pelajaran</label>
                         <div class="col-sm-9" wire:ignore>
@@ -23,6 +24,7 @@
                             </select>
                         </div>
                     </div>
+                    --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

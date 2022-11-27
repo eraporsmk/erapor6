@@ -7,6 +7,7 @@
 
 @yield('vendor-style')
 <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
+<link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-sweet-alerts.css')) }}">
 <!-- END: Vendor CSS-->
 <!-- BEGIN: Theme CSS-->
 <link rel="stylesheet" href="{{ asset(mix('css/core.css')) }}" />

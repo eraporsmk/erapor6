@@ -154,8 +154,10 @@ class RombelPilihan extends Component
         foreach($new_array as $pembelajaran_id => $data){
             $update = Pembelajaran::find($pembelajaran_id);
             if(is_array($data)){
-                $update->kelompok_id = ($data[0]) ? $data[0] : NULL;
-                $update->guru_pengajar_id = ($data[1]) ? $data[1] : NULL;
+                if(Str::isUuid($data[1])){
+                    $update->kelompok_id = ($data[0]) ? $data[0] : NULL;
+                    $update->guru_pengajar_id = ($data[1]) ? $data[1] : NULL;
+                }
             } else {
                 if(Str::isUuid($data)){
                     $update->guru_pengajar_id = ($data) ? $data : NULL;

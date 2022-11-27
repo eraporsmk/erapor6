@@ -243,7 +243,9 @@ class Pengetahuan extends Component
                 $query->where('tingkat', $this->tingkat);
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
-                $query->whereHas('pembelajaran', $this->kondisi());
+                $query->whereHas('pembelajaran', function($query){
+                    $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
+                });
                 $query->where('rombongan_belajar_id', '<>', $this->rencana->rombongan_belajar->rombongan_belajar_id);
             })->get();
             $this->dispatchBrowserEvent('data_rombongan_belajar_copy', ['data_rombongan_belajar' => $this->data_rombongan_belajar]);
@@ -267,7 +269,11 @@ class Pengetahuan extends Component
             $this->alert('info', 'Rencana Penilaian Pengetahuan berhasil dihapus', [
                 'position' => 'center',
                 'allowOutsideClick' => false,
-                'timer' => null
+                'timer' => null,
+                'toast' => false,
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'ok',
             ]);
         } else {
             $this->rencana->delete();
@@ -275,14 +281,22 @@ class Pengetahuan extends Component
             $this->alert('info', 'Rencana Penilaian Pengetahuan gagal dihapus! Silahkan coba beberapa saat lagi', [
                 'position' => 'center',
                 'allowOutsideClick' => false,
-                'timer' => null
+                'timer' => null,
+                'toast' => false,
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'OK',
+                'onConfirmed' => 'ok',
             ]);
         }
     }
     public function duplikasi(){
+        $pembelajaran = Pembelajaran::where(function($query){
+            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
+        })->first();
         $Rencana_penilaian = Rencana_penilaian::create([
             'sekolah_id' => session('sekolah_id'),
-            'pembelajaran_id' => $this->pembelajaran_id,
+            'pembelajaran_id' => $pembelajaran->pembelajaran_id,
             'kompetensi_id' => $this->kompetensi_id,
             'nama_penilaian' => $this->rencana->nama_penilaian,
             'metode_id' => $this->rencana->metode_id,
