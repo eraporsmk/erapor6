@@ -159,10 +159,13 @@ class Keterampilan extends Component
             }
         }
     }
-    private function kondisi(){
-        return function($query){
+    private function kondisi($copy = FALSE){
+        return function($query) use ($copy){
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            }
+            if($copy){
+                $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
             }
             $query->where('guru_id', $this->loggedUser()->guru_id);
             $query->whereHas('rombongan_belajar', function($query){
@@ -173,6 +176,9 @@ class Keterampilan extends Component
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
             $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+            if($copy){
+                $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
+            }
             $query->whereHas('rombongan_belajar', function($query){
                 $query->whereHas('kurikulum', function($query){
                     $query->where('nama_kurikulum', 'ILIKE', '%REV%');
@@ -252,8 +258,7 @@ class Keterampilan extends Component
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->whereHas('pembelajaran', function($query){
-                    $query->where('mata_pelajaran_id', $this->rencana->pembelajaran->mata_pelajaran_id);
-                    $query->where($this->kondisi());
+                    $query->where($this->kondisi(TRUE));
                 });
                 $query->where('rombongan_belajar_id', '<>', $this->rencana->rombongan_belajar->rombongan_belajar_id);
             })->get();
