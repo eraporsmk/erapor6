@@ -12,23 +12,23 @@
 					<table class="table table-bordered table-striped">
 						<thead>
 							<tr>
-								<th style="vertical-align:middle;" align="center" rowspan="2">No</th>
-								<th style="vertical-align:middle;" rowspan="2">Mata Pelajaran</th>
-								<th align="center" class="text-center" rowspan="2">SKM</th>
+								<th class="text-center align-middle" rowspan="2">No</th>
+								<th class="text-center align-middle" rowspan="2">Mata Pelajaran</th>
+								<th class="text-center align-middle" rowspan="2">SKM</th>
 								<?php if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Pusat') !== false) {?>
-								<th align="center" class="text-center">Nilai Akhir</th>
-								<th align="center" class="text-center">Capaian Kompetensi</th>
+								<th class="text-center">Nilai Akhir</th>
+								<th class="text-center">Capaian Kompetensi</th>
 								<?php } else { ?>
-								<th colspan="2" align="center" class="text-center">Pengetahuan</th>
-								<th colspan="2" align="center" class="text-center">Keterampilan</th>
+								<th colspan="2" class="text-center">Pengetahuan</th>
+								<th colspan="2" class="text-center">Keterampilan</th>
 								<?php } ?>
 							</tr>
 							<?php if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Pusat') === false) {?>
 							<tr>	
-								<th align="center" class="text-center">Angka</th>
-								<th align="center" class="text-center">Huruf</th>
-								<th align="center" class="text-center">Angka</th>
-								<th align="center" class="text-center">Huruf</th>
+								<th class="text-center">Angka</th>
+								<th class="text-center">Predikat</th>
+								<th class="text-center">Angka</th>
+								<th class="text-center">Predikat</th>
 							</tr>
 							<?php } ?>
 						</thead>

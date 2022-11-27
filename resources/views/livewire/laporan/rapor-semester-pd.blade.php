@@ -11,11 +11,6 @@
             </tr>
         </thead>
         <tbody>
-            @if(Illuminate\Support\Str::of($rombongan_belajar->kurikulum)->contains('Merdeka'))
-            <tr>
-                <td class="text-center" colspan="6">Tidak ada data untuk ditampilkan</td>
-            </tr>
-            @else
             @forelse ($data_siswa as $siswa)
             <tr>
                 <td>{{$siswa->nama}}</td>
@@ -56,7 +51,6 @@
                 <td class="text-center" colspan="6">Tidak ada data untuk ditampilkan</td>
             </tr>
             @endforelse
-            @endif
         </tbody>
     </table>
 </div>
