@@ -33,7 +33,7 @@ class DataInstruktur extends Component
     public $per_page = 10;
     public $data = 'Instruktur';
     public $file_excel;
-    public $imported_data;
+    public $imported_data = [];
     public $hapus = TRUE;
     public $guru_id;
     public $readonly;
@@ -45,37 +45,31 @@ class DataInstruktur extends Component
     public $ref_agama = [];
     public $ref_jenis_ptk = [];
     public $ref_status_kepegawaian = [];
-    public $nama;
-    public $nuptk;
-    public $nip;
-    public $nik;
-    public $jenis_kelamin;
-    public $tempat_lahir;
-    public $tanggal_lahir;
-    public $agama;
-    public $agama_id;
-    public $alamat_jalan;
-    public $rt;
-    public $rw;
-    public $desa_kelurahan;
-    public $kecamatan;
-    public $kodepos;
-    public $kode_pos;
-    public $telp_hp;
-    public $no_hp;
-    public $email;
+    public $nama = [];
+    public $nuptk = [];
+    public $nip = [];
+    public $nik = [];
+    public $jenis_kelamin = [];
+    public $tempat_lahir = [];
+    public $tanggal_lahir = [];
+    public $agama = [];
+    public $agama_id = [];
+    public $alamat_jalan = [];
+    public $rt = [];
+    public $rw = [];
+    public $desa_kelurahan = [];
+    public $kecamatan = [];
+    public $kodepos = [];
+    public $kode_pos = [];
+    public $telp_hp = [];
+    public $no_hp = [];
+    public $email = [];
     public $jenis_ptk_id;
     public $status_kepegawaian_id;
     public $dudi_id;
     public $opsi_dudi = FALSE;
+    public $file_path;
 
-    protected $rules = [
-        'file_excel' => 'required|mimes:xlsx',
-    ];
-    protected $messages = [
-        'file_excel.required' => 'File Excel tidak boleh kosong',
-        'file_excel.mimes' => 'File harus berupa file dengan tipe: xlsx.',
-    ];
     protected $listeners = ['confirmed'];
 
     public function render()
@@ -106,9 +100,20 @@ class DataInstruktur extends Component
     }
     public function updatedFileExcel()
     {
-        $this->validate();
-        $file_path = $this->file_excel->store('files', 'public');
-        $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
+        $this->validate(
+            [
+                'file_excel' => 'required|mimes:xlsx',
+            ],
+            [
+                'file_excel.required' => 'File Excel tidak boleh kosong',
+                'file_excel.mimes' => 'File harus berupa file dengan tipe: xlsx.',
+            ]
+        );
+        $this->file_path = $this->file_excel->store('files', 'public');
+        $this->imported_data();
+    }
+    private function imported_data(){
+        $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$this->file_path));
         $collection = collect($imported_data);
         $multiplied = $collection->map(function ($items, $key) {
             foreach($items as $k => $v){
@@ -128,7 +133,7 @@ class DataInstruktur extends Component
             $this->jenis_kelamin[$urut] = $data['jenis_kelamin'];
             $this->tempat_lahir[$urut] = $data['tempat_lahir'];
             //$this->tanggal_lahir[$urut] = $data['tanggal_lahir']->format('Y-m-d');
-            $this->tanggal_lahir[$urut] = (is_int($data['tanggal_lahir'])) ? $data['tanggal_lahir']->format('Y-m-d') : now()->format('Y-m-d');
+            $this->tanggal_lahir[$urut] = (is_object($data['tanggal_lahir'])) ? $data['tanggal_lahir']->format('Y-m-d') : now()->format('Y-m-d');
             $this->agama[$urut] = $data['agama'];
             $this->alamat_jalan[$urut] = $data['alamat_jalan'];
             $this->rt[$urut] = $data['rt'];
@@ -142,6 +147,8 @@ class DataInstruktur extends Component
         $this->imported_data = $multiplied->all();
     }
     public function store(){
+        $this->emit('show-tooltip');
+        //$this->imported_data();
         $this->validate(
             [
                 'nama.*' => 'required',

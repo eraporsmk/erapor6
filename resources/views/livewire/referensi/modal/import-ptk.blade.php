@@ -47,37 +47,16 @@
                             </thead>
                             <tbody>
                                 @foreach ($imported_data as $urut => $data)
-                                @if(
-                                    $errors->has('nama.'.$urut) ||
-                                    $errors->has('nik.'.$urut) ||
-                                    $errors->has('email.'.$urut)
-                                )
-                                <tr>
-                                    <td>{{$loop->iteration}}</td>
-                                    <td class="text-danger">{{ $errors->first('nama.'.$urut) }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-danger">{{ $errors->first('nik.'.$urut) }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-danger">{{ $errors->first('email.'.$urut) }}</td>
-                                </tr>
-                                @else
                                 <tr>
                                     <td class="text-center">{{$loop->iteration}}</td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="nama.{{$urut}}"></td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm @error('nama.'.$urut) is-invalid @enderror" wire:model="nama.{{$urut}}" @error('nama.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
+                                    </td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="nuptk.{{$urut}}"></td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="nip.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="nik.{{$urut}}"></td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm @error('nik.'.$urut) is-invalid @enderror" wire:model="nik.{{$urut}}" @error('nik.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
+                                    </td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="jenis_kelamin.{{$urut}}"></td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="tempat_lahir.{{$urut}}"></td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="tanggal_lahir.{{$urut}}"></td>
@@ -89,9 +68,10 @@
                                     <td><input type="text" class="form-control form-control-sm" wire:model="kecamatan.{{$urut}}"></td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="kodepos.{{$urut}}"></td>
                                     <td><input type="text" class="form-control form-control-sm" wire:model="telp_hp.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="email.{{$urut}}"></td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm @error('email.'.$urut) is-invalid @enderror" wire:model="email.{{$urut}}" @error('email.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
+                                    </td>
                                 </tr>
-                                @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -108,3 +88,10 @@
         </div>
     </div>
 </div>
+@push('scripts')
+<script>
+    Livewire.on('show-tooltip', event => {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    });
+</script>
+@endpush

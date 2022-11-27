@@ -72,13 +72,7 @@ class DataAsesor extends Component
     public $dudi_id;
     public $opsi_dudi = TRUE;
     public $ref_dudi = [];
-    protected $rules = [
-        'file_excel' => 'required|mimes:xlsx',
-    ];
-    protected $messages = [
-        'file_excel.required' => 'File Excel tidak boleh kosong',
-        'file_excel.mimes' => 'File harus berupa file dengan ekstensi: xlsx.',
-    ];
+    
     protected $listeners = ['confirmed'];
     
     public function render()
@@ -109,9 +103,20 @@ class DataAsesor extends Component
     }
     public function updatedFileExcel()
     {
-        $this->validate();
-        $file_path = $this->file_excel->store('files', 'public');
-        $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
+        $this->validate(
+            [
+                'file_excel' => 'required|mimes:xlsx',
+            ],
+            [
+                'file_excel.required' => 'File Excel tidak boleh kosong',
+                'file_excel.mimes' => 'File harus berupa file dengan tipe: xlsx.',
+            ]
+        );
+        $this->file_path = $this->file_excel->store('files', 'public');
+        $this->imported_data();
+    }
+    private function imported_data(){
+        $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$this->file_path));
         $collection = collect($imported_data);
         $multiplied = $collection->map(function ($items, $key) {
             foreach($items as $k => $v){
@@ -130,7 +135,8 @@ class DataAsesor extends Component
             $this->nik[$urut] = $data['nik'];
             $this->jenis_kelamin[$urut] = $data['jenis_kelamin'];
             $this->tempat_lahir[$urut] = $data['tempat_lahir'];
-            $this->tanggal_lahir[$urut] = (is_int($data['tanggal_lahir'])) ? $data['tanggal_lahir']->format('Y-m-d') : now()->format('Y-m-d');
+            //$this->tanggal_lahir[$urut] = $data['tanggal_lahir']->format('Y-m-d');
+            $this->tanggal_lahir[$urut] = (is_object($data['tanggal_lahir'])) ? $data['tanggal_lahir']->format('Y-m-d') : now()->format('Y-m-d');
             $this->agama[$urut] = $data['agama'];
             $this->alamat_jalan[$urut] = $data['alamat_jalan'];
             $this->rt[$urut] = $data['rt'];
@@ -144,6 +150,7 @@ class DataAsesor extends Component
         $this->imported_data = $multiplied->all();
     }
     public function store(){
+        $this->emit('show-tooltip');
         $this->validate(
             [
                 'nama.*' => 'required',
