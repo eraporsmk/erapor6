@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 @if($show)
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered {{table_striped()}}">
                     <tr>
                         <th width="20%">Rombongan Belajar</th>
                         <th class="text-center" width="5%">:</th>

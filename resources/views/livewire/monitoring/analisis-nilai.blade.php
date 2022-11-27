@@ -8,7 +8,7 @@
                 <h3>Sebaran Hasil Penilaian per Rencana Penilaian</h3>
                 <div class="row">
                     <div class="col-sm-6">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered {{table_striped()}}">
                             <tbody>
                                 <tr>
                                     <td width="40%">Rombongan Belajar</td>

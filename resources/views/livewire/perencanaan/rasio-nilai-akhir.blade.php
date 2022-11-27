@@ -4,7 +4,7 @@
         <div class="card">
             <form wire:submit.prevent="save">
                 <div class="card-body">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered {{table_striped()}}">
                         <thead>
                             <tr>
                                 <th class="text-center align-middle" rowspan="2">No</th>

@@ -302,7 +302,11 @@ class LoginController extends Controller
             $request->session()->put('peserta_didik_id', auth()->user()->peserta_didik_id);
         */
         Auth::logout();
+        $theme = session('theme');
         $request->session()->invalidate();
+        if($theme){
+            $request->session()->put('theme', $theme);
+        }
         //$request->session()->forget(['semester_id', 'semester_aktif', 'sekolah_id', 'nama_sekolah', 'user_id', 'guru_id', 'peserta_didik_id']);
         //$request->session()->regenerate();
         return redirect()->route('login');

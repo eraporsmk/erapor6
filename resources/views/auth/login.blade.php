@@ -24,11 +24,7 @@ $configData = Helper::applClasses();
     <!-- Left Text-->
     <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
       <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-        @if($configData['theme'] === 'dark')
-          <img class="img-fluid" src="{{asset('images/login-v2-dark.svg')}}" alt="Login V2" />
-          @else
-          <img class="img-fluid" src="{{asset('images/login3.png')}}" alt="Login V2" />
-          @endif
+        <img class="img-fluid" src="{{asset('images/bg-login.png')}}" alt="Login V2" />
       </div>
     </div>
     <!-- /Left Text-->

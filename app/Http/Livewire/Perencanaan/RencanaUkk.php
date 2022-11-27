@@ -70,7 +70,7 @@ class RencanaUkk extends Component
         }
     }
     public function updatedRombonganBelajarId($value){
-        $this->reset(['paket_ukk', 'paket_kompetensi', 'data_internal', 'data_eksternal']);
+        $this->reset(['paket_ukk', 'paket_kompetensi', 'data_internal', 'data_eksternal', 'penguji_eksternal']);
         if($value){
             $rombongan_belajar = Rombongan_belajar::find($value);
             $this->jurusan_id = $rombongan_belajar->jurusan_id;
@@ -88,6 +88,7 @@ class RencanaUkk extends Component
     }
     //penguji_eksternal
     public function updatedPengujiEksternal($value){
+        $this->reset(['tanggal', 'collection', 'show', 'paket_kompetensi']);
         if($value){
             $this->paket_ukk = Paket_ukk::where(function($query){
                 $query->where('sekolah_id', session('sekolah_id'));

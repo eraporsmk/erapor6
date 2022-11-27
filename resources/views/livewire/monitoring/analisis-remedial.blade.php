@@ -6,7 +6,7 @@
                 @include('livewire.formulir-remedial')
                 @if($show)
                 <h3>Rekapitulasi Hasil Penilaian Remedial</h3>
-                <table class="table table-bordered table-striped table-hover jarak1">
+                <table class="table table-bordered {{table_striped()}}">
                     <thead>
                         <tr>
                             <th class="text-center" width="1%" rowspan="2" style="vertical-align:middle;">No</th>

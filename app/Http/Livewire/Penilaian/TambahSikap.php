@@ -66,10 +66,30 @@ class TambahSikap extends Component
             $this->dispatchBrowserEvent('data_pd', ['data_pd' => $data_pd]);
         }
     }
-    public function showButton(){
+    public function updatedOpsiSikap(){
         $this->show = TRUE;
     }
     public function store(){
+        $this->validate(
+            [
+                'tingkat' => 'required',
+                'rombongan_belajar_id' => 'required',
+                'anggota_rombel_id' => 'required',
+                'tanggal' => 'required',
+                'sikap_id' => 'required',
+                'opsi_sikap' => 'required',
+                'uraian_sikap' => 'required',
+            ],
+            [
+                'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
+                'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!',
+                'anggota_rombel_id.required' => 'Peserta Didik tidak boleh kosong!',
+                'tanggal.required' => 'Tanggal tidak boleh kosong!',
+                'sikap_id.required' => 'Butir Sikap tidak boleh kosong!',
+                'opsi_sikap.required' => 'Opsi Sikap tidak boleh kosong!',
+                'uraian_sikap.required' => 'Uraian Sikap tidak boleh kosong!',
+            ]
+        );
         if(!$this->tanggal){
             $this->tanggal = now()->format('Y-m-d');
         }

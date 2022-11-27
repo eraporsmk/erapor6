@@ -340,3 +340,9 @@ function sebaran_tooltip($input, $a, $b, $c)
     }
     return $result;
 }
+function table_striped(){
+    if(session('theme') !== 'dark'){
+        return 'table-striped';
+    }
+    return '';
+}

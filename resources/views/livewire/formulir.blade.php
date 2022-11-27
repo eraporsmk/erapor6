@@ -52,7 +52,7 @@
     </div>
     <div class="row mb-2 {{($show) ? '' : 'd-none'}}" wire:loading.remove>
         <div class="table-responsive">
-            <table class="table table-striped table-bordered">
+            <table class="table table-bordered {{table_striped()}}">
                 <thead>
                     <tr>
                         <th class="text-center align-middle" rowspan="2">Nama Peserta Didik</th>

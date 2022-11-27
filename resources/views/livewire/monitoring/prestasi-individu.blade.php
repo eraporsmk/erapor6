@@ -51,7 +51,7 @@
                     <div class="col-lg-12">
                         <div class="row">
                             <div class="col-sm-6">
-                                <table class="table table-bordered table-striped">
+                                <table class="table table-bordered {{table_striped()}}">
                                     <tr>
                                         <th width="40%">Kompetensi</th>
                                         <th class="text-center" width="5%">:</th>
@@ -80,7 +80,7 @@
                     <div class="col-lg-12">
                         <div class="row">
                             <div class="col-sm-6">
-                                <table class="table table-bordered table-striped">
+                                <table class="table table-bordered {{table_striped()}}">
                                     <tr>
                                         <th width="40%">Kompetensi</th>
                                         <th class="text-center" width="5%">:</th>

@@ -79,7 +79,7 @@
                 </div>
                 <div class="row mb-2 {{($show) ? '' : 'd-none'}}">
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
+                        <table class="table {{table_striped()}} table-bordered">
                             <thead>
                                 <tr>
                                     <th class="text-center" width="5%"></th>
@@ -136,6 +136,8 @@
         });
     })
     window.addEventListener('data_internal', event => {
+        $('#penguji_eksternal').html('<option value="">== Pilih Penguji Eksternal ==</option>')
+        $('#paket_kompetensi').html('<option value="">== Pilih Paket Kompetensi ==</option>')
         $.each(event.detail.data_internal, function (i, item) {
             $('#penguji_internal').append($('<option>', { 
                 value: item.guru_id,
@@ -144,6 +146,7 @@
         });
     })
     window.addEventListener('data_eksternal', event => {
+        $('#paket_kompetensi').html('<option value="">== Pilih Paket Kompetensi ==</option>')
         $.each(event.detail.data_eksternal, function (i, item) {
             $('#penguji_eksternal').append($('<option>', { 
                 value: item.guru_id,
@@ -152,7 +155,6 @@
         });
     })
     window.addEventListener('paket_ukk', event => {
-        console.log(event.detail.paket_ukk);
         $.each(event.detail.paket_ukk, function (i, item) {
             $('#paket_kompetensi').append($('<option>', { 
                 value: item.paket_ukk_id,
