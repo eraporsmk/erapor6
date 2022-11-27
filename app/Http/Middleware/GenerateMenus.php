@@ -230,7 +230,7 @@ class GenerateMenus
                 ])->append($this->setAppend())->prepend($this->icon('copy'))->nickname('wali_kelas')->link->attr($this->text_class());
                 $menu->group(['prefix' => 'wali-kelas'], function($menu){
                     $menu->wali_kelas->add('Ketidakhadiran', 'ketidakhadiran')->data([
-                        'role' => ['wali'], 
+                        'role' => ['wali', 'waka'], 
                         'smt' => collect([1,2]),
                         'cara_penilaian' => collect(['sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
@@ -240,12 +240,12 @@ class GenerateMenus
                         'cara_penilaian' => collect(['sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());*/
                     $menu->wali_kelas->add('Cetak Rapor', 'rapor-nilai-akhir')->data([
-                        'role' => ['wali'], 
+                        'role' => ['wali', 'waka'], 
                         'smt' => collect([1,2]),
                         'cara_penilaian' => collect(['sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
                     $menu->wali_kelas->add('Unduh Leger', 'leger')->data([
-                        'role' => ['wali'], 
+                        'role' => ['wali', 'waka'], 
                         'smt' => collect([1, 2]),
                         'cara_penilaian' => collect(['sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('download'))->link->attr($this->text_class());
