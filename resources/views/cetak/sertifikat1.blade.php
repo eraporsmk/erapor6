@@ -1,7 +1,7 @@
 @extends('layouts.cetak_sertifikat_1')
 @section('content')
 <div class="text-center" id="cover_utama">
-	<img src="{{asset('images/tutwuri.png')}}" border="0" width="100" />
+	<img src="./images/tutwuri.png" border="0" width="100" />
 	<h2>SERTIFIKAT UJI KOMPETENSI</h2>
 	<h3><i>CERTIFICATE OF COMPETENCY ASSESSMENT</i></h3>
 	<br />

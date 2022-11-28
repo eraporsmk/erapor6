@@ -4,7 +4,7 @@
 <br>
 <br>
 <br>
-<img src="{{($get_siswa->rombongan_belajar->sekolah && $get_siswa->rombongan_belajar->sekolah->logo_sekolah) ? asset('storage/images/'.$get_siswa->rombongan_belajar->sekolah->logo_sekolah) : asset('images/tutwuri.png')}}" width="200" />
+<img src="{{($get_siswa->rombongan_belajar->sekolah && $get_siswa->rombongan_belajar->sekolah->logo_sekolah) ? './storage/images/'.$get_siswa->rombongan_belajar->sekolah->logo_sekolah : './images/tutwuri.png'}}" width="200" />
 <br>
 <br>
 <br>
