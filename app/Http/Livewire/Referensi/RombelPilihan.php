@@ -123,10 +123,6 @@ class RombelPilihan extends Component
             ]);
             $this->dispatchBrowserEvent('pharaonic.select2.load', [
                 'component' => $this->id,
-                'target'    => '#pengajar_'.$urut,
-            ]);
-            $this->dispatchBrowserEvent('pharaonic.select2.load', [
-                'component' => $this->id,
                 'target'    => '#kelompok_id_'.$urut,
             ]);
         }
@@ -148,14 +144,23 @@ class RombelPilihan extends Component
         $this->dispatchBrowserEvent('pharaonic.select2.init');
     }
     public function simpanPembelajaran(){
+        foreach($this->pembelajaran_id as $urut => $pembelajaran_id){
+            $update = Pembelajaran::find($pembelajaran_id);
+            $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$pembelajaran_id];
+            $update->guru_pengajar_id = $this->pengajar[$pembelajaran_id];
+            $update->kelompok_id = $this->kelompok_id[$pembelajaran_id];
+            $update->no_urut = $this->no_urut[$pembelajaran_id];
+        }
+        $update->save();
+        /*
         $collection = collect($this->kelompok_id);
         $merged = $collection->mergeRecursive($this->pengajar);
         $new_array = $merged->all();
         foreach($new_array as $pembelajaran_id => $data){
             $update = Pembelajaran::find($pembelajaran_id);
             if(is_array($data)){
+                $update->kelompok_id = ($data[0]) ? $data[0] : NULL;
                 if(Str::isUuid($data[1])){
-                    $update->kelompok_id = ($data[0]) ? $data[0] : NULL;
                     $update->guru_pengajar_id = ($data[1]) ? $data[1] : NULL;
                 }
             } else {
@@ -168,7 +173,8 @@ class RombelPilihan extends Component
             $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$pembelajaran_id];
             $update->no_urut = $this->no_urut[$pembelajaran_id];
             $update->save();
-        }
+        }*/
+
         $this->alert('success', 'Pembelajaran berhasil disimpan', [
             'showConfirmButton' => true,
             'confirmButtonText' => 'OK',

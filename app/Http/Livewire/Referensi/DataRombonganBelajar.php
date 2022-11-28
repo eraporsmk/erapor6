@@ -118,18 +118,6 @@ class DataRombonganBelajar extends Component
             $no_urut[$pembelajaran->pembelajaran_id] = $pembelajaran->no_urut;
             $nama_mata_pelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran->nama_mata_pelajaran;
             $pembelajaran_id[] = $pembelajaran->pembelajaran_id;
-            $this->dispatchBrowserEvent('pharaonic.select2.load', [
-                'component' => $this->id,
-                'target'    => '#pengajar_'.$urut,
-            ]);
-            $this->dispatchBrowserEvent('pharaonic.select2.load', [
-                'component' => $this->id,
-                'target'    => '#pengajar_'.$urut,
-            ]);
-            $this->dispatchBrowserEvent('pharaonic.select2.load', [
-                'component' => $this->id,
-                'target'    => '#kelompok_id_'.$urut,
-            ]);
         }
         $this->pengajar = $pengajar;
         $this->kelompok_id = $kelompok_id;
@@ -146,17 +134,38 @@ class DataRombonganBelajar extends Component
             'nama_mata_pelajaran' => $this->nama_mata_pelajaran,
             'pembelajaran_id' => $this->pembelajaran_id,
         ]);
+        foreach($this->pembelajaran as $urut => $pembelajaran){
+            $this->dispatchBrowserEvent('pharaonic.select2.load', [
+                'component' => $this->id,
+                'target'    => '#pengajar_'.$urut,
+            ]);
+            $this->dispatchBrowserEvent('pharaonic.select2.load', [
+                'component' => $this->id,
+                'target'    => '#kelompok_id_'.$urut,
+            ]);
+        }
         $this->dispatchBrowserEvent('pharaonic.select2.init');
     }
     public function simpanPembelajaran(){
+        foreach($this->pembelajaran_id as $urut => $pembelajaran_id){
+            $update = Pembelajaran::find($pembelajaran_id);
+            $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$pembelajaran_id];
+            $update->guru_pengajar_id = $this->pengajar[$pembelajaran_id];
+            $update->kelompok_id = $this->kelompok_id[$pembelajaran_id];
+            $update->no_urut = $this->no_urut[$pembelajaran_id];
+        }
+        $update->save();
+        /*dump($this->pembelajaran_id);
+        dd($this->kelompok_id);
         $collection = collect($this->kelompok_id);
         $merged = $collection->mergeRecursive($this->pengajar);
         $new_array = $merged->all();
         foreach($new_array as $pembelajaran_id => $data){
+            dump($data);
             $update = Pembelajaran::find($pembelajaran_id);
             if(is_array($data)){
+                $update->kelompok_id = ($data[0]) ? $data[0] : NULL;
                 if(Str::isUuid($data[1])){
-                    $update->kelompok_id = ($data[0]) ? $data[0] : NULL;
                     $update->guru_pengajar_id = ($data[1]) ? $data[1] : NULL;
                 }
             } else {
@@ -173,7 +182,7 @@ class DataRombonganBelajar extends Component
                 $update->no_urut = ($this->no_urut[$pembelajaran_id]) ? $this->no_urut[$pembelajaran_id] : NULL;
             }
             $update->save();
-        }
+        }*/
         $this->alert('success', 'Pembelajaran berhasil disimpan', [
             'showConfirmButton' => true,
             'confirmButtonText' => 'OK',

@@ -84,7 +84,6 @@
                     text : item.nama_kelompok,
                 }));
             });
-            console.log(event.detail.pengajar[pembelajaran_id]);
             if(event.detail.pengajar[pembelajaran_id]){
                 $('#pengajar_'+i).val(event.detail.pengajar[pembelajaran_id])
             } else {
