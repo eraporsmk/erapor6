@@ -368,10 +368,58 @@ class SinkronDapodik extends Command
         }
         $bar->finish();
     }
+    private function ambil_dapo($user, $semester, $satuan, $data){
+        try {
+            $data_sync = [
+                'sekolah_id' => $user->sekolah_id,
+                'username_dapo' => $user->email,
+                'password_dapo' => $user->password,
+                'tahun_ajaran_id' => $semester->tahun_ajaran_id,
+                'semester_id' => $semester->semester_id,
+                'npsn' => $user->sekolah->npsn,
+                'table' => $data['table'],
+                'where' => $data['where'],
+                'value' => $data['value'],
+                'limit' => $data['limit'],
+                'offset' => $data['offset'],
+                'satuan' => $data['satuan'],
+            ];
+            $response = Http::withHeaders([
+                'x-api-key' => $user->sekolah_id,
+            ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/'.$satuan), $data_sync);
+            if($response->status() == 200){
+                return $response->object();
+            } else {
+                return false;
+            }
+        } catch (\Exception $e){
+            return false;
+        }
+    }
+    private function cari_wilayah($user, $semester, $kode_wilayah){
+        $find = Mst_wilayah::find($kode_wilayah);
+        if(!$find){
+            $data = [
+                'table' => 'ref.mst_wilayah',
+                'where' => 'kode_wilayah',
+                'value' => $kode_wilayah,
+                'limit' => '',
+                'offset' => '',
+                'satuan' => 1,
+            ];
+            $dapodik = $this->ambil_dapo($user, $semester, 'referensi', $data);
+            if($dapodik && $dapodik->dapodik){
+                $this->update_wilayah($dapodik->dapodik);
+            }
+        }
+    }
     private function simpan_pd($data, $user, $semester, $deleted_at){
         $wilayah = NULL;
         if(isset($data->wilayah)){
             $this->proses_wilayah($data->wilayah);
+        }
+        if(isset($data->kode_wilayah)){
+            $this->cari_wilayah($user, $semester, $data->kode_wilayah);
         }
         if($wilayah){
             $kecamatan = ($wilayah['kecamatan']) ? $wilayah['kecamatan']->nama : 0;
