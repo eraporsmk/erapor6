@@ -150,8 +150,8 @@ class RombelPilihan extends Component
             $update->guru_pengajar_id = $this->pengajar[$pembelajaran_id];
             $update->kelompok_id = $this->kelompok_id[$pembelajaran_id];
             $update->no_urut = $this->no_urut[$pembelajaran_id];
+            $update->save();
         }
-        $update->save();
         /*
         $collection = collect($this->kelompok_id);
         $merged = $collection->mergeRecursive($this->pengajar);

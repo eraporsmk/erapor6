@@ -153,8 +153,8 @@ class DataRombonganBelajar extends Component
             $update->guru_pengajar_id = $this->pengajar[$pembelajaran_id];
             $update->kelompok_id = $this->kelompok_id[$pembelajaran_id];
             $update->no_urut = $this->no_urut[$pembelajaran_id];
+            $update->save();
         }
-        $update->save();
         /*dump($this->pembelajaran_id);
         dd($this->kelompok_id);
         $collection = collect($this->kelompok_id);
