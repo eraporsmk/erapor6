@@ -152,6 +152,7 @@
         @role('waka', session('semester_id'))
         <div class="card">
             <div class="card-body">
+                <h4 class="card-title">Progres Perencanaan dan Penilaian Tahun Pelajaran {{session('semester_id')}}</h4>
                 <ul class="nav nav-tabs nav-justified" id="myTab2" role="tablist">
                     <li class="nav-item">
                       <a class="nav-link active" id="mapel-kurtilas-waka-tab" data-bs-toggle="tab" href="#mapel-kurtilas-waka" role="tab" aria-controls="mapel-kurtilas-waka" aria-selected="true">Kurikulum 2013 REV</a
@@ -192,8 +193,8 @@
                                         <td>{{$item->nama_mata_pelajaran}}</td>
                                         <td>{{($item->guru_pengajar_id) ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap}}</td>
                                         <td class="text-center">{{get_kkm($item->kelompok_id, $item->kkm)}}</td>
-                                        <td class="text-center">{{$item->pengetahuan_dinilai}}</td>
-                                        <td class="text-center">{{$item->keterampilan_dinilai}}</td>
+                                        <td class="text-center">{{$item->rencana_pengetahuan}}</td>
+                                        <td class="text-center">{{$item->rencana_keterampilan}}</td>
                                         <td class="text-center">{{$item->pengetahuan_dinilai}}</td>
                                         <td class="text-center">{{$item->keterampilan_dinilai}}</td>
                                         <td class="text-center">
