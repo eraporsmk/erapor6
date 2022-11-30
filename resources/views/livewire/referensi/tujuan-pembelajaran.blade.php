@@ -13,8 +13,8 @@
                     <thead>
                         <tr>
                             <th class="text-center">Mata Pelajaran</th>
-                            <th class="text-center">Capaian Pembelajaran</th>
-                            <th class="text-center">Fase</th>
+                            <th class="text-center">Capaian Pembelajaran/Kompetensi Dasar</th>
+                            <th class="text-center">Fase/Kelas</th>
                             <th class="text-center">Tujuan Pembelajaran</th>
                             <th class="text-center">Aksi</th>
                         </tr>
@@ -32,11 +32,26 @@
                             }
                             ?>
                             <tr>
-                                <td class="align-top">{{$item->cp->mata_pelajaran->nama}}</td>
+                                @if($item->cp)
+                                <td class="align-top">
+                                    {{$item->cp->mata_pelajaran->nama}}
+                                </td>
                                 <td class="align-top">{{$item->cp->elemen}}</td>
                                 <td class="text-center align-top">
                                     {{$item->cp->fase}}
                                 </td>
+                                @endif
+                                @if($item->kd)
+                                <td class="align-top">
+                                    {{$item->kd->mata_pelajaran->nama}}
+                                </td>
+                                <td class="align-top">
+                                    {{$item->kd->kompetensi_dasar}}
+                                </td>
+                                <td class="text-center align-top">
+                                    {{tingkat_kelas($item->kd->kelas_10, $item->kd->kelas_11, $item->kd->kelas_12, $item->kd->kelas_13)}}
+                                </td>
+                                @endif
                                 <td class="align-top">{{$item->deskripsi}}</td>
                                 <td class="text-center align-top">
                                     <div class="btn-group dropstart">

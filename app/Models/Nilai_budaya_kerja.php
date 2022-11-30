@@ -19,6 +19,14 @@ class Nilai_budaya_kerja extends Model
 	{
 		return $this->belongsTo(Budaya_kerja::class, 'budaya_kerja_id', 'budaya_kerja_id');
 	}
+    public function elemen_budaya_kerja()
+	{
+		return $this->belongsTo(Elemen_budaya_kerja::class, 'elemen_id', 'elemen_id');
+	}
+    public function guru()
+	{
+		return $this->belongsTo(Guru::class, 'guru_id', 'guru_id');
+	}
     public function rencana_budaya_kerja()
     {
         return $this->belongsTo(Rencana_budaya_kerja::class, 'rencana_budaya_kerja_id', 'rencana_budaya_kerja_id');

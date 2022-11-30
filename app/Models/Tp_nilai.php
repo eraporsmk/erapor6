@@ -24,6 +24,10 @@ class Tp_nilai extends Model
 	{
 		return $this->hasOne(Tujuan_pembelajaran::class, 'tp_id', 'tp_id');
 	}
+	public function kd()
+	{
+		return $this->hasOne(Kompetensi_dasar::class, 'kompetensi_dasar_id', 'kd_id');
+	}
 	public function nilai_tp()
 	{
 		return $this->hasMany(Nilai::class, 'tp_nilai_id', 'tp_nilai_id');

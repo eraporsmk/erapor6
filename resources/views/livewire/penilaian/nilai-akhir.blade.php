@@ -4,61 +4,7 @@
         <div class="card">
             <form wire:ignore.self wire:submit.prevent="store">
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <label for="semester_id" class="col-sm-3 col-form-label">Tahun Pelajaran</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" readonly wire:model="semester_id">
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label for="tingkat" class="col-sm-3 col-form-label">Tingkat Kelas</label>
-                        <div class="col-sm-9">
-                            <select id="tingkat" class="form-select" wire:model="tingkat" wire:change="changeTingkat">
-                                <option value="">== Pilih Tingkat Kelas ==</option>
-                                <option value="10">Kelas 10</option>
-                                <option value="11">Kelas 11</option>
-                                <option value="12">Kelas 12</option>
-                                <option value="13">Kelas 13</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label for="rombongan_belajar_id" class="col-sm-3 col-form-label">Rombongan Belajar</label>
-                        <div class="col-sm-9">
-                            <select id="rombongan_belajar_id" class="form-select" wire:model="rombongan_belajar_id" wire:change="changeRombel">
-                                <option value="">== Pilih Rombongan Belajar ==</option>
-                                @if($data_rombongan_belajar)
-                                @foreach ($data_rombongan_belajar as $rombongan_belajar)
-                                <option value="{{$rombongan_belajar->rombongan_belajar_id}}">{{$rombongan_belajar->nama}}</option>
-                                @endforeach
-                                @endif
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label for="mata_pelajaran_id" class="col-sm-3 col-form-label">Mata Pelajaran</label>
-                        <div class="col-sm-9">
-                            <select id="mata_pelajaran_id" class="form-select" wire:model="mata_pelajaran_id" wire:change="changePembelajaran">
-                                <option value="">== Pilih Mata Pelajaran ==</option>
-                                @if($data_pembelajaran)
-                                @foreach ($data_pembelajaran as $pembelajaran)
-                                <option value="{{$pembelajaran->mata_pelajaran_id}}">{{$pembelajaran->nama_mata_pelajaran}}</option>
-                                @endforeach
-                                @endif
-                            </select>
-                        </div>
-                    </div>
-                    {{--
-                    <div class="row mb-2 {{($show) ? '' : 'd-none'}}" wire:loading.remove wire:target="changePembelajaran">
-                        <div class="col-6">
-                            <input class="form-control" type="file" wire:model="template_excel">
-                            @error('template_excel') <span class="error">{{ $message }}</span> @enderror
-                        </div>
-                        <div class="col-6 d-grid">
-                            <a target="_blank" class="btn btn-primary" href="{{route('unduhan.template-nilai-akhir', ['pembelajaran_id' => $pembelajaran_id])}}">Unduh Template Nilai Akhir</a>
-                        </div>
-                    </div>
-                    --}}
+                    @include('livewire.formulir-umum')
                     <div class="row mb-2 {{($show) ? '' : 'd-none'}}" wire:loading.remove wire:target="changePembelajaran">
                         <div class="table-responsive">
                             <table class="table table-bordered {{table_striped()}}">
@@ -80,7 +26,8 @@
                                             {{$siswa->nama}}
                                         </td>
                                         <td class="text-center">
-                                            <input type="number" wire:ignore class="form-control" wire:model="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}">
+                                            <input type="number" class="form-control @error('nilai.'.$siswa->anggota_rombel->anggota_rombel_id) is-invalid @enderror" wire:model.defer="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}">
+                                            @error('nilai.'.$siswa->anggota_rombel->anggota_rombel_id) {{$message}} @enderror
                                         </td>
                                         <td>
                                             @foreach ($data_tp as $tp)
@@ -125,3 +72,30 @@
     </div>
     @include('components.loader')
 </div>
+@push('scripts')
+<script>
+    window.addEventListener('data_rombongan_belajar', event => {
+        $('#rombongan_belajar_id').html('<option value="">== Pilih Rombongan Belajar ==</option>')
+        $('#mata_pelajaran_id').html('<option value="">== Pilih Mata Pelajaran ==</option>')
+        $.each(event.detail.data_rombongan_belajar, function (i, item) {
+            $('#rombongan_belajar_id').append($('<option>', { 
+                value: item.rombongan_belajar_id,
+                text : item.nama
+            }));
+        });
+    })
+    window.addEventListener('data_pembelajaran', event => {
+        $('#mata_pelajaran_id').html('<option value="">== Pilih Mata Pelajaran ==</option>')
+        $.each(event.detail.data_pembelajaran, function (i, item) {
+            $('#mata_pelajaran_id').append($('<option>', { 
+                value: item.mata_pelajaran_id,
+                text : item.nama_mata_pelajaran
+            }));
+        });
+    })
+    window.addEventListener('data_siswa', event => {
+        console.log(event);
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+</script>
+@endpush

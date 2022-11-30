@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Laporan;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
+use Illuminate\Support\Str;
 use App\Models\Pembelajaran;
 use App\Models\Rombongan_belajar;
 use App\Models\Peserta_didik;
@@ -17,6 +18,7 @@ class RaporNilaiAkhir extends Component
     public $rombongan_belajar = [];
     public $rombongan_belajar_id;
     public $data_siswa = [];
+    public $merdeka;
     
     public function render()
     {
@@ -29,12 +31,6 @@ class RaporNilaiAkhir extends Component
     }
     private function loggedUser(){
         return auth()->user();
-    }
-    public function mount_salah(){
-        if(check_walas()){
-            $this->show = TRUE;
-            $this->data_siswa = pd_walas();
-        }
     }
     private function check_walas($rombongan_belajar_id = NULL){
         if($rombongan_belajar_id){
@@ -66,6 +62,7 @@ class RaporNilaiAkhir extends Component
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                 })->first();
+            $this->merdeka = Str::contains($this->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
         }
     }
     public function updatedTingkat(){
@@ -76,9 +73,6 @@ class RaporNilaiAkhir extends Component
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('jenis_rombel', 1);
-                $query->whereHas('kurikulum', function($query){
-                    $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
-                });
             })->get();
             $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $data_rombongan_belajar]);
         }
@@ -93,6 +87,7 @@ class RaporNilaiAkhir extends Component
         $this->rombongan_belajar = Rombongan_belajar::with([
             'kurikulum'
         ])->find($this->rombongan_belajar_id);
+        $this->merdeka = Str::contains($this->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
         $this->show = TRUE;
     }
 }

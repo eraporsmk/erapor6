@@ -38,7 +38,7 @@ class Users extends Component
     public $user_id;
     public $pengguna;
     public $roles = [];
-    public $akses;
+    public $akses = [];
     public $is_guru;
     public function render()
     {

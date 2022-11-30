@@ -196,15 +196,13 @@ class CetakController extends Controller
 					'wali_kelas'
 				]);
 			},
-			'catatan_ppk' => function($query){
-				$query->with(['nilai_karakter' => function($query){
-					$query->with('sikap');
-				}]);
-			},
 			'kenaikan',
 			'all_prakerin',
 			'single_catatan_wali',
 		])->find($request->route('anggota_rombel_id'));
+		$budaya_kerja = Budaya_kerja::with(['catatan_budaya_kerja' => function($query){
+			$query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
+		}])->get();
 		$find_anggota_rombel_pilihan = Anggota_rombel::where(function($query) use ($get_siswa){
 			$query->whereHas('rombongan_belajar', function($query){
 				$query->where('jenis_rombel', 16);
@@ -244,6 +242,7 @@ class CetakController extends Controller
         }
 		$rombel_4_tahun = Rombel_empat_tahun::select('rombongan_belajar_id')->where('sekolah_id', session('sekolah_id'))->where('semester_id', session('semester_aktif'))->get()->keyBy('rombongan_belajar_id')->keys()->toArray();
 		$params = array(
+			'budaya_kerja' => $budaya_kerja,
 			'get_siswa'	=> $get_siswa,
 			'tanggal_rapor'	=> $tanggal_rapor,
 			'cari_tingkat_akhir'	=> $cari_tingkat_akhir,
@@ -270,14 +269,17 @@ class CetakController extends Controller
 		$rapor_nilai = view('cetak.rapor_nilai_akhir', $params);
 		//dd($params);
 		$pdf->getMpdf()->WriteHTML($rapor_nilai);
-		if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
+		/*if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
 			$pdf->getMpdf()->WriteHTML('<pagebreak />');
 			$rapor_catatan = view('cetak.rapor_catatan', $params);
 			$pdf->getMpdf()->WriteHTML($rapor_catatan);
 			$rapor_karakter = view('cetak.rapor_karakter', $params);
 			$pdf->getMpdf()->WriteHTML('<pagebreak />');
 			$pdf->getMpdf()->WriteHTML($rapor_karakter);
-		}
+		}*/
+		$pdf->getMpdf()->WriteHTML('<pagebreak />');
+		$rapor_catatan = view('cetak.rapor_catatan', $params);
+		$pdf->getMpdf()->WriteHTML($rapor_catatan);
 		return $pdf->stream($general_title.'-NILAI.pdf');
 	}
 	public function rapor_semester(Request $request){

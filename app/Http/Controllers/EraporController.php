@@ -187,6 +187,9 @@ class EraporController extends Controller
     public function nilai_ekskul(){
         return view('content.wali-kelas.nilai-ekstrakurikuler');
     }
+    public function catatan_sikap(){
+        return view('content.wali-kelas.catatan-sikap');
+    }
     public function pkl(){
         return view('content.laporan.pkl');
     }

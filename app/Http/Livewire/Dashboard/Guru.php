@@ -45,56 +45,15 @@ class Guru extends Component
     {
         $cara_penilaian = config('global.'.session('sekolah_id').'.'.session('semester_aktif').'.cara_penilaian');
         return view('livewire.dashboard.guru-'.$cara_penilaian, [
-            'mapel_diampu_kurtilas' => Pembelajaran::where($this->kondisi('REV'))->with(['rombongan_belajar' => function($query){
+            'mapel_diampu' => Pembelajaran::where($this->kondisi())->with(['rombongan_belajar' => function($query){
                     $query->select('rombongan_belajar_id', 'nama', 'guru_id');
-                    $query->withCount('anggota_rombel');
                     $query->with(['wali_kelas' => function($query){
                         $query->select('guru_id', 'nama');
                     }]);
                 }])->withCount([
-                    'rencana_penilaian as rencana_pengetahuan' => function($query){
-                        $query->where('kompetensi_id', 1);
-                    },
-                    'rencana_penilaian as rencana_keterampilan' => function($query){
-                        $query->where('kompetensi_id', 2);
-                    },
-                    'rencana_penilaian as rencana_pk' => function($query){
-                        $query->where('kompetensi_id', 3);
-                    },
-                    'rencana_penilaian as pengetahuan_dinilai' => function($query){
-                        $query->where('kompetensi_id', 1);
-                        $query->has('nilai');
-                    },
-                    'rencana_penilaian as keterampilan_dinilai' => function($query){
-                        $query->where('kompetensi_id', 2);
-                        $query->has('nilai');
-                    },
-                    'rencana_penilaian as pk_dinilai' => function($query){
-                        $query->where('kompetensi_id', 3);
-                        $query->has('nilai');
-                    },
-                    'nilai_akhir as na_pengetahuan' => function($query){
-                        $query->where('kompetensi_id', 1);
-                    },
-                    'nilai_akhir as na_keterampilan' => function($query){
-                        $query->where('kompetensi_id', 2);
-                    },
-                    'nilai_akhir as na_pk' => function($query){
-                        $query->where('kompetensi_id', 3);
-                    },
-                ])->orderBy('mata_pelajaran_id', 'asc')->get(),
-            'mapel_diampu_merdeka' => Pembelajaran::where($this->kondisi('Merdeka'))->with(['rombongan_belajar' => function($query){
-                    $query->select('rombongan_belajar_id', 'nama', 'guru_id');
-                    $query->withCount('anggota_rombel');
-                    $query->with(['wali_kelas' => function($query){
-                        $query->select('guru_id', 'nama');
-                    }]);
-                }])->withCount([
-                    'rencana_penilaian' => function($query){
-                        $query->where('kompetensi_id', 4);
-                    },
-                    'nilai_akhir' => function($query){
-                        $query->where('kompetensi_id', 4);
+                    'anggota_rombel',
+                    'anggota_rombel as anggota_dinilai' => function($query){
+                        $query->has('nilai_akhir_mapel');
                     },
                 ])->orderBy('mata_pelajaran_id', 'asc')->get(),
             'rombongan_belajar' => ($this->loggedUser()->hasRole('wali', session('semester_id'))) ? Rombongan_belajar::with([
@@ -110,37 +69,8 @@ class Guru extends Component
                         }
                     ]);
                     $query->withCount([
-                        'rencana_penilaian as rencana_pengetahuan' => function($query){
-                            $query->where('kompetensi_id', 1);
-                        },
-                        'rencana_penilaian as rencana_keterampilan' => function($query){
-                            $query->where('kompetensi_id', 2);
-                        },
-                        'rencana_penilaian as rencana_pk' => function($query){
-                            $query->where('kompetensi_id', 3);
-                        },
-                        'rencana_penilaian as pengetahuan_dinilai' => function($query){
-                            $query->where('kompetensi_id', 1);
-                            $query->has('nilai');
-                        },
-                        'rencana_penilaian as keterampilan_dinilai' => function($query){
-                            $query->where('kompetensi_id', 2);
-                            $query->has('nilai');
-                        },
-                        'rencana_penilaian as pk_dinilai' => function($query){
-                            $query->where('kompetensi_id', 3);
-                            $query->has('nilai');
-                        },
-                        'nilai_akhir as na_pengetahuan' => function($query){
-                            $query->where('kompetensi_id', 1);
-                        },
-                        'nilai_akhir as na_keterampilan' => function($query){
-                            $query->where('kompetensi_id', 2);
-                        },
-                        'nilai_akhir as na_pk' => function($query){
-                            $query->where('kompetensi_id', 3);
-                        },
-                        'anggota_rombel' => function($query){
+                        'anggota_rombel',
+                        'anggota_rombel as anggota_dinilai' => function($query){
                             $query->has('nilai_akhir_mapel');
                         }
                     ]);
@@ -214,28 +144,18 @@ class Guru extends Component
     private function loggedUser(){
         return auth()->user();
     }
-    private function kondisi($kurikulum){
-        return function($query) use ($kurikulum){
+    private function kondisi(){
+        return function($query){
             $query->where('semester_id', session('semester_aktif'));
             $query->where('sekolah_id', session('sekolah_id'));
             $query->where('guru_id', $this->loggedUser()->guru_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereHas('rombongan_belajar', function($query) use ($kurikulum){
-                $query->whereHas('kurikulum', function($query) use ($kurikulum){
-                    $query->where('nama_kurikulum', 'ILIKE', '%'.$kurikulum.'%');
-                });
-            });
             $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
             $query->where('semester_id', session('semester_aktif'));
             $query->where('sekolah_id', session('sekolah_id'));
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereHas('rombongan_belajar', function($query) use ($kurikulum){
-                $query->whereHas('kurikulum', function($query) use ($kurikulum){
-                    $query->where('nama_kurikulum', 'ILIKE', '%'.$kurikulum.'%');
-                });
-            });
         };
     }
     public function generateNilai($pembelajaran_id, $kompentesi_id){

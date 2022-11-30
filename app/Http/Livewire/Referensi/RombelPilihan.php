@@ -144,6 +144,16 @@ class RombelPilihan extends Component
         $this->dispatchBrowserEvent('pharaonic.select2.init');
     }
     public function simpanPembelajaran(){
+        $this->validate(
+            [
+                'nama_mata_pelajaran.*' => 'required',
+                'no_urut.*' => 'nullable|numeric',
+            ],
+            [
+                'nama_mata_pelajaran.*.required' => 'Nama Mata Pelajaran tidak boleh kosong!',
+                'no_urut.*.numeric' => 'Nomor urut harus berupa angka!',
+            ]
+        );
         foreach($this->pembelajaran_id as $urut => $pembelajaran_id){
             $update = Pembelajaran::find($pembelajaran_id);
             $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$pembelajaran_id];
@@ -152,29 +162,6 @@ class RombelPilihan extends Component
             $update->no_urut = $this->no_urut[$pembelajaran_id];
             $update->save();
         }
-        /*
-        $collection = collect($this->kelompok_id);
-        $merged = $collection->mergeRecursive($this->pengajar);
-        $new_array = $merged->all();
-        foreach($new_array as $pembelajaran_id => $data){
-            $update = Pembelajaran::find($pembelajaran_id);
-            if(is_array($data)){
-                $update->kelompok_id = ($data[0]) ? $data[0] : NULL;
-                if(Str::isUuid($data[1])){
-                    $update->guru_pengajar_id = ($data[1]) ? $data[1] : NULL;
-                }
-            } else {
-                if(Str::isUuid($data)){
-                    $update->guru_pengajar_id = ($data) ? $data : NULL;
-                } else {
-                    $update->kelompok_id = $data;
-                }
-            }
-            $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$pembelajaran_id];
-            $update->no_urut = $this->no_urut[$pembelajaran_id];
-            $update->save();
-        }*/
-
         $this->alert('success', 'Pembelajaran berhasil disimpan', [
             'showConfirmButton' => true,
             'confirmButtonText' => 'OK',
@@ -182,7 +169,6 @@ class RombelPilihan extends Component
             'allowOutsideClick' => false,
             'timer' => null
         ]);
-        //$this->emit('close-modal');
     }
     public function pembelajaranTersimpan(){
         $this->reset(['nama_kelas', 'pembelajaran', 'pengajar', 'kelompok_id', 'no_urut']);

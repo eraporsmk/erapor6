@@ -1,7 +1,7 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Praktik Kerja Lapangan')
+@section('title', 'Catatan Sikap')
 
 @section('content')
-@livewire('laporan.pkl')
+@livewire('wali-kelas.catatan-sikap')
 @endsection

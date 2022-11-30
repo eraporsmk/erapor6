@@ -3,29 +3,28 @@
 @if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false)
 <table border="0" width="100%">
 	<tr>
-    	<td style="width: 25%;padding:0px;">Nama Peserta Didik</td>
-		<td style="width: 1%;" class="text-center">:</td>
-		<td style="width: 74%">{{strtoupper($get_siswa->peserta_didik->nama)}}</td>
+    	<td style="width: 20%;padding:0px;">Nama Peserta Didik</td>
+		<td style="width: 50%">: {{strtoupper($get_siswa->peserta_didik->nama)}}</td>
+		<td style="padding:0px;width: 15%">Kelas</td>
+		<td style="width: 15%">: {{$get_siswa->rombongan_belajar->nama}}</td>
 	</tr>
 	<tr>
 		<td style="padding:0px;">Nomor Induk/NISN</td>
-		<td class="text-center">:</td>
-		<td>{{$get_siswa->peserta_didik->no_induk.' / '.$get_siswa->peserta_didik->nisn}}</td>
-	</tr>
-	<tr>
-		<td style="padding:0px;">Kelas</td>
-		<td class="text-center">:</td>
-		<td>{{$get_siswa->rombongan_belajar->nama}}</td>
-	</tr>
-	<tr>
-		<td style="padding:0px;">Tahun Pelajaran</td>
-		<td class="text-center">:</td>
-		<td>{{str_replace('/','-',substr($get_siswa->rombongan_belajar->semester->nama,0,9))}}</td>
-	</tr>
-	<tr>
+		<td>: {{$get_siswa->peserta_didik->no_induk.' / '.$get_siswa->peserta_didik->nisn}}</td>
 		<td style="padding:0px;">Semester</td>
-		<td class="text-center">:</td>
-		<td>{{substr($get_siswa->rombongan_belajar->semester->nama,10)}}</td>
+		<td>: {{substr($get_siswa->rombongan_belajar->semester->nama,10)}}</td>
+	</tr>
+	<tr>
+		<td style="padding:0px;">Sekolah</td>
+		<td>: {{$get_siswa->rombongan_belajar->sekolah->nama}}</td>
+		<td style="padding:0px;">Tahun Pelajaran</td>
+		<td>: {{str_replace('/','-',substr($get_siswa->rombongan_belajar->semester->nama,0,9))}}</td>
+	</tr>
+	<tr>
+		<td style="padding:0px;">Alamat</td>
+		<td>: {{$get_siswa->peserta_didik->alamat}}</td>
+		<td></td>
+		<td></td>
 	</tr>
 </table>
 @else
@@ -58,6 +57,25 @@
 @endif
 <br />
 @if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false)
+<div class="strong"><strong>A.&nbsp;&nbsp;Sikap</strong></div>
+<table class="table table-bordered" border="1">
+	<thead>
+		<tr>
+			<th style="vertical-align:middle;width: 40%;">Dimensi</th>
+			<th style="vertical-align:middle;width: 60%;">Penjelasan</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach ($budaya_kerja as $catatan)
+		<tr>
+			<td>{{$catatan->aspek}}</td>
+			<td>{{($catatan->catatan_budaya_kerja) ? $catatan->catatan_budaya_kerja->catatan : ''}}</td>
+		</tr>
+		@endforeach
+	</tbody>
+</table>
+<div class="strong"><strong>B.&nbsp;&nbsp;Nilai Akademik</strong></div>
+@else
 <div class="strong"><strong>A.&nbsp;&nbsp;Nilai Akademik</strong></div>
 @endif
 <table class="table table-bordered" border="1">
@@ -65,15 +83,8 @@
 		<tr>
 			<th style="vertical-align:middle;width: 2px;" class="text-center">No</th>
 			<th style="vertical-align:middle;width: 250px;">Mata Pelajaran</th>
-			<?php if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') !== false) {?>
 			<th style="vertical-align:middle;width: 50px;" class="text-center">Nilai Akhir</th>
 			<th style="vertical-align: middle;" class="text-center">Capaian Kompetensi</th>
-			<?php } else { ?>
-			<th style="vertical-align: middle;" class="text-center">Pengetahuan</th>
-			<th style="vertical-align: middle;" class="text-center">Keterampilan</th>
-			<th style="vertical-align: middle;" class="text-center">Nilai Akhir</th>
-			<th style="vertical-align: middle;" class="text-center">Predikat</th>
-			<?php } ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -125,20 +136,14 @@
 	$i=1;
 	?>
 	@endforeach
-	<?php 
-	if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') !== false) { 
-		$colspan = 4;
-	} else { 
-		$colspan = 6;
-	} ?>
 	@foreach($all_pembelajaran as $kelompok => $data_pembelajaran)
 	@if($kelompok == 'C1. Dasar Bidang Keahlian' || $kelompok == 'C3. Kompetensi Keahlian')
 	<tr>
-		<td colspan="6" class="strong"><strong style="font-size: 13px;">C. Muatan Peminatan Kejuruan</strong></td>
+		<td colspan="4" class="strong"><strong style="font-size: 13px;">C. Muatan Peminatan Kejuruan</strong></td>
 	</tr>
 	@endif
 	<tr>
-		<td colspan="{{$colspan}}" class="strong"><strong style="font-size: 13px;">{{$kelompok}}</strong></td>
+		<td colspan="4" class="strong"><strong style="font-size: 13px;">{{$kelompok}}</strong></td>
 	</tr>
 	@foreach($data_pembelajaran as $pembelajaran)
 	<?php 
@@ -157,20 +162,12 @@
 		<tr>
 			<td class="text-center" rowspan="{{$rowspan}}" style="vertical-align:middle;">{{$i++}}</td>
 			<td rowspan="{{$rowspan}}" style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
-			<?php if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') !== false) {?>
 			<td class="text-center" rowspan="{{$rowspan}}" style="vertical-align:middle;">{{$pembelajaran->nilai_akhir}}</td>
 			@if (!$pembelajaran->deskripsi_mata_pelajaran->count())
 			<td class="text-center" style="vertical-align:middle;">-</td>
 			@endif
-			<?php } else { ?>
-			<td class="text-center">{{$pembelajaran->nilai_akhir_pengetahuan}}</td>
-			<td class="text-center">{{$pembelajaran->nilai_akhir_keterampilan}}</td>
-			<td class="text-center">{{$pembelajaran->nilai_akhir}}</td>
-			<td class="text-center">{{$pembelajaran->predikat}}</td>
-			<?php } ?>
 		</tr>
-		<?php if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') !== false) { ?>
-			@foreach ($pembelajaran->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran)
+		@foreach ($pembelajaran->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran)
 			@if($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan)
 			<tr>
 				<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_pengetahuan : '-' !!}</td>
@@ -190,8 +187,7 @@
 				</tr>
 				@endif
 			@endif
-			@endforeach
-		<?php } ?>
+		@endforeach
 	@endforeach
 	@endforeach
 	@if($find_anggota_rombel_pilihan)
@@ -219,101 +215,4 @@
 	@endif
 	</tbody>
 </table>
-<br />
-@if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') !== false)
-<table class="table table-bordered">
-	<thead>
-		<tr>
-			<th style="vertical-align: middle; width: 5%;" class="text-center">No</th>
-			<th style="vertical-align: middle; width: 35%;" class="text-center">Kegiatan Ekstrakurikuler</th>
-			<th style="vertical-align: middle; width: 60%;" class="text-center">Keterangan</th>
-		</tr>
-	</thead>
-	<tbody>
-	@if($get_siswa->all_nilai_ekskul->count())
-	@foreach($get_siswa->all_nilai_ekskul as $nilai_ekskul)
-		<tr>
-			<td style="vertical-align: middle;">{{$loop->iteration}}</td>
-			<td>{{strtoupper($nilai_ekskul->rombongan_belajar->nama)}}</td>
-			<td>{{$nilai_ekskul->deskripsi_ekskul}}</td>
-		</tr>
-	@endforeach
-	@else
-		<tr>
-			<td class="text-center" colspan="3">&nbsp;</td>
-		</tr>
-	@endif
-	</tbody>
-</table>
-<br />
-<table class="table table-bordered" style="width: 300px;">
-	<thead>
-		<tr>
-			<th colspan="2" class="text-center">Ketidakhadiran</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td width="100">Sakit</td>
-			<td> : {{($get_siswa->kehadiran) ? ($get_siswa->kehadiran->sakit) ? $get_siswa->kehadiran->sakit.' hari' : '- hari' : '.... hari'}}</td>
-		</tr>
-		<tr>
-			<td>Izin</td>
-			<td width="100"> : {{($get_siswa->kehadiran) ? ($get_siswa->kehadiran->izin) ? $get_siswa->kehadiran->izin.' hari' : '- hari' : '.... hari'}}</td>
-		</tr>
-		<tr>
-			<td>Tanpa Keterangan</td>
-			<td> : {{($get_siswa->kehadiran) ? ($get_siswa->kehadiran->alpa) ? $get_siswa->kehadiran->alpa.' hari' : '- hari' : '.... hari'}}</td>
-		</tr>
-	</tbody>
-</table>
-<table width="100%">
-	<tr>
-	  <td style="width:40%">
-		  <p>Orang Tua/Wali</p><br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-		  <p>...................................................................</p>
-	  </td>
-	  <td style="width:20%"></td>
-	  <td style="width:40%"><p>{{$get_siswa->peserta_didik->sekolah->kabupaten}}, {{$tanggal_rapor}}<br>Wali Kelas</p><br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <p>
-  <u>{{$get_siswa->rombongan_belajar->wali_kelas->nama_lengkap }}</u><br />
-  NIP. {{$get_siswa->rombongan_belajar->wali_kelas->nip}}
-  </td>
-	</tr>
-  </table>
-  <table width="100%" style="margin-top:10px;">
-	<tr>
-		<td style="width:30%">&nbsp;</td>
-	  <td style="font-family: Tahoma; font-size: 13px;">
-		  	<p>Mengetahui,<br>Kepala Sekolah</p>
-	  		<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<p><u>{{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}</u><br />
-			NIP. {{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}
-			</p>
-	  </td>
-	  <td style="width:30%">&nbsp;</td>
-	</tr>
-  </table>
-@else
-<div class="strong"><strong>B.&nbsp;&nbsp;Catatan Akademik</strong></div>
-<table width="100%" class="table table-bordered">
-  <tr>
-    <td style="padding:10px;">{!! ($get_siswa->single_catatan_wali) ? $get_siswa->single_catatan_wali->uraian_deskripsi : '' !!}</td>
-  </tr>
-</table>
-@endif
 @endsection

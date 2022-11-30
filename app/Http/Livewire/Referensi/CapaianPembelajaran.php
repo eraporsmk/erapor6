@@ -24,7 +24,7 @@ class CapaianPembelajaran extends Component
     public $sortbydesc = 'ASC';
     public $per_page = 10;
 
-    public $kompetensi_dasar_id;
+    public $cp_id;
     public $data;
 
     public function render()
@@ -61,25 +61,20 @@ class CapaianPembelajaran extends Component
     private function loggedUser(){
         return auth()->user();
     }
-    public function getId($kompetensi_dasar_id, $aksi){
-        $this->kompetensi_dasar_id = $kompetensi_dasar_id;
-        $this->data = Kompetensi_dasar::find($this->kompetensi_dasar_id);
-        if($aksi == 'edit'){
-            $this->emit('editCP');
+    public function getId($cp_id, $aksi){
+        $this->cp_id = $cp_id;
+        $this->data = Capaian_pembelajaran::find($this->cp_id);
+        $data = $this->data;
+        $data->aktif = ($aksi) ? 1 : 0;
+        $data->save();
+        if($aksi){
+            $this->alert('success', 'Data CP berhasil di aktifkan!', [
+                'toast' => false
+            ]);
         } else {
-            $aktif = $this->data->aktif;
-            $data = $this->data;
-            $data->aktif = ($data->aktif) ? 0 : 1;
-            $data->save();
-            if($aktif){
-                $this->alert('success', 'Data CP berhasil di nonaktifkan!', [
-                    'toast' => false
-                ]);
-            } else {
-                $this->alert('success', 'Data CP berhasil di aktifkan!', [
-                    'toast' => false
-                ]);
-            }
+            $this->alert('success', 'Data CP berhasil di nonaktifkan!', [
+                'toast' => false
+            ]);
         }
     }
     public function perbaharui(){

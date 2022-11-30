@@ -23,14 +23,18 @@
                         <tbody>
                             @forelse ($pembelajaran as $urut => $item)
                             <tr>
-                                <td class="text-center">{{$urut + 1}}</td>
-                                <td>
-                                    <input type="text" wire:model.lazy="nama_mata_pelajaran.{{$item->pembelajaran_id}}" class="form-control">
+                                <td class="text-center align-top">{{$urut + 1}}</td>
+                                <td class="align-top">
+                                    <input type="text" wire:model.defer="nama_mata_pelajaran.{{$item->pembelajaran_id}}" class="form-control @error('nama_mata_pelajaran.'.$item->pembelajaran_id) is-invalid @enderror">
+                                    @error('nama_mata_pelajaran.'.$item->pembelajaran_id) {{$message}} @enderror
                                 </td>
-                                <td>{{$item->guru->nama_lengkap}}</td>
-                                <td>
+                                <td class="align-top">
+                                    <input type="text" class="form-control" value="{{$item->guru->nama_lengkap}}" readonly>
+                                    {{--$item->guru->nama_lengkap--}}
+                                </td>
+                                <td class="align-top">
                                     <div wire:ignore>
-                                        <select id="pengajar_{{$urut}}" class="form-select" wire:model="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
+                                        <select id="pengajar_{{$urut}}" class="form-select" wire:model.defer="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
                                             <option value="">== Pilih Guru Pengajar ==</option>
                                             {{--
                                             @foreach ($guru_pengajar as $pengajar)
@@ -40,9 +44,9 @@
                                         </select>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="align-top">
                                     <div wire:ignore>
-                                        <select id="kelompok_id_{{$urut}}" class="form-select" wire:model="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
+                                        <select id="kelompok_id_{{$urut}}" class="form-select" wire:model.defer="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
                                             <option value="">== Pilih Kelompok ==</option>
                                             {{--
                                             @foreach ($data_kelompok as $kelompok)
@@ -52,7 +56,10 @@
                                         </select>
                                     </div>
                                 </td>
-                                <td><input type="number" class="form-control" wire:model="no_urut.{{$item->pembelajaran_id}}"></td>
+                                <td class="align-top">
+                                    <input type="text" class="form-control @error('no_urut.'.$item->pembelajaran_id) is-invalid @enderror" wire:model.defer="no_urut.{{$item->pembelajaran_id}}">
+                                    @error('no_urut.'.$item->pembelajaran_id) {{$message}} @enderror
+                                </td>
                                 <td class="text-center">
                                     @if($item->kelompok_id || $item->no_urut)
                                     <a href="javascript:void(0)" wire:click="hapusPembelajaran('{{$item->pembelajaran_id}}')"><i class="fas fa-trash text-danger text-lg"></i></a>

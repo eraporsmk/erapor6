@@ -9,16 +9,16 @@
                         <table class="table table-bordered">
                             <thead>
                             @foreach($all_sikap as $sikap)
-                                <th width="20%" class="text-center">{{$sikap->butir_sikap}}</th>
+                                <th width="20%" class="text-center">{{$sikap->aspek}}</th>
                             @endforeach
                             </thead>
                             <tbody>
                                 <tr>
                                 @foreach($all_sikap as $sikap)
-                                    <td>
+                                    <td class="align-top">
                                     <ul style="padding-left:10px;">
-                                    @foreach($sikap->sikap as $subsikap)
-                                    <li>{{$subsikap->butir_sikap}}</li>
+                                    @foreach($sikap->elemen_budaya_kerja->unique('elemen') as $subsikap)
+                                    <li>{{$subsikap->elemen}}</li>
                                     @endforeach
                                     </ul>
                                     </td>
@@ -82,17 +82,25 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <label for="butir_sikap" class="col-sm-3 col-form-label">Butir Sikap</label>
+                    <label for="butir_sikap" class="col-sm-3 col-form-label">Dimensi/Elemen Sikap</label>
                     <div class="col-sm-3">
                         <div wire:ignore>
-                            <select wire:model="sikap_id" class="form-control" id="sikap_id" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Butir Sikap ==">
-                                <option value="">== Pilih Butir Sikap ==</option>
+                            <select wire:model="budaya_kerja_id" class="form-control" id="budaya_kerja_id" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Dimensi Sikap ==">
+                                <option value="">== Pilih Dimensi Sikap ==</option>
                                 @foreach($all_sikap as $ref_sikap)
-                                <option value="{{$ref_sikap->sikap_id}}">{{$ref_sikap->butir_sikap}}</option>
+                                <option value="{{$ref_sikap->budaya_kerja_id}}">{{$ref_sikap->aspek}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        @error('sikap_id') <span class="text-danger">{{$message}}</span> @enderror
+                        @error('budaya_kerja_id') <span class="text-danger">{{$message}}</span> @enderror
+                    </div>
+                    <div class="col-sm-3">
+                        <div wire:ignore>
+                            <select wire:model="elemen_id" class="form-control" id="elemen_id" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Elemen Sikap ==">
+                                <option value="">== Pilih Elemen Sikap ==</option>
+                            </select>
+                        </div>
+                        @error('elemen_id') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
                     <div class="col-sm-3">
                         <div wire:ignore>
@@ -149,6 +157,16 @@
             $('#anggota_rombel_id').append($('<option>', { 
                 value: item.anggota_rombel.anggota_rombel_id,
                 text : item.nama
+            }));
+        });
+    })
+    window.addEventListener('elemen', event => {
+        console.log(event.detail.elemen);
+        $("#elemen_id").html('<option value="">== Pilih Elemen Sikap ==</option>');
+        $.each(event.detail.elemen, function (i, item) {
+            $('#elemen_id').append($('<option>', { 
+                value: item.elemen_id,
+                text : item.elemen
             }));
         });
     })

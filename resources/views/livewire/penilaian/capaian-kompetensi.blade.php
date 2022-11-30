@@ -4,6 +4,8 @@
         <div class="card">
             <form wire:ignore.self wire:submit.prevent="store">
                 <div class="card-body">
+                    @include('livewire.formulir-umum')
+                    {{--
                     <div class="row mb-2">
                         <label for="semester_id" class="col-sm-3 col-form-label">Tahun Pelajaran</label>
                         <div class="col-sm-9">
@@ -12,8 +14,8 @@
                     </div>
                     <div class="row mb-2">
                         <label for="tingkat" class="col-sm-3 col-form-label">Tingkat Kelas</label>
-                        <div class="col-sm-9">
-                            <select id="tingkat" class="form-select" wire:model="tingkat" wire:change="changeTingkat">
+                        <div class="col-sm-9" wire:ignore>
+                            <select id="tingkat" class="form-select" wire:model="tingkat" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Tingkat Kelas ==" data-search-off="true">
                                 <option value="">== Pilih Tingkat Kelas ==</option>
                                 <option value="10">Kelas 10</option>
                                 <option value="11">Kelas 11</option>
@@ -22,28 +24,23 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-2" wire:ignore>
                         <label for="rombongan_belajar_id" class="col-sm-3 col-form-label">Rombongan Belajar</label>
                         <div class="col-sm-9">
-                            <select id="rombongan_belajar_id" class="form-select" wire:model="rombongan_belajar_id" wire:change="changeRombel">
+                            <select id="rombongan_belajar_id" class="form-select" wire:model="rombongan_belajar_id" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Rombongan Belajar ==" wire:change="changeRombel">
                                 <option value="">== Pilih Rombongan Belajar ==</option>
-                                @foreach ($data_rombongan_belajar as $rombongan_belajar)
-                                <option value="{{$rombongan_belajar->rombongan_belajar_id}}">{{$rombongan_belajar->nama}}</option>
-                                @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <label for="pembelajaran_id" class="col-sm-3 col-form-label">Mata Pelajaran</label>
+                    <div class="row mb-2" wire:ignore>
+                        <label for="mata_pelajaran_id" class="col-sm-3 col-form-label">Mata Pelajaran</label>
                         <div class="col-sm-9">
-                            <select id="pembelajaran_id" class="form-select" wire:model="pembelajaran_id" wire:change="changePembelajaran">
+                            <select id="mata_pelajaran_id" class="form-select" wire:model="mata_pelajaran_id" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Mata Pelajaran ==" wire:change="changePembelajaran">
                                 <option value="">== Pilih Mata Pelajaran ==</option>
-                                @foreach ($data_pembelajaran as $pembelajaran)
-                                <option value="{{$pembelajaran->pembelajaran_id}}">{{$pembelajaran->nama_mata_pelajaran}}</option>
-                                @endforeach
                             </select>
                         </div>
                     </div>
+                    --}}
                     <div class="row mb-2{{($show_reset) ? '' : ' d-none'}}">
                         <label class="col-sm-3 col-form-label">Reset Capaian Kompetensi</label>
                         <div class="col-sm-9">
@@ -68,15 +65,13 @@
                                     <tr>
                                         <td class="align-middle">{{$siswa->nama}}</td>
                                         <td class="align-middle text-center">
-                                            <div wire:ignore>
-                                                {{($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : 0}}
-                                            </div>
+                                            {{($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : 0}}
                                         </td>
                                         <td>
-                                            <textarea wire:ignore wire:model="deskripsi_kompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control" rows="5"></textarea>
+                                            <textarea wire:model.defer="deskripsi_kompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control" rows="5"></textarea>
                                         </td>
                                         <td>
-                                            <textarea wire:ignore wire:model="deskripsi_inkompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control" rows="5"></textarea>
+                                            <textarea wire:model.defer="deskripsi_inkompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control" rows="5"></textarea>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -92,3 +87,26 @@
     </div>
     @include('components.loader')
 </div>
+@push('scripts')
+<script>
+    window.addEventListener('data_rombongan_belajar', event => {
+        $('#rombongan_belajar_id').html('<option value="">== Pilih Rombongan Belajar ==</option>')
+        $('#mata_pelajaran_id').html('<option value="">== Pilih Mata Pelajaran ==</option>')
+        $.each(event.detail.data_rombongan_belajar, function (i, item) {
+            $('#rombongan_belajar_id').append($('<option>', { 
+                value: item.rombongan_belajar_id,
+                text : item.nama
+            }));
+        });
+    })
+    window.addEventListener('data_pembelajaran', event => {
+        $('#mata_pelajaran_id').html('<option value="">== Pilih Mata Pelajaran ==</option>')
+        $.each(event.detail.data_pembelajaran, function (i, item) {
+            $('#mata_pelajaran_id').append($('<option>', { 
+                value: item.mata_pelajaran_id,
+                text : item.nama_mata_pelajaran
+            }));
+        });
+    })
+</script>
+@endpush

@@ -123,7 +123,7 @@ class SinkronErapor extends Command
     }
     private function hitung_data($hitung_data, $satuan, $sekolah, $semester, $args){
         if($hitung_data && $hitung_data->dapodik){
-            $limit = 250;
+            $limit = 500;
             $this->info('Memproses data '.$this->get_table($satuan));
             $bar = $this->output->createProgressBar($hitung_data->dapodik);
             $bar->start(0);

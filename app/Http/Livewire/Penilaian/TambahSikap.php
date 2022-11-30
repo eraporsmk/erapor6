@@ -6,8 +6,10 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use App\Models\Rombongan_belajar;
 use App\Models\Peserta_didik;
-use App\Models\Nilai_sikap;
-use App\Models\Sikap;
+use App\Models\Catatan_budaya_kerja;
+use App\Models\Budaya_kerja;
+use App\Models\Elemen_budaya_kerja;
+use App\Models\Nilai_budaya_kerja;
 use Carbon\Carbon;
 
 class TambahSikap extends Component
@@ -18,7 +20,8 @@ class TambahSikap extends Component
     public $rombongan_belajar_id;
     public $anggota_rombel_id;
     public $tanggal;
-    public $sikap_id;
+    public $budaya_kerja_id;
+    public $elemen_id;
     public $opsi_sikap;
     public $uraian_sikap;
     public $data_rombongan_belajar;
@@ -40,7 +43,7 @@ class TambahSikap extends Component
         }
         $this->semester_id = session('semester_id');
         return view('livewire.penilaian.tambah-sikap', [
-            'all_sikap' => Sikap::whereHas('sikap')->with('sikap')->orderBy('sikap_id')->get(),
+            'all_sikap' => Budaya_kerja::with(['elemen_budaya_kerja'])->get(),
             'placeholder' => Carbon::parse(now())->translatedFormat('d F Y'),
             'breadcrumbs' => $breadcrumbs
         ]);
@@ -51,6 +54,7 @@ class TambahSikap extends Component
                 $query->where('tingkat', $this->tingkat);
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('jenis_rombel', 1);
             })->get();
             $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $data_rombongan_belajar]);
         }
@@ -66,6 +70,10 @@ class TambahSikap extends Component
             $this->dispatchBrowserEvent('data_pd', ['data_pd' => $data_pd]);
         }
     }
+    public function updatedBudayaKerjaId(){
+        $elemen = Elemen_budaya_kerja::where('budaya_kerja_id', $this->budaya_kerja_id)->get()->unique('elemen');
+        $this->dispatchBrowserEvent('elemen', ['elemen' => $elemen]);
+    }
     public function updatedOpsiSikap(){
         $this->show = TRUE;
     }
@@ -76,7 +84,8 @@ class TambahSikap extends Component
                 'rombongan_belajar_id' => 'required',
                 'anggota_rombel_id' => 'required',
                 'tanggal' => 'required',
-                'sikap_id' => 'required',
+                'budaya_kerja_id' => 'required',
+                'elemen_id' => 'required',
                 'opsi_sikap' => 'required',
                 'uraian_sikap' => 'required',
             ],
@@ -85,7 +94,8 @@ class TambahSikap extends Component
                 'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!',
                 'anggota_rombel_id.required' => 'Peserta Didik tidak boleh kosong!',
                 'tanggal.required' => 'Tanggal tidak boleh kosong!',
-                'sikap_id.required' => 'Butir Sikap tidak boleh kosong!',
+                'budaya_kerja_id.required' => 'Dimensi Sikap tidak boleh kosong!',
+                'elemen_id.required' => 'Elemen Sikap tidak boleh kosong!',
                 'opsi_sikap.required' => 'Opsi Sikap tidak boleh kosong!',
                 'uraian_sikap.required' => 'Uraian Sikap tidak boleh kosong!',
             ]
@@ -93,17 +103,17 @@ class TambahSikap extends Component
         if(!$this->tanggal){
             $this->tanggal = now()->format('Y-m-d');
         }
-        $insert_sikap = [
+        Nilai_budaya_kerja::create([
             'sekolah_id'		=> session('sekolah_id'),
-            'guru_id'			=> $this->loggedUser()->guru_id,
+            'guru_id' => $this->loggedUser()->guru_id,
             'anggota_rombel_id'	=> $this->anggota_rombel_id,
-            'tanggal_sikap' 	=> $this->tanggal,
-            'sikap_id'			=> $this->sikap_id,
-            'opsi_sikap'		=> $this->opsi_sikap,
-            'uraian_sikap'		=> $this->uraian_sikap,
+            'tanggal' 	=> $this->tanggal,
+            'budaya_kerja_id'	=> $this->budaya_kerja_id,
+            'elemen_id' => $this->elemen_id,
+            'opsi_id'		=> $this->opsi_sikap,
+            'deskripsi'		=> $this->uraian_sikap,
             'last_sync'			=> now(),
-        ];
-        Nilai_sikap::create($insert_sikap);
+        ]);
         $this->flash('success', 'Nilai Sikap berhasil disimpan', [], '/penilaian/sikap');
     }
 }

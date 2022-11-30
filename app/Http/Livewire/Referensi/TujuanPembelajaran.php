@@ -35,25 +35,10 @@ class TujuanPembelajaran extends Component
     public function render()
     {
         return view('livewire.referensi.tujuan-pembelajaran', [
-            'collection' => Tujuan_pembelajaran::with(['cp.mata_pelajaran'])->where(function($query){
-                $query->whereHas('cp', function($query){
-                    $query->whereHas('mata_pelajaran', function($query){
-                        $query->whereHas('pembelajaran', function($query){
-                            $query->where('guru_id', $this->loggedUser()->guru_id);
-                            $query->whereNotNull('kelompok_id');
-                            $query->where('sekolah_id', session('sekolah_id'));
-                            $query->where('semester_id', session('semester_aktif'));
-                            $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
-                            $query->whereNotNull('kelompok_id');
-                            $query->where('sekolah_id', session('sekolah_id'));
-                            $query->where('semester_id', session('semester_aktif'));
-                        });
-                    });
-                });
-            })->orderBy($this->sortby, $this->sortbydesc)
+            'collection' => Tujuan_pembelajaran::with(['cp.mata_pelajaran'])->where($this->kondisi())->orderBy($this->sortby, $this->sortbydesc)
             ->orderBy('updated_at', $this->sortbydesc)
-                ->when($this->search, function($query) {
-                    $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');
+                ->when($this->search, function($query){
+                    $this->kondisi($this->search);
                     //$query->orWhere('cp.elemen', 'ILIKE', '%' . $this->search . '%');
                     //$query->orWhere('cp.mata_pelajaran.nama', 'ILIKE', '%' . $this->search . '%');
             })->paginate($this->per_page),
@@ -68,8 +53,41 @@ class TujuanPembelajaran extends Component
             ]
         ]);
     }
-    private function loggedUser(){
-        return auth()->user();
+    private function kondisi($search = NULL){
+        $callback = function($query) use ($search){
+            $query->whereHas('cp', function($query){
+                $query->whereHas('mata_pelajaran', function($query){
+                    $query->whereHas('pembelajaran', function($query){
+                        $query->where('guru_id', session('guru_id'));
+                        $query->whereNotNull('kelompok_id');
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->where('semester_id', session('semester_aktif'));
+                        $query->orWhere('guru_pengajar_id', session('guru_id'));
+                        $query->whereNotNull('kelompok_id');
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->where('semester_id', session('semester_aktif'));
+                    });
+                });
+            });
+            if($search){
+                $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');
+            }
+            $query->orWhereHas('kd', function($query){
+                $query->whereHas('pembelajaran', function($query){
+                    $query->where('guru_id', session('guru_id'));
+                    $query->whereNotNull('kelompok_id');
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->orWhere('guru_pengajar_id', session('guru_id'));
+                    $query->whereNotNull('kelompok_id');
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                });
+            });
+            if($search){
+                $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');
+            }
+        };
     }
     public function getId($tp_id, $aksi){
         $this->tp_id = $tp_id;

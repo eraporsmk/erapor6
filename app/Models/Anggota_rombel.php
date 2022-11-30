@@ -110,7 +110,10 @@ class Anggota_rombel extends Model
 		return $this->hasOne(Nilai_akhir::class, 'anggota_rombel_id', 'anggota_rombel_id');
 	}
 	public function nilai_budaya_kerja(){
-		return $this->hasMany(Nilai_budaya_kerja::class, 'anggota_rombel_id', 'anggota_rombel_id');
+		return $this->hasMany(Nilai_budaya_kerja::class, 'anggota_rombel_id', 'anggota_rombel_id')->whereNull('guru_id');
+	}
+	public function nilai_budaya_kerja_guru(){
+		return $this->hasMany(Nilai_budaya_kerja::class, 'anggota_rombel_id', 'anggota_rombel_id')->whereNotNull('guru_id');
 	}
 	public function single_nilai_ekstrakurikuler(){
 		return $this->hasOne(Nilai_ekstrakurikuler::class, 'anggota_rombel_id', 'anggota_rombel_id');
@@ -226,5 +229,11 @@ class Anggota_rombel extends Model
 	}
 	public function tp_inkompeten(){
 		return $this->hasMany(Tp_nilai::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompeten', 0);
+	}
+	public function kd_kompeten(){
+		return $this->hasMany(Kd_nilai::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompeten', 1);
+	}
+	public function kd_inkompeten(){
+		return $this->hasMany(Kd_nilai::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompeten', 0);
 	}
 }

@@ -26,7 +26,12 @@ data-textdirection="{{ env('MIX_CONTENT_DIRECTION') === 'rtl' ? 'rtl' : 'ltr' }}
   {{-- Include core + vendor Styles --}}
   @include('panels/styles')
   <style>
-    /*.blank-page{background:#d2d6de url(images/login-page.png)}*/
+    /*.blank-page{
+      background:#d2d6de url(images/bglogin4.png);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }*/
     .blank-page{background:#fff}
     .judul {color: #1A1B1C !important}
   </style>

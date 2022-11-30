@@ -5,8 +5,9 @@ namespace App\Http\Livewire\Penilaian;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\WithPagination;
 use Livewire\Component;
-use App\Models\Sikap as Sikap_model;
-use App\Models\Nilai_sikap;
+use App\Models\Budaya_kerja;
+use App\Models\Elemen_budaya_kerja;
+use App\Models\Nilai_budaya_kerja;
 
 class Sikap extends Component
 {
@@ -23,9 +24,10 @@ class Sikap extends Component
     public $sortby = 'created_at';
     public $sortbydesc = 'DESC';
     public $per_page = 10;
-    public $nilai_sikap_id;
+    public $nilai_budaya_kerja_id;
     public $data;
-    public $sikap_id;
+    public $budaya_kerja_id;
+    public $elemen_id;
     public $opsi_sikap;
     public $uraian_sikap;
 
@@ -42,7 +44,8 @@ class Sikap extends Component
         ];
         if(!status_penilaian()){
             return view('components.non-aktif', [
-                'all_sikap' => Sikap_model::whereHas('sikap')->with('sikap')->orderBy('sikap_id')->get(),
+                //'all_sikap' => Sikap_model::whereHas('sikap')->with('sikap')->orderBy('sikap_id')->get(),
+                'all_sikap' => [],
                 'breadcrumbs' => $breadcrumbs,
             ]);
         }
@@ -54,19 +57,19 @@ class Sikap extends Component
 			$query->where('semester_id', session('semester_aktif'));
 		};
         return view('livewire.penilaian.sikap', [
-            'collection' => Nilai_sikap::whereHas('anggota_rombel', $callback)->with(['anggota_rombel' => $callback, 'ref_sikap'])
+            'collection' => Nilai_budaya_kerja::whereHas('anggota_rombel', $callback)->where('guru_id', session('guru_id'))->with(['anggota_rombel' => $callback, 'budaya_kerja', 'elemen_budaya_kerja'])
             ->orderBy($this->sortby, $this->sortbydesc)
                 ->when($this->search, function($query) {
-                    $query->where('nama_penilaian', 'ILIKE', '%' . $this->search . '%')
+                    $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');
                     //->orWhere('pembelajaran.nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');
-                    ->orWhereIn('pembelajaran_id', function($query){
-                        $query->select('pembelajaran_id')
+                    /*$query->orWhereIn('peserta_didik_id', function($query){
+                        $query->select('peserta_didik_id')
                         ->from('pembelajaran')
                         ->where('sekolah_id', session('sekolah_id'))
                         ->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');
-                    });
+                    });*/
             })->paginate($this->per_page),
-            'all_sikap' => Sikap_model::whereHas('sikap')->with('sikap')->orderBy('sikap_id')->get(),
+            'all_sikap' => Budaya_kerja::with(['elemen_budaya_kerja'])->get(),
             'breadcrumbs' => $breadcrumbs,
             'tombol_add' => [
                 'wire' => NULL,
@@ -81,15 +84,20 @@ class Sikap extends Component
         return auth()->user();
     }
     public function getID($id){
-        $this->nilai_sikap_id = $id;
-        $this->data = Nilai_sikap::find($this->nilai_sikap_id);
-        $this->sikap_id = $this->data->sikap_id;
-        $this->opsi_sikap = $this->data->getRawOriginal('opsi_sikap');
-        $this->uraian_sikap = $this->data->uraian_sikap;
+        $this->nilai_budaya_kerja_id = $id;
+        $this->data = Nilai_budaya_kerja::with(['budaya_kerja'])->find($this->nilai_budaya_kerja_id);
+        $this->budaya_kerja_id = $this->data->budaya_kerja_id;
+        $this->elemen_id = $this->data->elemen_id;
+        $this->opsi_sikap = $this->data->opsi_id;
+        $this->uraian_sikap = $this->data->deskripsi;
+        $this->dispatchBrowserEvent('data', [
+            'data' => $this->data,
+            'elemen_budaya_kerja' => Elemen_budaya_kerja::where('budaya_kerja_id', $this->budaya_kerja_id)->get()->unique('elemen'),
+        ]);
         $this->emit('show-modal');
     }
     public function delete($id){
-        $this->nilai_sikap_id = $id;
+        $this->nilai_budaya_kerja_id = $id;
         $this->alert('question', 'Apakah Anda yakin?', [
             'text' => 'Tindak ini tidak dapat dikembalikan!',
             'showConfirmButton' => true,
@@ -104,14 +112,15 @@ class Sikap extends Component
     }
     public function confirmed()
     {
-        $a = Nilai_sikap::find($this->nilai_sikap_id);
+        $a = Nilai_sikap::find($this->nilai_budaya_kerja_id);
         $a->delete();
         $this->alert('success', 'Nilai sikap berhasil dihapus');
     }
     public function update(){
-        $this->data->sikap_id = $this->sikap_id;
-        $this->data->opsi_sikap = $this->opsi_sikap;
-        $this->data->uraian_sikap = $this->uraian_sikap;
+        $this->data->budaya_kerja_id = $this->budaya_kerja_id;
+        $this->data->elemen_id = $this->elemen_id;
+        $this->data->opsi_id = $this->opsi_sikap;
+        $this->data->deskripsi = $this->uraian_sikap;
         if($this->data->save()){
             $this->alert('success', 'Berhasil', [
                 'text' => 'Nilai Sikap berhasil diperbaharui',

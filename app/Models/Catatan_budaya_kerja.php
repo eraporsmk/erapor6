@@ -18,4 +18,8 @@ class Catatan_budaya_kerja extends Model
 	public function anggota_rombel(){
 		return $this->hasOne(Anggota_rombel::class, 'anggota_rombel_id', 'anggota_rombel_id');
 	}
+	public function budaya_kerja()
+	{
+		return $this->belongsTo(Budaya_kerja::class, 'budaya_kerja_id', 'budaya_kerja_id');
+	}
 }

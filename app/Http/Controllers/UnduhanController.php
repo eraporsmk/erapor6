@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Rombongan_belajar;
 use App\Models\Pembelajaran;
 use App\Models\Rencana_penilaian;
 use App\Models\Capaian_pembelajaran;
+use App\Models\Kompetensi_dasar;
 use App\Exports\LeggerKDExport;
 use App\Exports\LeggerNilaiAkhirExport;
 use App\Exports\LeggerNilaiRaporExport;
@@ -89,12 +91,20 @@ class UnduhanController extends Controller
 		}
 	}
 	public function template_tp(){
-		if(request()->route('cp_id')){
-			$cp = Capaian_pembelajaran::with(['pembelajaran'])->find(request()->route('cp_id'));
-			$nama_file = 'Template TP '.$cp->elemen.' Mata Pelajaran ' . $cp->pembelajaran->nama_mata_pelajaran;
-			$nama_file = clean($nama_file);
-			$nama_file = $nama_file . '.xlsx';
-			return (new TemplateTp)->query(request()->route('cp_id'))->download($nama_file);
+		if(request()->route('id')){
+			if(Str::isUuid(request()->route('id'))){
+				$kd = Kompetensi_dasar::with(['pembelajaran'])->find(request()->route('id'));
+				$nama_file = 'Template TP '.$kd->id_kompetensi.' Mata Pelajaran ' . $kd->pembelajaran->nama_mata_pelajaran;
+				$nama_file = clean($nama_file);
+				$nama_file = $nama_file . '.xlsx';
+				return (new TemplateTp)->query(request()->route('id'))->download($nama_file);
+			} else {
+				$cp = Capaian_pembelajaran::with(['pembelajaran'])->find(request()->route('id'));
+				$nama_file = 'Template TP '.$cp->elemen.' Mata Pelajaran ' . $cp->pembelajaran->nama_mata_pelajaran;
+				$nama_file = clean($nama_file);
+				$nama_file = $nama_file . '.xlsx';
+				return (new TemplateTp)->query(request()->route('id'))->download($nama_file);
+			}
 		} else {
 			echo 'Akses tidak sah!';
 		}

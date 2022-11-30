@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Laporan;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
+use Illuminate\Support\Str;
 use App\Models\Pembelajaran;
 use App\Models\Rombongan_belajar;
 use App\Models\Anggota_rombel;
@@ -20,6 +21,8 @@ class RaporSemester extends Component
     public $get_siswa;
     public $data_rombongan_belajar = [];
     public $rombongan_belajar;
+    public $merdeka;
+
     public function render()
     {
         $this->semester_id = session('semester_id');
@@ -46,6 +49,7 @@ class RaporSemester extends Component
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                 })->first();
+            $this->merdeka = Str::contains($this->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
         }
     }
     public function preview($anggota_rombel_id){
@@ -106,9 +110,9 @@ class RaporSemester extends Component
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('jenis_rombel', 1);
-                $query->whereHas('kurikulum', function($query){
+                /*$query->whereHas('kurikulum', function($query){
                     $query->where('nama_kurikulum', 'ILIKE', '%REV%');
-                });
+                });*/
             })->get();
             $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $data_rombongan_belajar]);
         }
@@ -123,6 +127,7 @@ class RaporSemester extends Component
         $this->rombongan_belajar = Rombongan_belajar::with([
             'kurikulum'
         ])->find($this->rombongan_belajar_id);
+        $this->merdeka = Str::contains($this->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
         $this->show = TRUE;
     }
     private function check_walas($rombongan_belajar_id = NULL){

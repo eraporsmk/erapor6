@@ -43,9 +43,9 @@
                 </td>
                 <td>
                     @if($form)
-                    <textarea wire:model.lazy="catatan_akademik.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
+                    <textarea wire:model.defer="catatan_akademik.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
                     @else
-                    <textarea wire:model="catatan_akademik.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control" disabled></textarea>
+                    <textarea wire:model.defer="catatan_akademik.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control" disabled></textarea>
                     @endif
                 </td>
             </tr>

@@ -43,6 +43,7 @@ class DataEkstrakurikuler extends Component
     {
         return view('livewire.referensi.data-ekstrakurikuler', [
             'collection' => Ekstrakurikuler::where(function($query){
+                $query->has('rombongan_belajar');
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('semester_id', session('semester_aktif'));
             })->with([
@@ -55,11 +56,20 @@ class DataEkstrakurikuler extends Component
                 }
             ])->orderBy($this->sortby, $this->sortbydesc)
                 ->when($this->search, function($query) {
-                    $query->where('nama_ekskul', 'ILIKE', '%' . $this->search . '%')
-                    ->orWhere('nama_ketua', 'ILIKE', '%' . $this->search . '%')
-                    ->orWhereIn('guru_id', function($query){
+                    $query->where('nama_ekskul', 'ILIKE', '%' . $this->search . '%');
+                    $query->has('rombongan_belajar');
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->orWhere('nama_ketua', 'ILIKE', '%' . $this->search . '%');
+                    $query->has('rombongan_belajar');
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->orWhereIn('guru_id', function($query){
                         $query->select('guru_id')->from('guru')->where('nama', 'ILIKE', '%' . $this->search . '%');
                     });
+                    $query->has('rombongan_belajar');
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
             })->paginate($this->per_page),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Ekstrakurikuler"]

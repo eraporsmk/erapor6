@@ -3,6 +3,7 @@
 		<tr>
 			<th colspan="3">Template Import Tujuan Pembelajaran (TP)</th>
 		</tr>
+		@if($cp)
 		<tr>
 			<th colspan="2">Nama Mata Pelajaran</th>
 			<th>{{$cp->pembelajaran->nama_mata_pelajaran}}</th>
@@ -19,6 +20,25 @@
 			<th colspan="2">Kode CP</th>
 			<th>{{$cp->cp_id}}</th>
 		</tr>
+		@endif
+		@if($kd)
+		<tr>
+			<th colspan="2">Nama Mata Pelajaran</th>
+			<th>{{$kd->pembelajaran->nama_mata_pelajaran}}</th>
+		</tr>
+		<tr>
+			<th colspan="2">Kode Mata Pelajaran</th>
+			<th>{{$kd->pembelajaran->mata_pelajaran_id}}</th>
+		</tr>
+		<tr>
+			<th colspan="2">Kompetensi Dasar</th>
+			<th>{{$kd->kompetensi_dasar}}</th>
+		</tr>
+		<tr>
+			<th colspan="2">Kode Kompetensi Dasar</th>
+			<th>{{$kd->kompetensi_dasar_id}}</th>
+		</tr>
+		@endif
 		<tr>
 			<th colspan="3"></th>
 		</tr>

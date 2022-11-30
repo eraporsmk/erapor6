@@ -138,13 +138,15 @@ Route::middleware([
         Route::get('/template-nilai-akhir/{pembelajaran_id?}', [UnduhanController::class, 'template_nilai_akhir'])->name('template-nilai-akhir');
         Route::get('/template-nilai-kd/{rencana_penilaian_id?}', [UnduhanController::class, 'template_nilai_kd'])->name('template-nilai-kd');
         Route::get('/template-nilai-tp/{rencana_penilaian_id?}', [UnduhanController::class, 'template_nilai_tp'])->name('template-nilai-tp');
-        Route::get('/template-tp/{cp_id?}', [UnduhanController::class, 'template_tp'])->name('template-tp');
+        Route::get('/template-tp/{id?}', [UnduhanController::class, 'template_tp'])->name('template-tp');
     });
     //Route::prefix('wali-kelas')->name('wali-kelas.')->group( function(){
     Route::prefix('wali-kelas')->name('wali-kelas.')->middleware('team:guru')->group( function(){
     //Route::group(['prefix' => 'wali-kelas', 'middleware' => ['role:guru'], 'name' => 'wali-kelas.'], function(){
+        Route::get('/praktik-kerja-lapangan', [EraporController::class, 'pkl'])->name('pkl');
         Route::get('/rapor-nilai-akhir', [EraporController::class, 'rapor_nilai_akhir'])->name('rapor-nilai-akhir');
         Route::get('/prestasi-pd', [EraporController::class, 'prestasi_pd'])->name('wali-kelas.prestasi-pd');
+        Route::get('/catatan-sikap', [EraporController::class, 'catatan_sikap'])->name('wali-kelas.catatan-sikap');
         Route::get('/ketidakhadiran', [EraporController::class, 'ketidakhadiran'])->name('wali-kelas.ketidakhadiran');
         Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekskul'])->name('wali-kelas.nilai-ekstrakurikuler');
         Route::get('/leger', [EraporController::class, 'leger_kurmer'])->name('leger-kurmer');

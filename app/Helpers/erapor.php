@@ -346,3 +346,18 @@ function table_striped(){
     }
     return '';
 }
+function tingkat_kelas($kelas_10, $kelas_11, $kelas_12, $kelas_13){
+    $data = collect([
+        ['kelas' => $kelas_10, 'tingkat' => 10],
+        ['kelas' => $kelas_11, 'tingkat' => 11], 
+        ['kelas' => $kelas_12, 'tingkat' => 12], 
+        ['kelas' => $kelas_13, 'tingkat' => 13]
+    ]);
+    $filtered = $data->filter(function ($value, $key) {
+        //dump($key);
+        //dump($value['kelas']);
+        return $value['kelas'] > 0;
+    });
+    //dd($filtered->all());
+    return $filtered->implode('tingkat', ', ');
+}

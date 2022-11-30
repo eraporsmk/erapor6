@@ -59,7 +59,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" id="deskripsi_ekskul" wire:model="deskripsi_ekskul.{{$siswa->anggota_ekskul->anggota_rombel_id}}">
+                                        <input type="text" class="form-control" id="deskripsi_ekskul" wire:model.defer="deskripsi_ekskul.{{$siswa->anggota_ekskul->anggota_rombel_id}}">
                                     </td>
                                 </tr>
                                 @endforeach

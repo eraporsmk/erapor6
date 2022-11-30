@@ -12,6 +12,7 @@ use Livewire\Component;
 use App\Models\Rombongan_belajar;
 use App\Models\Pembelajaran;
 use App\Models\Capaian_pembelajaran;
+use App\Models\Kompetensi_dasar;
 use App\Models\Tujuan_pembelajaran;
 use Storage;
 
@@ -20,12 +21,20 @@ class TambahTp extends Component
     use WithFileUploads, LivewireAlert;
     public $semester_id;
     public $tingkat;
+    public $jenis_rombel;
     public $rombongan_belajar_id;
     public $mata_pelajaran_id;
+    public $kompetensi_id;
     public $cp_id;
+    public $kd_id;
+    public $merdeka;
+    /*
     public $data_rombongan_belajar = [];
     public $data_pembelajaran = [];
     public $data_cp = [];
+    public $data_kd = [];*/
+    public $show_tp = FALSE;
+    public $show_kd = FALSE;
     public $show = FALSE;
     public $template_excel;
 
@@ -67,16 +76,82 @@ class TambahTp extends Component
             ]
         ]);
     }
-    public function changeTingkat(){
-        $this->reset(['data_rombongan_belajar', 'data_pembelajaran', 'data_cp', 'show']);
-        if($this->tingkat){
-            $this->data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
+    public function updatedTingkat(){
+        $this->reset(['jenis_rombel', 'rombongan_belajar_id', 'mata_pelajaran_id', 'kompetensi_id', 'cp_id', 'kd_id', 'merdeka', 'show_tp', 'show_kd', 'show', 'template_excel']);
+        $this->dispatchBrowserEvent('tingkat', ['tingkat' => 'tingkat']);
+    }
+    public function updatedJenisRombel(){
+        $this->reset(['rombongan_belajar_id', 'mata_pelajaran_id', 'kompetensi_id', 'cp_id', 'kd_id', 'merdeka', 'show_tp', 'show_kd', 'show', 'template_excel']);
+        if($this->jenis_rombel){
+            $data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
                 $query->where('tingkat', $this->tingkat);
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
-                //$query->where('jenis_rombel', 1);
+                $query->where('jenis_rombel', $this->jenis_rombel);
                 $query->whereHas('pembelajaran', $this->kondisi());
             })->get();
+            $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $data_rombongan_belajar]);
+        }
+    }
+    public function updatedRombonganBelajarId(){
+        $this->reset(['mata_pelajaran_id', 'kompetensi_id', 'cp_id', 'kd_id', 'merdeka', 'show_tp', 'show_kd', 'show', 'template_excel']);
+        if($this->rombongan_belajar_id){
+            $rombel = Rombongan_belajar::find($this->rombongan_belajar_id);
+            $this->merdeka = Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka');
+            $data_pembelajaran = Pembelajaran::where($this->kondisi())->orderBy('mata_pelajaran_id', 'asc')->get();
+            $this->dispatchBrowserEvent('data_pembelajaran', ['data_pembelajaran' => $data_pembelajaran]);
+        }
+    }
+    public function updatedMataPelajaranId(){
+        $this->reset(['kompetensi_id', 'cp_id', 'kd_id', 'show_tp', 'show_kd', 'show', 'template_excel']);
+        if($this->mata_pelajaran_id){
+            $pembelajaran = Pembelajaran::where(function($query){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+            })->first();
+            if($this->merdeka){
+                if($this->mata_pelajaran_id){
+                    $fase = 'F';
+                    if($this->tingkat == 10){
+                        $fase = 'E';
+                    }
+                    $data_cp = Capaian_pembelajaran::where('mata_pelajaran_id', $this->mata_pelajaran_id)->where('fase', $fase)->where('aktif', 1)->orderBy('cp_id')->get();
+                    $this->dispatchBrowserEvent('data_cp', ['data_cp' => $data_cp]);
+                    $this->show_tp = TRUE;
+                }
+            } else {
+                if($this->mata_pelajaran_id){
+                    $this->show_kd = TRUE;
+                }
+            }
+            $this->dispatchBrowserEvent('pharaonic.select2.init');
+        }
+    }
+    public function updatedKompetensiId(){
+        $this->reset(['cp_id', 'kd_id', 'show', 'template_excel']);
+        if($this->kompetensi_id){
+            $data_kd = Kompetensi_dasar::where(function($query){
+                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                $query->where('kelas_'.$this->tingkat, 1);
+                $query->where('kompetensi_id', $this->kompetensi_id);
+                $query->where('aktif', 1);
+            })->orderBy('id_kompetensi')->get();
+            $this->dispatchBrowserEvent('data_kd', ['data_kd' => $data_kd]);
+            $this->dispatchBrowserEvent('pharaonic.select2.init');
+        }
+    }
+    public function updatedCpId(){
+        $this->reset(['kd_id', 'show', 'template_excel']);
+        if($this->cp_id){
+            $this->show = TRUE;
+        }
+    }
+    public function updatedKdId(){
+        $this->reset(['cp_id', 'show', 'template_excel']);
+        if($this->kd_id){
+            $this->show = TRUE;
         }
     }
     private function kondisi(){
@@ -87,29 +162,13 @@ class TambahTp extends Component
             $query->where('guru_id', $this->loggedUser()->guru_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereHas('rombongan_belajar', function($query){
-                $query->whereHas('kurikulum', function($query){
-                    $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
-                });
-            });
             $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereHas('rombongan_belajar', function($query){
-                $query->whereHas('kurikulum', function($query){
-                    $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
-                });
-            });
         };
-    }
-    public function changeRombel(){
-        $this->reset(['data_pembelajaran', 'data_cp', 'show']);
-        if($this->rombongan_belajar_id){
-            $this->data_pembelajaran = Pembelajaran::where($this->kondisi())->orderBy('mata_pelajaran_id', 'asc')->get();
-        }
     }
     public function changeMapel(){
         $this->reset(['data_cp', 'show']);
@@ -137,24 +196,10 @@ class TambahTp extends Component
             ]
         );
         $file_path = $this->template_excel->store('files', 'public');
-        //return (new LeggerKDExport)->query(request()->route('rombongan_belajar_id'))->download($nama_file);
-        Excel::import(new TemplateTp($this->mata_pelajaran_id, $this->cp_id), storage_path('/app/public/'.$file_path));
-        /*$imported_data = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
-        $collection = collect($imported_data);
-        dd($collection);
-        foreach($collection as $nilai){
-            dd($nilai);
-            //Tujuan_pembelajaran::create();
-        }*/
+        $id = ($this->cp_id) ?? $this->kd_id;
+        Excel::import(new TemplateTp($this->mata_pelajaran_id, $id), storage_path('/app/public/'.$file_path));
         Storage::disk('public')->delete($file_path);
         $this->flash('success', 'Data Tujuan Pembelajaran (TP) berhasil disimpan!', [], '/referensi/tujuan-pembelajaran');
-        /*$this->alert('success', 'Data Tujuan Pembelajaran (TP) berhasil disimpan!', [
-            'showConfirmButton' => true,
-            'confirmButtonText' => 'OK',
-            'onConfirmed' => 'confirmed',
-            'allowOutsideClick' => false,
-            'timer' => null
-        ]);*/
     }
     
     public function confirmed(){

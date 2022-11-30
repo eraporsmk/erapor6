@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Penilaian;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use Livewire\Component;
 use App\Models\Rombongan_belajar;
@@ -11,30 +12,40 @@ use App\Models\Pembelajaran;
 use App\Models\Rencana_penilaian;
 use App\Models\Anggota_rombel;
 use App\Models\Peserta_didik;
-use App\Models\Kd_nilai;
 use App\Models\Nilai;
 use App\Models\Nilai_remedial;
 use App\Models\Nilai_akhir;
 use App\Models\Deskripsi_mata_pelajaran;
 use App\Models\Tujuan_pembelajaran;
+use App\Models\Kompetensi_dasar;
 use App\Models\Tp_nilai;
+use App\Models\Kd_nilai;
 use Storage;
 
 class NilaiAkhir extends Component
 {
     use LivewireAlert, WithFileUploads;
+    public $show = FALSE;
     public $semester_id;
     public $tingkat;
+    public $jenis_rombel;
     public $rombongan_belajar_id;
     public $mata_pelajaran_id;
-    public $kompetensi_id;
+    public $pembelajaran_id;
+    public $merdeka;
+    public $data_siswa = [];
+    public $data_tp = [];
+    public $tp_dicapai = [];
+    public $tp_belum_dicapai = [];
+    public $data_kd = [];
+    public $kd_dicapai = [];
+    public $kd_belum_dicapai = [];
+    public $nilai = [];
+    /*public $kompetensi_id;
     public $data_rombongan_belajar;
     public $data_pembelajaran;
-    public $pembelajaran_id;
-    public $show = FALSE;
-    public $data_siswa = [];
     public $kd_nilai = [];
-    public $nilai = [];
+    
     public $rerata = [];
     public $remedial = [];
     public $deskripsi_dicapai = [];
@@ -43,9 +54,7 @@ class NilaiAkhir extends Component
     public $kompetensi_dasar_id;
     public $class_input = [];
     public $template_excel;
-    public $data_tp = [];
-    public $tp_dicapai;
-    public $tp_belum_dicapai;
+    */
 
     public function render()
     {
@@ -65,25 +74,6 @@ class NilaiAkhir extends Component
     public function loggedUser(){
         return auth()->user();
     }
-    public function changeTingkat(){
-        $this->pembelajaran = NULL;
-        $this->rombongan_belajar_id = NULL;
-        if($this->tingkat){
-            $this->data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
-                $query->where('tingkat', $this->tingkat);
-                $query->where('semester_id', session('semester_aktif'));
-                $query->where('sekolah_id', session('sekolah_id'));
-                //$query->whereIn('jenis_rombel', [1, 16]);
-                $query->whereHas('pembelajaran', $this->kondisi());
-            })->get();
-            $this->data_pembelajaran = NULL;
-            $this->data_rencana = NULL;
-        } else {
-            $this->data_rombongan_belajar = NULL;
-            $this->data_pembelajaran = NULL;
-            $this->data_rencana = NULL;
-        }
-    }
     private function kondisi(){
         return function($query){
             if($this->rombongan_belajar_id){
@@ -100,33 +90,76 @@ class NilaiAkhir extends Component
             $query->whereNotNull('no_urut');
         };
     }
-    public function changeRombel(){
-        if($this->rombongan_belajar_id){
-            $this->data_pembelajaran = Pembelajaran::where($this->kondisi())->orderBy('mata_pelajaran_id', 'asc')->get();
-        } else {
-            $this->data_pembelajaran = NULL;
-        }
-        $this->mata_pelajaran_id = NULL;
+    public function updatedTingkat(){
+        $this->reset(['jenis_rombel', 'show', 'merdeka', 'rombongan_belajar_id', 'pembelajaran_id', 'mata_pelajaran_id', 'data_siswa', 'data_tp', 'data_kd', 'tp_dicapai', 'tp_belum_dicapai', 'kd_dicapai', 'kd_belum_dicapai', 'nilai']);
+        $this->dispatchBrowserEvent('tingkat', ['tingkat' => 'tingkat']);
     }
-    public function changePembelajaran(){
-        $this->reset(['pembelajaran_id', 'data_siswa', 'show', 'nilai', 'tp_dicapai', 'tp_belum_dicapai']);
+    public function updatedJenisRombel(){
+        $this->reset(['show', 'merdeka', 'rombongan_belajar_id', 'pembelajaran_id', 'mata_pelajaran_id', 'data_siswa', 'data_tp', 'data_kd', 'tp_dicapai', 'tp_belum_dicapai', 'kd_dicapai', 'kd_belum_dicapai', 'nilai']);
+        if($this->jenis_rombel){
+            $data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
+                $query->where('tingkat', $this->tingkat);
+                $query->where('semester_id', session('semester_aktif'));
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('jenis_rombel', $this->jenis_rombel);
+                $query->whereHas('pembelajaran', $this->kondisi());
+            })->get();
+            $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $data_rombongan_belajar]);
+        }
+    }
+    public function updatedRombonganBelajarId(){
+        $this->reset(['show', 'merdeka', 'mata_pelajaran_id', 'pembelajaran_id', 'data_siswa', 'data_tp', 'data_kd', 'tp_dicapai', 'tp_belum_dicapai', 'kd_dicapai', 'kd_belum_dicapai', 'nilai']);
+        if($this->rombongan_belajar_id){
+            $rombel = Rombongan_belajar::find($this->rombongan_belajar_id);
+            $this->merdeka = Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka');
+            $data_pembelajaran = Pembelajaran::where($this->kondisi())->orderBy('mata_pelajaran_id', 'asc')->get();
+            $this->dispatchBrowserEvent('data_pembelajaran', ['data_pembelajaran' => $data_pembelajaran]);
+        }
+    }
+    public function updatedMataPelajaranId(){
+        $this->reset(['show', 'pembelajaran_id', 'data_siswa', 'data_tp', 'data_kd', 'tp_dicapai', 'tp_belum_dicapai', 'kd_dicapai', 'kd_belum_dicapai', 'nilai']);
         if($this->mata_pelajaran_id){
-            $this->data_tp = Tujuan_pembelajaran::whereHas('cp', function($query){
+            $pembelajaran = Pembelajaran::where(function($query){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
-            })->orderBy('created_at')->get();
-            $pembelajaran = Pembelajaran::where('rombongan_belajar_id', $this->rombongan_belajar_id)->where('mata_pelajaran_id', $this->mata_pelajaran_id)->first();
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+            })->first();
             $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
             $this->getSiswa();
-            foreach($this->data_siswa as $data_siswa){
-                $this->nilai[$data_siswa->anggota_rombel->anggota_rombel_id] = ($data_siswa->anggota_rombel->nilai_akhir_mapel) ? $data_siswa->anggota_rombel->nilai_akhir_mapel->nilai : NULL;
-                foreach($data_siswa->anggota_rombel->tp_kompeten as $tp_kompeten){
-                    $this->tp_dicapai[$data_siswa->anggota_rombel->anggota_rombel_id][$tp_kompeten->tp_id] = $tp_kompeten->tp_id;
-                }
-                foreach($data_siswa->anggota_rombel->tp_inkompeten as $tp_inkompeten){
-                    $this->tp_belum_dicapai[$data_siswa->anggota_rombel->anggota_rombel_id][$tp_inkompeten->tp_id] = $tp_inkompeten->tp_id;
-                }
-            }
             $this->show = TRUE;
+            $this->getSiswa();
+            foreach($this->data_siswa as $siswa){
+                foreach($siswa->anggota_rombel->tp_kompeten as $tp_kompeten){
+                    $this->tp_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp_kompeten->tp_id] = $tp_kompeten->tp_id;
+                }
+                foreach($siswa->anggota_rombel->tp_inkompeten as $tp_inkompeten){
+                    $this->tp_belum_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp_inkompeten->tp_id] = $tp_inkompeten->tp_id;
+                }
+                $this->nilai[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : '';
+            }
+            $this->dispatchBrowserEvent('data_siswa', ['data_siswa' => 'data_siswa']);
+            //$data_rencana = Rencana_penilaian::select('rencana_penilaian_id', 'pembelajaran_id', 'kompetensi_id', 'nama_penilaian')->where('pembelajaran_id', $pembelajaran->pembelajaran_id)->where('kompetensi_id', $this->kompetensi_id)->get();
+            //$this->dispatchBrowserEvent('data_rencana', ['data_rencana' => $data_rencana]);
+        }
+    }
+    private function wherehas($query){
+        if($this->merdeka){
+            $query->whereHas('tp', function($query){
+                $query->whereHas('cp', function($query){
+                    $query->whereHas('pembelajaran', function($query){
+                        $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                        $query->where($this->kondisi());
+                    });
+                });
+            });
+        } else {
+            $query->whereHas('kd', function($query){
+                $query->whereHas('pembelajaran', function($query){
+                    $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                    $query->where($this->kondisi());
+                });
+            });
         }
     }
     private function getSiswa(){
@@ -134,34 +167,22 @@ class NilaiAkhir extends Component
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             $query->with([
                 'tp_kompeten' => function($query){
-                    $query->whereHas('tp', function($query){
-                        $query->whereHas('cp', function($query){
-                            $query->whereHas('pembelajaran', function($query){
-                                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
-                                $query->where($this->kondisi());
-                            });
-                        });
-                    });
-                    //$query->with('tp');
+                    $this->wherehas($query);
                 },
                 'tp_inkompeten' => function($query){
-                    $query->whereHas('tp', function($query){
-                        $query->whereHas('cp', function($query){
-                            $query->whereHas('pembelajaran', function($query){
-                                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
-                                $query->where($this->kondisi());
-                            });
-                        });
-                    });
-                    //$query->with('tp');
+                    $this->wherehas($query);
                 },
                 'nilai_akhir_mapel' => function($query){
-                    $query->where('kompetensi_id', 4);
-                    //$query->where('pembelajaran_id', $this->pembelajaran_id);
-                    $query->whereHas('pembelajaran', function($query){
+                    if($this->merdeka){
+                        $query->where('kompetensi_id', 4);
+                    } else {
+                        $query->where('kompetensi_id', 1);
+                    }
+                    $query->where('pembelajaran_id', $this->pembelajaran_id);
+                    /*$query->whereHas('pembelajaran', function($query){
                         $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
                         $query->where($this->kondisi());
-                    });
+                    });*/
                 }
             ]);
         };
@@ -172,8 +193,32 @@ class NilaiAkhir extends Component
                 $query->where('agama_id', $get_mapel_agama);
             }
         })->with(['anggota_rombel' => $callback])->orderBy('nama')->get();
+        if($this->merdeka){
+            $this->data_tp = Tujuan_pembelajaran::whereHas('cp', function($query){
+                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+            })->orderBy('created_at')->get();
+        } else {
+            /*$this->data_kd = Kompetensi_dasar::where(function($query){
+                $query->where('kelas_'.$this->tingkat, 1);
+                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                $query->where('aktif', 1);
+            })->orderBy('id_kompetensi')->get();*/
+            $this->data_tp = Tujuan_pembelajaran::whereHas('kd', function($query){
+                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+            })->orderBy('created_at')->get();
+        }
     }
     public function store(){
+        $this->validate(
+            [
+                'nilai.*' => 'nullable|numeric|min:0|max:100'
+            ],
+            [
+                'nilai.*.numeric' => 'Nilai harus berupa angka!',
+                'nilai.*.min' => 'Nilai tidak boleh di bawah 0 (nol)!',
+                'nilai.*.max' => 'Nilai tidak boleh di atas 100 (seratus)!',
+            ]
+        );
         foreach($this->nilai as $anggota_rombel_id => $nilai_akhir){
             if($nilai_akhir > -1){
                 Nilai_akhir::updateOrCreate(
@@ -181,53 +226,70 @@ class NilaiAkhir extends Component
                         'sekolah_id' => session('sekolah_id'),
                         'anggota_rombel_id' => $anggota_rombel_id,
                         'pembelajaran_id' => $this->pembelajaran_id,
-                        'kompetensi_id' => 4,
+                        'kompetensi_id' => ($this->merdeka) ? 4 : 1,
                     ],
                     [
-                        'nilai' => $nilai_akhir,
+                        'nilai' => ($nilai_akhir) ? $nilai_akhir : 0,
                     ]
                 );
-                $tp_id = [];
-                if(isset($this->tp_dicapai[$anggota_rombel_id])){
-                    foreach(array_filter($this->tp_dicapai[$anggota_rombel_id]) as $tp_dicapai){
-                        $tp = Tujuan_pembelajaran::find($tp_dicapai);
-                        $tp_id[] = $tp_dicapai;
-                        Tp_nilai::updateOrCreate(
-                            [
-                                'sekolah_id' => session('sekolah_id'),
-                                'anggota_rombel_id' => $anggota_rombel_id,
-                                'tp_id' => $tp_dicapai,
-                                'kompeten' => 1,
-                            ],
-                            [
-                                'cp_id' => $tp->cp_id,
-                            ]
-                        );
-                    }
-                }
-                $this->hapus_tp_nilai($tp_id, $anggota_rombel_id, 1);
-                $tp_id = [];
-                if(isset($this->tp_belum_dicapai[$anggota_rombel_id])){
-                    foreach(array_filter($this->tp_belum_dicapai[$anggota_rombel_id]) as $tp_belum_dicapai){
-                        $tp = Tujuan_pembelajaran::find($tp_belum_dicapai);
-                        $tp_id[] = $tp_belum_dicapai;
-                        Tp_nilai::updateOrCreate(
-                            [
-                                'sekolah_id' => session('sekolah_id'),
-                                'anggota_rombel_id' => $anggota_rombel_id,
-                                'tp_id' => $tp_belum_dicapai,
-                                'kompeten' => 0,
-                            ],
-                            [
-                                'cp_id' => $tp->cp_id,
-                            ]
-                        );
-                    }
-                }
-                $this->hapus_tp_nilai($tp_id, $anggota_rombel_id, 0);
+                $this->simpan_tp_nilai($anggota_rombel_id);
             }
         }
         $this->flash('success', 'Nilai Akhir berhasil disimpan', [], '/penilaian/nilai-akhir');
+    }
+    private function simpan_tp_nilai($anggota_rombel_id){
+        $tp_id = [];
+        if(isset($this->tp_dicapai[$anggota_rombel_id])){
+            foreach(array_filter($this->tp_dicapai[$anggota_rombel_id]) as $tp_dicapai){
+                $tp_id[] = $tp_dicapai;
+                $tp = Tujuan_pembelajaran::find($tp_dicapai);
+                if($this->merdeka){
+                    $update = [
+                        'cp_id' => $tp->cp_id,
+                    ];
+                } else {
+                    $update = [
+                        'kd_id' => $tp->kd_id,
+                    ];
+                }
+                Tp_nilai::updateOrCreate(
+                    [
+                        'sekolah_id' => session('sekolah_id'),
+                        'anggota_rombel_id' => $anggota_rombel_id,
+                        'tp_id' => $tp_dicapai,
+                        'kompeten' => 1,
+                    ],
+                    $update
+                );
+            }
+        }
+        $this->hapus_tp_nilai($tp_id, $anggota_rombel_id, 1);
+        $tp_id = [];
+        if(isset($this->tp_belum_dicapai[$anggota_rombel_id])){
+            foreach(array_filter($this->tp_belum_dicapai[$anggota_rombel_id]) as $tp_belum_dicapai){
+                $tp_id[] = $tp_belum_dicapai;
+                $tp = Tujuan_pembelajaran::find($tp_belum_dicapai);
+                if($this->merdeka){
+                    $update = [
+                        'cp_id' => $tp->cp_id,
+                    ];
+                } else {
+                    $update = [
+                        'kd_id' => $tp->kd_id,
+                    ];
+                }
+                Tp_nilai::updateOrCreate(
+                    [
+                        'sekolah_id' => session('sekolah_id'),
+                        'anggota_rombel_id' => $anggota_rombel_id,
+                        'tp_id' => $tp_belum_dicapai,
+                        'kompeten' => 0,
+                    ],
+                    $update
+                );
+            }
+        }
+        $this->hapus_tp_nilai($tp_id, $anggota_rombel_id, 0);
     }
     public function updatedTpDicapai(){
         $this->getSiswa();
@@ -236,13 +298,21 @@ class NilaiAkhir extends Component
         $this->getSiswa();
     }
     private function hapus_tp_nilai($tp_id, $anggota_rombel_id, $kompeten){
-        Tp_nilai::where('anggota_rombel_id', $anggota_rombel_id)->where('kompeten', $kompeten)->whereNotIn('tp_id', $tp_id)->whereHas('tp', function($query){
-            $query->whereHas('cp', function($query){
-                $query->whereHas('pembelajaran', function($query){
-                    $query->where($this->kondisi());
+        if($this->merdeka){
+            Tp_nilai::where('anggota_rombel_id', $anggota_rombel_id)->where('kompeten', $kompeten)->whereNotIn('tp_id', $tp_id)->whereHas('tp', function($query){
+                $query->whereHas('cp', function($query){
+                    $query->whereHas('pembelajaran', function($query){
+                        $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                    });
                 });
-            });
-        })->delete();
+            })->delete();
+        } else {
+            Tp_nilai::where('anggota_rombel_id', $anggota_rombel_id)->where('kompeten', $kompeten)->whereNotIn('tp_id', $tp_id)->whereHas('kd', function($query){
+                $query->whereHas('pembelajaran', function($query){
+                    $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                });
+            })->delete();
+        }
     }
     public function updatedTemplateExcel()
     {

@@ -15,4 +15,7 @@ class Budaya_kerja extends Model
     public function elemen_budaya_kerja(){
         return $this->hasMany(Elemen_budaya_kerja::class, 'budaya_kerja_id', 'budaya_kerja_id');
     }
+    public function catatan_budaya_kerja(){
+        return $this->hasOne(Catatan_budaya_kerja::class, 'budaya_kerja_id', 'budaya_kerja_id');
+    }
 }

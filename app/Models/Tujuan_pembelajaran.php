@@ -19,4 +19,8 @@ class Tujuan_pembelajaran extends Model
     {
         return $this->belongsTo(Capaian_pembelajaran::class, 'cp_id', 'cp_id');
     }
+    public function kd()
+    {
+        return $this->belongsTo(Kompetensi_dasar::class, 'kd_id', 'kompetensi_dasar_id');
+    }
 }

@@ -9,7 +9,8 @@
                         <tr>
                             <th class="text-center">Nama PD</th>
                             <th class="text-center">Rombel</th>
-                            <th class="text-center">Butir Sikap</th>
+                            <th class="text-center">Dimensi Sikap</th>
+                            <th class="text-center">Elemen Sikap</th>
                             <th class="text-center">Opsi Sikap</th>
                             <th class="text-center">Uraian Sikap</th>
                             <th class="text-center">Aksi</th>
@@ -21,17 +22,18 @@
                             <tr>
                                 <td class="align-top">{{$item->anggota_rombel->peserta_didik->nama}}</td>
                                 <td class="align-top">{{$item->anggota_rombel->rombongan_belajar->nama}}</td>
-                                <td class="align-top">{{$item->ref_sikap->butir_sikap}}</td>
-                                <td class="align-top">{{$item->opsi_sikap}}</td>
-                                <td class="align-top">{{$item->uraian_sikap}}</td>
+                                <td class="align-top">{{$item->budaya_kerja->aspek}}</td>
+                                <td class="align-top">{{$item->elemen_budaya_kerja->elemen}}</td>
+                                <td class="align-top text-center">{{($item->opsi_id == 1) ? 'Positif' : 'Negatif'}}</td>
+                                <td class="align-top">{{$item->deskripsi}}</td>
                                 <td class="text-center align-top">
                                     <div class="btn-group dropstart">
                                         <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                         Aksi
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="btnGroupDrop1">
-                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->nilai_sikap_id}}')" title="Edit Data"><i class="fas fa-pencil"></i> Edit</a></li>
-                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="delete('{{$item->nilai_sikap_id}}')" title="Hapus Data"><i class="fas fa-trash"></i> Hapus</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="getID('{{$item->nilai_budaya_kerja_id}}')" title="Edit Data"><i class="fas fa-pencil"></i> Edit</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)" wire:click="delete('{{$item->nilai_budaya_kerja_id}}')" title="Hapus Data"><i class="fas fa-trash"></i> Hapus</a></li>
                                         </ul>
                                     </div>
                                 </td>

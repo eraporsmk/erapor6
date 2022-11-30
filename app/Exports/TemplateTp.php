@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Illuminate\Support\Str;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -9,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use App\Models\Capaian_pembelajaran;
+use App\Models\Kompetensi_dasar;
 
 class TemplateTp implements FromView, WithColumnWidths, WithEvents
 {
@@ -47,17 +49,24 @@ class TemplateTp implements FromView, WithColumnWidths, WithEvents
         ];
     }
 
-    public function query($cp_id)
+    public function query($id)
     {
-        $this->cp_id = $cp_id;
+        $this->id = $id;
         return $this;
     }
 	public function view(): View
     {
-        $cp = Capaian_pembelajaran::with(['pembelajaran.rombongan_belajar'])->find($this->cp_id);
-        $params = array(
+        $cp = NULL;
+        $kd = NULL;
+        if(Str::isUuid($this->id)){
+            $kd = Kompetensi_dasar::with(['pembelajaran'])->find($this->id);
+        } else {
+            $cp = Capaian_pembelajaran::with(['pembelajaran.rombongan_belajar'])->find($this->id);
+        }
+        $params = [
 			'cp' => $cp,
-		);
+            'kd' => $kd
+        ];
         return view('content.unduhan.template_tp', $params);
     }
 }
