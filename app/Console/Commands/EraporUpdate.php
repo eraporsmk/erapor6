@@ -4,6 +4,9 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use File;
+use Storage;
+use App\Models\Gelar;
+use App\Models\Guru;
 use App\Models\Setting;
 use App\Models\Tahun_ajaran;
 use App\Models\Semester;
@@ -12,6 +15,7 @@ use App\Models\Team;
 use App\Models\Role;
 use App\Models\Permission;
 use App\Models\Jabatan_ptk;
+use App\Models\Capaian_pembelajaran;
 
 class EraporUpdate extends Command
 {
@@ -46,6 +50,16 @@ class EraporUpdate extends Command
      */
     public function handle()
     {
+        if(!File::isDirectory(public_path('storage'))){
+            $this->call('storage:link');
+        } else {
+            $symlink = readlink(public_path('storage'));
+            $storage = public_path('storage');
+            if($symlink == $storage){
+                File::deleteDirectory($storage);
+                $this->call('storage:link');
+            }
+        }
         $roles = Role::get();
         foreach($roles as $role){
             $permissions = Permission::firstOrCreate([
@@ -58,19 +72,20 @@ class EraporUpdate extends Command
         $version = File::get(base_path().'/app_version.txt');
         $db_version = File::get(base_path().'/db_version.txt');
         $this->call('migrate');
-        if(!Jabatan_ptk::count()){
-            $this->call('db:seed', ['class' => 'JabatanPtkSeeder']);
-        }
         $this->call('cache:clear');
         $this->call('view:clear');
         $this->call('config:cache');
+        if(!Jabatan_ptk::count()){
+            $this->call('db:seed', ['class' => 'JabatanPtkSeeder']);
+        }
+        if(!Gelar::count()){
+            $this->call('db:seed', ['class' => 'GelarSeeder']);
+        }
         $this->info('Menambah referensi Mata Pelajaran');
         $this->call('custom:ref');
         $this->info('Menambah referensi CP');
         $this->call('ref:cp');
-        if(!File::isDirectory(public_path('storage'))){
-            $this->call('storage:link');
-        }
+            
         $ajaran = [
             [
                 'tahun_ajaran_id' => 2020,
@@ -177,6 +192,19 @@ class EraporUpdate extends Command
                 }
             }
         }
+        Semester::where('semester_id', '<>', '20221')->update(['periode_aktif' => 0]);
+        $guru = Guru::whereRaw('guru_id <> guru_id_dapodik')->first();
+        if($guru){
+            $semester = Semester::where('periode_aktif', 1)->first();
+            $users = User::whereRoleIs('admin', $semester->nama)->get();
+            foreach($users as $user){
+                $this->info('Proses update data GTK ('.$user->sekolah->nama.')');
+                $this->call('update:guru', ['sekolah_id' => $user->sekolah_id, 'semester_id' => $semester->semester_id]);
+                $this->info('Proses update data Peserta Didik ('.$user->sekolah->nama.')');
+                $this->call('update:siswa', ['sekolah_id' => $user->sekolah_id]);
+            }
+            $this->call('hapus:ganda');
+        }
         Setting::updateOrCreate(
             [
                 'key' => 'app_version',
@@ -193,16 +221,6 @@ class EraporUpdate extends Command
                 'value' => $db_version,
             ]
         );
-        Semester::where('semester_id', '<>', '20221')->update(['periode_aktif' => 0]);
-        $semester = Semester::where('periode_aktif', 1)->first();
-        $users = User::whereRoleIs('admin', $semester->nama)->get();
-        foreach($users as $user){
-            $this->info('Proses update data GTK ('.$user->sekolah->nama.')');
-            $this->call('update:guru', ['sekolah_id' => $user->sekolah_id, 'semester_id' => $semester->semester_id]);
-            $this->info('Proses update data Peserta Didik ('.$user->sekolah->nama.')');
-            $this->call('update:siswa', ['sekolah_id' => $user->sekolah_id]);
-        }
-        $this->call('hapus:ganda');
         $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi '.$version);
     }
 }

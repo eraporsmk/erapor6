@@ -39,7 +39,12 @@
 			<td>{{$siswa->nisn}}</td>
 			@foreach($all_pembelajaran as $pembelajaran)
 			<?php
-			$nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $siswa->anggota_rombel->anggota_rombel_id)->first();
+			//$nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $siswa->anggota_rombel->anggota_rombel_id)->first();
+			if($merdeka){
+				$nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+			} else {
+				$nilai = $pembelajaran->nilai_akhir_pengetahuan()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+			}
 			?>
 			<td>{{($nilai) ? $nilai->nilai : '-'}}</td>
 			@endforeach

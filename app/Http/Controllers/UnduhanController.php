@@ -38,10 +38,11 @@ class UnduhanController extends Controller
     }
 	public function unduh_leger_nilai_kurmer(){
         $rombongan_belajar = Rombongan_belajar::find(request()->route('rombongan_belajar_id'));
+		$merdeka = Str::contains($rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
 		$nama_file = 'Leger Nilai Akhir Kelas ' . $rombongan_belajar->nama;
 		$nama_file = clean($nama_file);
 		$nama_file = $nama_file . '.xlsx';
-		return (new LeggerNilaiKurmerExport)->query(request()->route('rombongan_belajar_id'))->download($nama_file);
+		return (new LeggerNilaiKurmerExport)->query(request()->route('rombongan_belajar_id'), $merdeka)->download($nama_file);
     }
     public function unduh_leger_nilai_rapor(){
         $rombongan_belajar = Rombongan_belajar::find(request()->route('rombongan_belajar_id'));
@@ -53,10 +54,25 @@ class UnduhanController extends Controller
 	public function template_nilai_akhir(){
 		if(request()->route('pembelajaran_id')){
 			$pembelajaran = Pembelajaran::find(request()->route('pembelajaran_id'));
-			$nama_file = 'Template Nilai Akhir Mata Pelajaran ' . $pembelajaran->nama_mata_pelajaran;
+			$merdeka = Str::contains($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
+			$nama_file = 'Template Nilai Akhir Mata Pelajaran ' . $pembelajaran->nama_mata_pelajaran. ' Kelas '.$pembelajaran->rombongan_belajar->nama;
 			$nama_file = clean($nama_file);
-			$nama_file = $nama_file . '.xlsx';
-			return (new TemplateNilaiAkhir)->query(request()->route('pembelajaran_id'), $pembelajaran->rombongan_belajar_id)->download($nama_file);
+			$data = [
+				'pembelajaran_id' => request()->route('pembelajaran_id'), 
+				'rombongan_belajar_id' => $pembelajaran->rombongan_belajar_id, 
+				'merdeka' => $merdeka, 
+				'nama_mata_pelajaran' => $pembelajaran->nama_mata_pelajaran,
+				'kelas' => $pembelajaran->rombongan_belajar->nama,
+			];
+			$export = new TemplateNilaiAkhir($data);
+			return Excel::download($export, $nama_file . '.xlsx');
+			return (new TemplateNilaiAkhir)->query([
+				'pembelajaran_id' => request()->route('pembelajaran_id'), 
+				'rombongan_belajar_id' => $pembelajaran->rombongan_belajar_id, 
+				'merdeka' => $merdeka, 
+				'nama_mata_pelajaran' => $pembelajaran->nama_mata_pelajaran,
+				'kelas' => $pembelajaran->rombongan_belajar->nama,
+			])->download($nama_file . '.xlsx');
 		} else {
 			echo 'Akses tidak sah!';
 		}

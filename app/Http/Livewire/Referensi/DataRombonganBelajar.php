@@ -106,7 +106,7 @@ class DataRombonganBelajar extends Component
         $this->getPengajar();
         $this->getKelompok($kurikulum);
         $this->getRombel();
-        $this->pembelajaran = Pembelajaran::where('rombongan_belajar_id', $rombongan_belajar_id)->whereNull('induk_pembelajaran_id')->orderBy('kelompok_id')->orderBy('no_urut')->orderBy('mata_pelajaran_id')->get();
+        $this->pembelajaran = Pembelajaran::where('rombongan_belajar_id', $rombongan_belajar_id)->whereNull('induk_pembelajaran_id')->orderBy('mata_pelajaran_id')->get();
         $pengajar = [];
         $kelompok_id = [];
         $no_urut = [];
@@ -159,10 +159,10 @@ class DataRombonganBelajar extends Component
         );
         foreach($this->pembelajaran_id as $urut => $pembelajaran_id){
             $update = Pembelajaran::find($pembelajaran_id);
-            $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$pembelajaran_id];
-            $update->guru_pengajar_id = $this->pengajar[$pembelajaran_id];
-            $update->kelompok_id = $this->kelompok_id[$pembelajaran_id];
-            $update->no_urut = $this->no_urut[$pembelajaran_id];
+            $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$update->pembelajaran_id];
+            $update->guru_pengajar_id = $this->pengajar[$update->pembelajaran_id];
+            $update->kelompok_id = $this->kelompok_id[$update->pembelajaran_id];
+            $update->no_urut = $this->no_urut[$update->pembelajaran_id];
             $update->save();
         }
         $this->alert('success', 'Pembelajaran berhasil disimpan', [

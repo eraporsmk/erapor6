@@ -18,11 +18,14 @@
 		<td style="padding:0px;">Sekolah</td>
 		<td>: {{$get_siswa->rombongan_belajar->sekolah->nama}}</td>
 		<td style="padding:0px;">Tahun Pelajaran</td>
-		<td>: {{str_replace('/','-',substr($get_siswa->rombongan_belajar->semester->nama,0,9))}}</td>
+		<td>: 
+			{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id}}/{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id + 1}}
+			{{--str_replace('/','-',substr($get_siswa->rombongan_belajar->semester->nama,0,9))--}}
+		</td>
 	</tr>
 	<tr>
 		<td style="padding:0px;">Alamat</td>
-		<td>: {{$get_siswa->peserta_didik->alamat}}</td>
+		<td>: {{$get_siswa->rombongan_belajar->sekolah->alamat}}</td>
 		<td></td>
 		<td></td>
 	</tr>
@@ -45,13 +48,19 @@
 		<td style="padding:0px;">Sekolah</td>
 		<td>: {{$get_siswa->rombongan_belajar->sekolah->nama}}</td>
 		<td style="padding:0px;">Semester</td>
-		<td>: {{substr($get_siswa->rombongan_belajar->semester->nama,10)}}</td>
+		<td>: 
+			{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id}}/{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id + 1}}
+			{{--substr($get_siswa->rombongan_belajar->semester->nama,10)--}}
+		</td>
 	</tr>
 	<tr>
 		<td style="padding:0px;">Alamat</td>
-		<td>: {{$get_siswa->peserta_didik->alamat}}</td>
+		<td>: {{$get_siswa->rombongan_belajar->sekolah->alamat}}</td>
 		<td style="padding:0px;">Tahun Pelajaran</td>
-		<td>: {{str_replace('/','-',substr($get_siswa->rombongan_belajar->semester->nama,0,9))}}</td>
+		<td>: 
+			{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id}}/{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id + 1}}
+			{{--str_replace('/','-',substr($get_siswa->rombongan_belajar->semester->nama,0,9))--}}
+		</td>
 	</tr>
 </table>
 @endif

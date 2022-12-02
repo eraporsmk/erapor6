@@ -47,7 +47,7 @@
                         </td>
                         <td class="text-center">{{$sinkron['dapodik']}}</td>
                         <td class="text-center">{{$sinkron['erapor']}}</td>
-                        <td class="text-center">{{$sinkron['sinkron']}}</td>
+                        <td class="text-center">{!! $sinkron['sinkron'] !!}</td>
                         <td class="text-center">
                             <div class="d-grid">
                                 @if($sinkron['erapor'])

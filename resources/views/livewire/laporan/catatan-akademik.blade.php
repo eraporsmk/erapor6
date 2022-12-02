@@ -4,7 +4,7 @@
         <div class="card">
             <form wire:ignore.self wire:submit.prevent="store">
                 <div class="card-body">
-                    @role('waka', session('semester_id'))
+                    @role(['waka', 'tu'], session('semester_id'))
                     @include('livewire.formulir-waka')
                     @endrole
                     @if($show)

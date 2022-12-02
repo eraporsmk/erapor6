@@ -3,7 +3,7 @@
     <div class="content-body">
         <div class="card">
             <div class="card-body">
-                @role('waka', session('semester_id'))
+                @role(['waka', 'tu'], session('semester_id'))
                     @include('livewire.formulir-waka')
                     @if($show && $data_pembelajaran->count())
                     <div class="row mb-2">
@@ -32,7 +32,11 @@
                             <td class="text-center">{{$item->nisn}}</td>
                             @foreach ($data_pembelajaran as $pembelajaran)
                             <?php
-                            $nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+                            if($merdeka){
+                                $nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+                            } else {
+                                $nilai = $pembelajaran->nilai_akhir_pengetahuan()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+                            }
                             ?>
                             <td class="text-center">{{($nilai) ? $nilai->nilai : '-'}}</td>
                             @endforeach

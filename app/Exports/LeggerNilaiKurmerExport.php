@@ -13,10 +13,10 @@ use App\Models\Rombongan_belajar;
 class LeggerNilaiKurmerExport implements FromView, ShouldAutoSize
 {
     use Exportable;
-    public function query(string $rombongan_belajar_id)
+    public function query(string $rombongan_belajar_id, $merdeka)
     {
         $this->rombongan_belajar_id = $rombongan_belajar_id;
-        
+        $this->merdeka = $merdeka;
         return $this;
     }
 	public function view(): View
@@ -32,6 +32,7 @@ class LeggerNilaiKurmerExport implements FromView, ShouldAutoSize
 			'data_siswa' => $data_siswa,
 			'all_pembelajaran'	=> $all_pembelajaran,
             'rombongan_belajar' => Rombongan_belajar::with(['sekolah'])->find($this->rombongan_belajar_id),
+            'merdeka' => $this->merdeka,
 		);
 		return view('content.laporan.legger_nilai_kurmer', $params);
     }

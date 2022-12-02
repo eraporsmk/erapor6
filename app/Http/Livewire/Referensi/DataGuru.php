@@ -30,6 +30,7 @@ class DataGuru extends Component
     public $per_page = 10;
     public $data = 'Guru';
     public $hapus = FALSE;
+    public $update = TRUE;
     public $guru_id;
     public $readonly = 'readonly';
     public $disabled = 'disabled';
@@ -78,8 +79,15 @@ class DataGuru extends Component
             ]
         ]);
     }
+    private function loggedUser(){
+        return auth()->user();
+    }
     public function detil($id){
         $this->reset(['guru_id', 'gelar_depan', 'gelar_belakang', 'nuptk', 'nip', 'nik', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama_id', 'rt', 'rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'email', 'jenis_ptk_id', 'status_kepegawaian_id']);
+        if($this->loggedUser()->hasRole('tu', session('semester_id'))){
+            $this->update = FALSE;
+            $this->emit('disabled');
+        }
         $this->guru_id = $id;
         $this->guru = Guru::with(['gelar_depan', 'gelar_belakang'])->find($id);
         foreach($this->guru->gelar_depan->unique() as $gelar_depan){

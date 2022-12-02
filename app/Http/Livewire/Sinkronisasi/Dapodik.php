@@ -10,6 +10,7 @@ use Livewire\Component;
 use App\Models\Sekolah;
 use App\Models\Semester;
 use App\Models\Kompetensi_dasar;
+use App\Models\Capaian_pembelajaran;
 use App\Models\Mst_wilayah;
 use App\Models\Jurusan;
 use App\Models\Kurikulum;
@@ -34,14 +35,11 @@ class Dapodik extends Component
     public function getListeners()
     {
         return [
-            //'confirmed' => '$refresh',
+            'confirmed',
             'prosesSync',
             'delaySync',
             'finishSync',
         ];
-    }
-    private function url_server($server, $ep){
-        return config('erapor.'.$server).$ep;
     }
     public function data_dapodik(){
         try {
@@ -57,7 +55,7 @@ class Dapodik extends Component
             ];
             $response = Http::withHeaders([
                 'x-api-key' => $user->sekolah->sekolah_id,
-            ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/status'), $data_sync);
+            ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/status', $data_sync);
             $return = $response->object();
             $this->online = ($return) ? TRUE : FALSE;
             return $return;
@@ -67,7 +65,7 @@ class Dapodik extends Component
     }
     private function referensi(){
         try {
-            $response = Http::get($this->url_server('dashboard', 'api/referensi'));
+            $response = Http::get('http://app.erapor-smk.net/api/referensi');
             return $response->object();
         } catch (\Exception $e){
             $this->online = FALSE;
@@ -94,7 +92,7 @@ class Dapodik extends Component
             'data_sinkron' => (!$jam_sinkron) ? [
                 [
                     'nama' => 'Jurusan',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->jurusan : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->jurusan : 0,
                     'erapor' => $erapor['jurusan'],
                     'sinkron' => $erapor['jurusan'],
                     'aksi' => 'jurusan',
@@ -104,7 +102,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Kurikulum',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->kurikulum : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->kurikulum : 0,
                     'erapor' => $erapor['kurikulum'],
                     'sinkron' => $erapor['kurikulum'],
                     'aksi' => 'kurikulum',
@@ -114,7 +112,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Mata Pelajaran',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->mata_pelajaran : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->mata_pelajaran : 0,
                     'erapor' => $erapor['mata_pelajaran'],
                     'sinkron' => $erapor['mata_pelajaran'],
                     'aksi' => 'mata_pelajaran',
@@ -124,7 +122,7 @@ class Dapodik extends Component
                 ],
                 /*[
                     'nama' => 'Mata Pelajaran Kurikulum',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->mata_pelajaran_kurikulum : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->mata_pelajaran_kurikulum : 0,
                     'erapor' => $erapor['mata_pelajaran_kurikulum'],
                     'sinkron' => $erapor['mata_pelajaran_kurikulum'],
                     'aksi' => 'mata_pelajaran_kurikulum',
@@ -145,7 +143,17 @@ class Dapodik extends Component
                     'dapodik' => ($referensi) ? $referensi->ref_kd : 0,
                     'erapor' => $erapor['ref_kd'],
                     'sinkron' => $erapor['ref_kd'],
-                    'aksi' => 'get-kd',
+                    'aksi' => 'kompetensi-dasar',
+                    'server' => 'erapor',
+                    'icon' => FALSE,
+                    'html' => NULL,
+                ],
+                [
+                    'nama' => 'Ref. Capaian Pembelajaran',
+                    'dapodik' => ($referensi) ? $referensi->ref_cp : 0,
+                    'erapor' => $erapor['ref_cp'],
+                    'sinkron' => $erapor['ref_cp_sync'],
+                    'aksi' => 'capaian-pembelajaran',
                     'server' => 'erapor',
                     'icon' => FALSE,
                     'html' => NULL,
@@ -162,7 +170,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'GTK',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->ptk_terdaftar : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->ptk_terdaftar : 0,
                     'erapor' => $erapor['ptk'],
                     'sinkron' => $erapor['ptk'],
                     'aksi' => 'ptk',
@@ -172,7 +180,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Rombongan Belajar',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->rombongan_belajar : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->rombongan_belajar : 0,
                     'erapor' => $erapor['rombongan_belajar'],
                     'sinkron' => $erapor['rombongan_belajar'],
                     'aksi' => 'rombongan_belajar',
@@ -182,7 +190,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Peserta Didik Aktif',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->registrasi_peserta_didik : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->registrasi_peserta_didik : 0,
                     'erapor' => $erapor['peserta_didik_aktif'],
                     'sinkron' => $erapor['peserta_didik_aktif'],
                     'aksi' => 'peserta_didik_aktif',
@@ -192,7 +200,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Peserta Didik Keluar',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->siswa_keluar_dapodik : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->siswa_keluar_dapodik : 0,
                     'erapor' => $erapor['peserta_didik_keluar'],
                     'sinkron' => $erapor['peserta_didik_keluar'],
                     'aksi' => 'peserta_didik_keluar',
@@ -202,7 +210,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Anggota Rombel Matpel Pilihan',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->anggota_rombel_pilihan : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->anggota_rombel_pilihan : 0,
                     'erapor' => $erapor['anggota_rombel_pilihan'],
                     'sinkron' => $erapor['anggota_rombel_pilihan'],
                     'aksi' => 'anggota_rombel_pilihan',
@@ -212,7 +220,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Pembelajaran',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->pembelajaran_dapodik : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->pembelajaran_dapodik : 0,
                     'erapor' => $erapor['pembelajaran'],
                     'sinkron' => $erapor['pembelajaran'],
                     'aksi' => 'pembelajaran',
@@ -222,7 +230,7 @@ class Dapodik extends Component
                 ],
                 /*[
                     'nama' => 'Pembelajaran (Sub Mapel/Tema P5)',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->sub_pembelajaran : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->sub_pembelajaran : 0,
                     'erapor' => $erapor['sub_pembelajaran'],
                     'sinkron' => $erapor['sub_pembelajaran'],
                     'aksi' => 'pembelajaran',
@@ -230,7 +238,7 @@ class Dapodik extends Component
                 ],*/
                 [
                     'nama' => 'Ekstrakurikuler',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->ekskul_dapodik : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->ekskul_dapodik : 0,
                     'erapor' => $erapor['ekstrakurikuler'],
                     'sinkron' => $erapor['ekstrakurikuler'],
                     'aksi' => 'ekstrakurikuler',
@@ -240,7 +248,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Anggota Ekstrakurikuler',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->anggota_ekskul_dapodik : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->anggota_ekskul_dapodik : 0,
                     'erapor' => $erapor['anggota_ekskul'],
                     'sinkron' => $erapor['anggota_ekskul'],
                     'aksi' => 'anggota_ekskul',
@@ -250,7 +258,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Relasi Dunia Usaha & Industri',
-                    'dapodik' => ($dapodik) ? $dapodik->dapodik->dudi_dapodik : 0,
+                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->dudi_dapodik : 0,
                     'erapor' => $erapor['dudi'],
                     'sinkron' => $erapor['dudi'],
                     'aksi' => 'dudi',
@@ -310,6 +318,16 @@ class Dapodik extends Component
             },
             'mou'
         ])->find(session('sekolah_id'));
+        $ref_cp_sync = NULL;
+        try {
+            $ref_cp_sync = Capaian_pembelajaran::where(function($query){
+                $query->whereIsDir(1);
+            })->count();
+        } catch (\Exception $e){
+            $ref_cp_sync = '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="" data-bs-original-title="Jalankan<br><strong>php artisan erapor:update</strong>">
+            <i class="fa-regular fa-circle-question"></i>
+        </a>';
+        }
         return [
             'sekolah' => $sekolah->sinkron,
             'ptk' => $sekolah->ptk_count,
@@ -328,7 +346,9 @@ class Dapodik extends Component
             'mata_pelajaran_kurikulum' => Mata_pelajaran_kurikulum::count(),
             'wilayah' => Mst_wilayah::count(),
             'ref_kd' => Kompetensi_dasar::withTrashed()->count(),
-            'mata_pelajaran_kurikulum' => Mata_pelajaran_kurikulum::count(),
+            'ref_cp' => Capaian_pembelajaran::count(),
+            'ref_cp_sync' => $ref_cp_sync,
+            //'mata_pelajaran_kurikulum' => Mata_pelajaran_kurikulum::count(),
         ];
     }
     public function clickSync()
@@ -337,7 +357,6 @@ class Dapodik extends Component
         $this->emit('delaySync');
     }
     public function delaySync(){
-        $this->hapus_file();
         if(!$this->prosesSync){
             $this->emit('prosesSync');
         }
@@ -383,7 +402,7 @@ class Dapodik extends Component
         return auth()->user();
     }
     private function hapus_file(){
-        Storage::disk('public')->delete('proses_sync.json');
+        Storage::disk('public')->delete('proses_sync_'.session('sekolah_id').'.json');
 		/*$json_files = Storage::disk('public')->files('kd');
 		Storage::disk('public')->delete($json_files);*/
     }
@@ -391,7 +410,6 @@ class Dapodik extends Component
         $response = Str::of($this->respon_artisan)->between('{', '}');
         $response = json_decode('{'.$response.'}');
         $this->reset(['prosesSync', 'server', 'satuan']);
-        $this->hapus_file();
         $this->alert($response->status, $response->title, [
             'text' => $response->message,
             'allowOutsideClick' => false,
@@ -401,6 +419,9 @@ class Dapodik extends Component
             'confirmButtonText' => 'OK',
             'onConfirmed' => 'confirmed',
         ]);
+    }
+    public function confirmed(){
+        $this->hapus_file();
     }
     /*
     public function syncSatuan($server, $aksi){

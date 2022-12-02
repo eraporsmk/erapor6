@@ -5,6 +5,15 @@
             <form wire:ignore.self wire:submit.prevent="store">
                 <div class="card-body">
                     @include('livewire.formulir-umum')
+                    <div class="row mb-2 {{($show && count($data_tp)) ? '' : 'd-none'}}">
+                        <div class="col-6">
+                            <input class="form-control" type="file" wire:model="template_excel">
+                            @error('template_excel') <span class="error">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-6 d-grid">
+                            <a class="btn btn-primary" href="{{route('unduhan.template-nilai-akhir', ['pembelajaran_id' => $pembelajaran_id])}}">Unduh Template Nilai Akhir</a>
+                        </div>
+                    </div>
                     <div class="row mb-2 {{($show) ? '' : 'd-none'}}" wire:loading.remove wire:target="changePembelajaran">
                         <div class="table-responsive">
                             <table class="table table-bordered {{table_striped()}}">
@@ -20,6 +29,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if(count($data_tp))
                                     @foreach ($data_siswa as $siswa)
                                     <tr>
                                         <td>
@@ -58,14 +68,26 @@
                                             @endforeach
                                         </td>
                                     </tr>
-                                    @endforeach      
+                                    @endforeach
+                                    @else
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="alert alert-danger" role="alert">
+                                                <div class="alert-body text-center">
+                                                    <h2>Tidak ditemukan data Tujuan Pembelajaran</h2>
+                                                    <p>Silahkan tambah data Tujuan Pembelajaran terlebih dahulu <a href="{{route('referensi.tujuan-pembelajaran.tambah')}}">disini</a></p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
                     </div>                        
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary {{($show) ? '' : 'd-none'}}">Simpan</button>
+                    <button type="submit" class="btn btn-primary {{($show && count($data_tp)) ? '' : 'd-none'}}">Simpan</button>
                 </div>
             </form>
         </div>

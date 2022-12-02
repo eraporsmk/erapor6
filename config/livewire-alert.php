@@ -8,7 +8,7 @@ return [
     'alert' => [
         'position' => 'center',
         'timer' => 3000,
-        'toast' => true,
+        'toast' => false,
         'text' => null,
         'showCancelButton' => false,
         'showConfirmButton' => false

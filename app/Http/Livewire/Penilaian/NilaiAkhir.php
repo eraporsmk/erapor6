@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Penilaian;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use Livewire\Component;
@@ -20,6 +21,7 @@ use App\Models\Tujuan_pembelajaran;
 use App\Models\Kompetensi_dasar;
 use App\Models\Tp_nilai;
 use App\Models\Kd_nilai;
+use App\Imports\NilaiAkhirImport;
 use Storage;
 
 class NilaiAkhir extends Component
@@ -41,6 +43,7 @@ class NilaiAkhir extends Component
     public $kd_dicapai = [];
     public $kd_belum_dicapai = [];
     public $nilai = [];
+    public $template_excel;
     /*public $kompetensi_id;
     public $data_rombongan_belajar;
     public $data_pembelajaran;
@@ -53,7 +56,6 @@ class NilaiAkhir extends Component
     //inject
     public $kompetensi_dasar_id;
     public $class_input = [];
-    public $template_excel;
     */
 
     public function render()
@@ -128,7 +130,6 @@ class NilaiAkhir extends Component
             $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
             $this->getSiswa();
             $this->show = TRUE;
-            $this->getSiswa();
             foreach($this->data_siswa as $siswa){
                 foreach($siswa->anggota_rombel->tp_kompeten as $tp_kompeten){
                     $this->tp_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp_kompeten->tp_id] = $tp_kompeten->tp_id;
@@ -179,10 +180,6 @@ class NilaiAkhir extends Component
                         $query->where('kompetensi_id', 1);
                     }
                     $query->where('pembelajaran_id', $this->pembelajaran_id);
-                    /*$query->whereHas('pembelajaran', function($query){
-                        $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
-                        $query->where($this->kondisi());
-                    });*/
                 }
             ]);
         };
@@ -198,11 +195,6 @@ class NilaiAkhir extends Component
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
             })->orderBy('created_at')->get();
         } else {
-            /*$this->data_kd = Kompetensi_dasar::where(function($query){
-                $query->where('kelas_'.$this->tingkat, 1);
-                $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
-                $query->where('aktif', 1);
-            })->orderBy('id_kompetensi')->get();*/
             $this->data_tp = Tujuan_pembelajaran::whereHas('kd', function($query){
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
             })->orderBy('created_at')->get();
@@ -325,13 +317,18 @@ class NilaiAkhir extends Component
             ]
         );
         $file_path = $this->template_excel->store('files', 'public');
-        $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
+        Excel::import(new NilaiAkhirImport($this->rombongan_belajar_id, $this->pembelajaran_id, $this->merdeka), storage_path('/app/public/'.$file_path));
+        Storage::disk('public')->delete($file_path);
+        $this->flash('success', 'Template Nilai Akhir berhasil di import', [], '/penilaian/nilai-akhir');
+        /*$sheets = (new FastExcel)->importSheets(storage_path('/app/public/'.$file_path));
+        $sheet_nilai = $sheets[0];
+        dd($sheet_nilai);
         $collection = collect($imported_data);
         foreach($collection as $nilai){
             $this->nilai[$nilai['PD_ID']] = $nilai['Nilai Akhir'];
             $this->deskripsi_dicapai[$nilai['PD_ID']] = $nilai['Kompetensi yang sudah dicapai'];
             $this->deskripsi_belum_dicapai[$nilai['PD_ID']] = $nilai['Kompetensi yang perlu ditingkatkan'];
         }
-        Storage::disk('public')->delete($file_path);
+        */
     }
 }

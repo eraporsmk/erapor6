@@ -141,8 +141,6 @@ class SinkronDapodik extends Command
                             $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => 'Sinkronisasi '.$this->get_table($satuan).' berhasil']);
                         }
                         $this->info("\n".'Sinkronisasi '.$this->get_table($d).' berhasil');
-                    } else {
-                        $this->error('Pengambilan data '.$this->get_table($d).' gagal. Server tidak merespon 1');
                     }
                 }
             }
@@ -177,9 +175,9 @@ class SinkronDapodik extends Command
         }
         return $table;
     }
-    private function url_server($server, $ep){
+    /*private function url_server($server, $ep){
         return config('erapor.'.$server).$ep;
-    }
+    }*/
     private function proses_sync($title, $table, $inserted, $jumlah, $sekolah_id){
         $record['table'] = $title.' '.$this->get_table($table);
 		$record['jumlah'] = $jumlah;
@@ -195,7 +193,7 @@ class SinkronDapodik extends Command
             'capaian-pembelajaran',
         ];
         if(in_array($satuan, $server_dashboard)){
-            $this->call('sinkron:erapor', ['satuan' => $satuan, 'email' => $sekolah->user->email]);
+            $this->call('sinkron:erapor', ['satuan' => $satuan, 'email' => $sekolah->user->email, 'created_at' => 1]);
         } else {
             try {
                 $updated_at = NULL;
@@ -215,7 +213,8 @@ class SinkronDapodik extends Command
                     ];
                     $response = Http::withHeaders([
                         'x-api-key' => $sekolah->sekolah_id,
-                    ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/'.$satuan), $data_sync);
+                    ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/'.$satuan, $data_sync);
+                    //->post($this->url_1server('dapodik', 'api/'.$satuan), $data_sync);
                     if($response->status() == 200){
                         $this->info('Memproses '.$this->get_table($satuan));
                         return $response->object();
@@ -239,90 +238,6 @@ class SinkronDapodik extends Command
     private function proses_data($dapodik, $satuan, $user, $semester){
         $function = 'simpan_'.$satuan;
         $this->{$function}($dapodik->dapodik, $user, $semester);
-    }
-    private function ambil_mapel_kur($user, $sekolah, $semester, $satuan, $counter){
-        $updated_at = Mata_pelajaran_kurikulum::orderBy('updated_at', 'DESC')->first()->created_at;
-        $data_sync = [
-            'username_dapo'		=> $user->email,
-            'password_dapo'		=> $user->password,
-            'npsn'				=> $sekolah->npsn,
-            'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
-            'semester_id'		=> $semester->semester_id,
-            'sekolah_id'		=> $sekolah->sekolah_id,
-            'updated_at'        => ($updated_at) ? Carbon::parse($updated_at)->format('Y-m-d H:i:s') : NULL,
-            'last_sync'         => NULL,
-        ];
-        $response = Http::withHeaders([
-            'x-api-key' => $sekolah->sekolah_id,
-        ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/'.$satuan.'/'.$counter), $data_sync);
-        if($response->status() == 200){
-            $this->info('Memproses Mata Pelajaran Kurikulum '.$counter);
-            return $response->object();
-        } else {
-            $this->proses_sync_mapel_kur('', 'Proses pengambilan data Mata Pelajaran Kurikulum gagal. Server tidak merespon', 0, 0, 0);
-            return $this->error('Proses pengambilan data Mata Pelajaran Kurikulum gagal. Server tidak merespon 4');
-            return false;
-        }
-    }
-    private function proses_sync_mapel_kur($title, $table, $inserted, $jumlah, $sekolah_id){
-        $record['table'] = $title.' '.$table;
-		$record['jumlah'] = $jumlah;
-		$record['inserted'] = $inserted;
-		//Storage::disk('public')->put('proses_sync.json', json_encode($record));
-        Storage::disk('public')->put('proses_sync_'.$sekolah_id.'.json', json_encode($record));
-    }
-    private function simpan_mata_pelajaran_kurikulum($dapodik, $user, $semester){
-        $limit = 500;
-        $bar = $this->output->createProgressBar($dapodik->total_rows);
-        $bar->start();
-        $i=1;
-        if($dapodik->total_rows > $limit){
-            for ($counter = 0; $counter <= $dapodik->total_rows; $counter += $limit) {
-                if($counter){
-                    foreach($dapodik->dapodik as $data){
-                        $this->simpan_mapel_kur($data);
-                        $this->proses_sync_mapel_kur('Memperoses', 'mata_pelajaran_kurikulum', $i, $dapodik->total_rows, $user->sekolah_id);
-                        $i++;
-                        $bar->advance();
-                    }
-                    $ambil = $this->ambil_mapel_kur($user, $user->sekolah, $semester, 'mata_pelajaran_kurikulum', $counter);
-                } else {
-                    foreach($dapodik->dapodik as $data){
-                        $this->simpan_mapel_kur($data);
-                        $this->proses_sync_mapel_kur('Memperoses', 'mata_pelajaran_kurikulum', $i, $dapodik->total_rows, $user->sekolah_id);
-                        $i++;
-                        $bar->advance();
-                    }
-                }
-            }
-        }
-        $bar->finish();
-    }
-    private function simpan_mapel_kur($data){
-        $kurikulum = Kurikulum::find($data->kurikulum_id);
-        $mata_pelajaran = Mata_pelajaran::find($data->mata_pelajaran_id);
-        if($kurikulum && $mata_pelajaran){
-            Mata_pelajaran_kurikulum::updateOrCreate(
-                [
-                    'kurikulum_id' => $data->kurikulum_id,
-                    'mata_pelajaran_id' => $data->mata_pelajaran_id,
-                    'tingkat_pendidikan_id' => $data->tingkat_pendidikan_id,
-                ],
-                [
-                    'jumlah_jam' => $data->jumlah_jam,
-                    'jumlah_jam_maksimum' => $data->jumlah_jam_maksimum,
-                    'wajib' => $data->wajib,
-                    'sks' => $data->sks,
-                    'a_peminatan' => $data->a_peminatan,
-                    'area_kompetensi' => $data->area_kompetensi,
-                    'gmp_id' => $data->gmp_id,
-                    'created_at' => $data->create_date,
-                    'updated_at' => $data->last_update,
-                    'deleted_at' => $data->expired_date,
-                    'last_sync' => $data->last_sync,
-                ]
-            );
-        }
     }
     private function simpan_peserta_didik_aktif($dapodik, $user, $semester){
         $i=1;
@@ -384,9 +299,12 @@ class SinkronDapodik extends Command
                 'offset' => $data['offset'],
                 'satuan' => $data['satuan'],
             ];
-            $response = Http::withHeaders([
+            /*$response = Http::withHeaders([
                 'x-api-key' => $user->sekolah_id,
-            ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/'.$satuan), $data_sync);
+            ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_s1erver('dapodik', 'api/'.$satuan), $data_sync);*/
+            $response = Http::withHeaders([
+                'x-api-key' => $sekolah->sekolah_id,
+            ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/'.$satuan, $data_sync);
             if($response->status() == 200){
                 return $response->object();
             } else {

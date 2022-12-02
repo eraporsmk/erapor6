@@ -23,6 +23,13 @@ class Ekskul extends Component
     public $ekstrakurikuler;
     public $nilai_satuan;
     public $array = [];
+    public $nama_ekskul;
+    public $nama_rombel;
+
+    protected $listeners = [
+        'confirmed',
+        'refresh',
+    ];
 
     public function render()
     {
@@ -61,10 +68,11 @@ class Ekskul extends Component
     public function loggedUser(){
         return auth()->user();
     }
-    public function changeEkskul(){
+    public function updatedRombonganBelajarId(){
         if($this->rombongan_belajar_id){
             $this->rombongan_belajar_id_reguler = NULL;
             $this->ekstrakurikuler = Ekstrakurikuler::where('rombongan_belajar_id', $this->rombongan_belajar_id)->first();
+            $this->nama_ekskul = $this->ekstrakurikuler->nama_ekskul;
             $this->getPd();
             $this->show = TRUE;
             $this->data_rombel = Rombongan_belajar::where(function($query){
@@ -81,10 +89,15 @@ class Ekskul extends Component
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('jenis_rombel', 1);
             })->orderBy('tingkat', 'ASC')->orderBy('kurikulum_id', 'ASC')->get();
+            $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $this->data_rombel]);
         }
     }
-    public function changeReguler(){
+    public function updatedRombonganBelajarIdReguler(){
         $this->reset(['nilai_ekskul', 'data_siswa', 'deskripsi_ekskul']);
+        if($this->rombongan_belajar_id_reguler){
+            $rombel = Rombongan_belajar::find($this->rombongan_belajar_id_reguler);
+            $this->nama_rombel = $rombel->nama;
+        }
         $this->getPd();
     }
     public function getPd(){
@@ -173,5 +186,57 @@ class Ekskul extends Component
             }
         }
         $this->flash('success', 'Nilai Ekstrakurikuler berhasil disimpan', [], '/penilaian/ekstrakurikuler');
+    }
+    public function confirmed(){
+        if(Nilai_ekstrakurikuler::where(function($query){
+            $query->where('ekstrakurikuler_id', $this->ekstrakurikuler->ekstrakurikuler_id);
+            if($this->rombongan_belajar_id_reguler){
+                $query->whereHas('peserta_didik', function($query){
+                    $query->whereHas('anggota_rombel', function($query){
+                        $query->where('rombongan_belajar_id', $this->rombongan_belajar_id_reguler);
+                    });
+                });
+            }
+        })->delete()){
+            $status = 'success';
+            $header = 'Berhasil';
+            if($this->nama_rombel){
+                $text = 'Nilai Esktrakurikuler '.$this->nama_ekskul.' di Kelas '.$this->nama_rombel.' berhasil dihapus';
+            } else {
+                $text = 'Nilai Esktrakurikuler '.$this->nama_ekskul.' berhasil dihapus';
+            }
+        } else {
+            $status = 'error';
+            $header = 'Gagal';
+            if($this->nama_rombel){
+                $text = 'Tidak ada Nilai Esktrakurikuler '.$this->nama_ekskul.' di Kelas '.$this->nama_rombel.' dihapus';
+            } else {
+                $text = 'Tidak ada Nilai Esktrakurikuler '.$this->nama_ekskul.' dihapus';
+            }
+        }
+        $this->getPd();
+        $this->alert($status, $header, [
+            'text' => $text,
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'OK',
+            'onConfirmed' => 'refresh',
+            'allowOutsideClick' => false,
+        ]);
+    }
+    public function refresh(){
+        $this->reset(['nilai_ekskul', 'data_siswa', 'deskripsi_ekskul', 'show', 'rombongan_belajar_id', 'rombongan_belajar_id_reguler']);
+        $this->dispatchBrowserEvent('reset');
+    }
+    public function resetNilai()
+    {
+        $this->alert('question', 'Apakah Anda Yakin?', [
+            'text' => 'Tindakan ini tidak dapat dikembalikan',
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'Yakin',
+            'onConfirmed' => 'confirmed',
+            'allowOutsideClick' => false,
+            'showCancelButton' => true,
+            'cancelButtonText' => 'Batal',
+        ]);
     }
 }

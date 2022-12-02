@@ -65,23 +65,31 @@
     Livewire.on('close-modal', event => {
         $('#detilGuru').modal('hide');
     })
-    window.addEventListener('gelar_depan', event => {
+    window.addEventListener('ref_gelar_depan', event => {
+        $('#gelar_depan').val('')
+        $('#gelar_belakang').val('')
         $('#gelar_depan').html('<option value="">== Pilih Gelar Depan ==</option>')
-        $.each(event.detail.gelar_depan, function (i, item) {
+        $.each(event.detail.ref_gelar_depan, function (i, item) {
             $('#gelar_depan').append($('<option>', { 
                 value: item.gelar_akademik_id,
                 text : item.kode
             }));
         });
     })
-    window.addEventListener('gelar_belakang', event => {
+    window.addEventListener('ref_gelar_belakang', event => {
         $('#gelar_belakang').html('<option value="">== Pilih Gelar Belakang ==</option>')
-        $.each(event.detail.gelar_belakang, function (i, item) {
+        $.each(event.detail.ref_gelar_belakang, function (i, item) {
             $('#gelar_belakang').append($('<option>', { 
                 value: item.gelar_akademik_id,
                 text : item.kode
             }));
         });
+    })
+    window.addEventListener('gelar_depan', event => {
+        $('#gelar_depan').val(event.detail.gelar_depan)
+    });
+    window.addEventListener('gelar_belakang', event => {
+        $('#gelar_belakang').val(event.detail.gelar_belakang)
     })
 </script>
 @endpush

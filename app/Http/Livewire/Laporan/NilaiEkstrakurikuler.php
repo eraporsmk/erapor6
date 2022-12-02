@@ -10,6 +10,7 @@ use App\Models\Nilai_ekstrakurikuler;
 class NilaiEkstrakurikuler extends Component
 {
     use LivewireAlert;
+    public $rombongan_belajar_id;
     public $show = FALSE;
 
     public function render()
@@ -23,25 +24,43 @@ class NilaiEkstrakurikuler extends Component
             ]
         ]);
     }
+    public function kondisi(){
+        return function($query){
+            $query->where('sekolah_id', session('sekolah_id'));
+            $query->where('semester_id', session('semester_aktif'));
+            if($this->rombongan_belajar_id){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            } else {
+                $query->whereHas('rombongan_belajar', function($query){
+                    $query->where('jenis_rombel', 1);
+                });
+            }
+            //$query->with(['rombongan_belajar']);
+        };
+    }
     public function mount(){
         if($this->check_walas()){
+            $this->rombongan_belajar_id = $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id;
             $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
-                $query->whereHas('rombongan_belajar', function($query){
-                    $query->where('semester_id', session('semester_aktif'));
-                    $query->where('sekolah_id', session('sekolah_id'));
-                    $query->where('guru_id', $this->loggedUser()->guru_id);
-                });
-                $query->whereHas('anggota_ekskul', function($query){
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('semester_id', session('semester_aktif'));
+                if($this->rombongan_belajar_id){
+                    $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                } else {
                     $query->whereHas('rombongan_belajar', function($query){
-                        $query->where('jenis_rombel', 51);
+                        $query->where('jenis_rombel', 1);
                     });
-                });
+                }
             })->with(['anggota_rombel' => function($query){
-                $query->whereHas('rombongan_belajar', function($query){
-                    $query->where('semester_id', session('semester_aktif'));
-                    $query->where('sekolah_id', session('sekolah_id'));
-                    $query->where('guru_id', $this->loggedUser()->guru_id);
-                });
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('semester_id', session('semester_aktif'));
+                if($this->rombongan_belajar_id){
+                    $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                } else {
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->where('jenis_rombel', 1);
+                    });
+                }
                 $query->with(['anggota_ekskul' => function($query){
                     $query->whereHas('rombongan_belajar', function($query){
                         $query->where('jenis_rombel', 51);

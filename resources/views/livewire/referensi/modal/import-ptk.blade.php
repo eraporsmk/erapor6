@@ -50,26 +50,26 @@
                                 <tr>
                                     <td class="text-center">{{$loop->iteration}}</td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm @error('nama.'.$urut) is-invalid @enderror" wire:model="nama.{{$urut}}" @error('nama.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
+                                        <input type="text" class="form-control form-control-sm @error('nama.'.$urut) is-invalid @enderror" wire:model.defer="nama.{{$urut}}" @error('nama.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
                                     </td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="nuptk.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="nip.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="nuptk.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="nip.{{$urut}}"></td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm @error('nik.'.$urut) is-invalid @enderror" wire:model="nik.{{$urut}}" @error('nik.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
+                                        <input type="text" class="form-control form-control-sm @error('nik.'.$urut) is-invalid @enderror" wire:model.defer="nik.{{$urut}}" @error('nik.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
                                     </td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="jenis_kelamin.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="tempat_lahir.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="tanggal_lahir.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="agama.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="alamat_jalan.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="rt.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="rw.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="desa_kelurahan.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="kecamatan.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="kodepos.{{$urut}}"></td>
-                                    <td><input type="text" class="form-control form-control-sm" wire:model="telp_hp.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="jenis_kelamin.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="tempat_lahir.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="tanggal_lahir.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="agama.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="alamat_jalan.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="rt.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="rw.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="desa_kelurahan.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="kecamatan.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="kodepos.{{$urut}}"></td>
+                                    <td><input type="text" class="form-control form-control-sm" wire:model.defer="telp_hp.{{$urut}}"></td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm @error('email.'.$urut) is-invalid @enderror" wire:model="email.{{$urut}}" @error('email.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
+                                        <input type="text" class="form-control form-control-sm @error('email.'.$urut) is-invalid @enderror" wire:model.defer="email.{{$urut}}" @error('email.'.$urut) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{$message}}" @enderror>
                                     </td>
                                 </tr>
                                 @endforeach

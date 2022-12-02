@@ -21,7 +21,7 @@ Route::namespace('Auth')->group(function () {
     Route::post('/login',[LoginController::class, 'process_login'])->name('process_login');
     if(config('erapor.registration')){
         Route::get('/register',[LoginController::class, 'show_signup_form'])->name('register');
-        Route::post('/register',[LoginController::class, 'process_signup']);
+        Route::post('/register',[LoginController::class, 'process_signup'])->name('registrasi');
     }
     Route::post('/logout',[LoginController::class, 'logout'])->name('logout');
 });
@@ -42,17 +42,17 @@ Route::middleware([
         Route::get('/umum', [EraporController::class, 'settings'])->name('index');
         Route::get('/users', [EraporController::class, 'users'])->name('users');
     });
-    Route::prefix('referensi')->name('referensi.')->middleware('team:admin,guru')->group( function(){
+    Route::prefix('referensi')->name('referensi.')->middleware('team:admin,guru,tu')->group( function(){
     //Route::group(['prefix' => 'referensi'], function(){
         Route::get('/guru', [EraporController::class, 'guru'])->name('guru');
         Route::get('/tendik', [EraporController::class, 'tendik'])->name('tendik');
         Route::get('/instruktur', [EraporController::class, 'instruktur'])->name('instruktur');
         Route::get('/asesor', [EraporController::class, 'asesor'])->name('asesor');
-        Route::get('/rombongan-belajar', [EraporController::class, 'rombongan_belajar'])->name('rombongan-belajar')->middleware('team:admin,waka');
-        Route::get('/rombel-pilihan', [EraporController::class, 'rombel_pilihan'])->name('rombel-pilihan')->middleware('team:admin,waka');
+        Route::get('/rombongan-belajar', [EraporController::class, 'rombongan_belajar'])->name('rombongan-belajar')->middleware('team:admin,waka,tu');
+        Route::get('/rombel-pilihan', [EraporController::class, 'rombel_pilihan'])->name('rombel-pilihan')->middleware('team:admin,waka,tu');
         Route::get('/peserta-didik-aktif', [EraporController::class, 'peserta_didik_aktif'])->name('peserta-didik-aktif');
         Route::get('/peserta-didik-keluar', [EraporController::class, 'peserta_didik_keluar'])->name('peserta-didik-keluar');
-        Route::get('/password-peserta-didik', [EraporController::class, 'password_peserta_didik'])->name('password-peserta-didik');
+        Route::get('/password-peserta-didik', [EraporController::class, 'password_peserta_didik'])->name('password-peserta-didik')->middleware('team:wali');
         Route::get('/mata-pelajaran', [EraporController::class, 'mata_pelajaran'])->name('mata-pelajaran');
         Route::get('/ekstrakurikuler', [EraporController::class, 'ekstrakurikuler'])->name('ekstrakurikuler');
         Route::get('/teknik-penilaian', [EraporController::class, 'teknik_penilaian'])->name('teknik-penilaian')->middleware('team:admin');
@@ -118,7 +118,7 @@ Route::middleware([
         Route::get('/capaian-kompetensi', [EraporController::class, 'monitoring_capaian_kompetensi'])->name('capaian-kompetensi');
         Route::get('/prestasi-individu', [EraporController::class, 'prestasi_individu'])->name('prestasi-individu');
     });
-    Route::prefix('cetak')->name('cetak.')->middleware('team:guru')->group( function(){
+    Route::prefix('cetak')->name('cetak.')->middleware('team:guru,tu')->group( function(){
     //Route::group(['prefix' => 'cetak', 'middleware' => ['role:guru']], function(){
         Route::get('/contoh', [CetakController::class, 'generate_pdf'])->name('contoh');
         Route::get('/rapor-uts/{rombongan_belajar_id}', [CetakController::class, 'rapor_uts'])->name('rapor-uts');
@@ -140,15 +140,15 @@ Route::middleware([
         Route::get('/template-nilai-tp/{rencana_penilaian_id?}', [UnduhanController::class, 'template_nilai_tp'])->name('template-nilai-tp');
         Route::get('/template-tp/{id?}', [UnduhanController::class, 'template_tp'])->name('template-tp');
     });
-    //Route::prefix('wali-kelas')->name('wali-kelas.')->group( function(){
-    Route::prefix('wali-kelas')->name('wali-kelas.')->middleware('team:guru')->group( function(){
+    Route::prefix('wali-kelas')->name('wali-kelas.')->middleware('team:wali,waka,tu')->group( function(){
     //Route::group(['prefix' => 'wali-kelas', 'middleware' => ['role:guru'], 'name' => 'wali-kelas.'], function(){
         Route::get('/praktik-kerja-lapangan', [EraporController::class, 'pkl'])->name('pkl');
         Route::get('/rapor-nilai-akhir', [EraporController::class, 'rapor_nilai_akhir'])->name('rapor-nilai-akhir');
-        Route::get('/prestasi-pd', [EraporController::class, 'prestasi_pd'])->name('wali-kelas.prestasi-pd');
-        Route::get('/catatan-sikap', [EraporController::class, 'catatan_sikap'])->name('wali-kelas.catatan-sikap');
-        Route::get('/ketidakhadiran', [EraporController::class, 'ketidakhadiran'])->name('wali-kelas.ketidakhadiran');
-        Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekskul'])->name('wali-kelas.nilai-ekstrakurikuler');
+        Route::get('/prestasi-pd', [EraporController::class, 'prestasi_pd'])->name('prestasi-pd');
+        Route::get('/catatan-sikap', [EraporController::class, 'catatan_sikap'])->name('catatan-sikap');
+        Route::get('/ketidakhadiran', [EraporController::class, 'ketidakhadiran'])->name('ketidakhadiran');
+        //Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekskul'])->name('nilai-ekstrakurikuler');
+        Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekstrakurikuler'])->name('nilai-ekstrakurikuler');
         Route::get('/leger', [EraporController::class, 'leger_kurmer'])->name('leger-kurmer');
     });
     Route::get('/unduhan', [EraporController::class, 'unduhan'])->name('pusat-unduhan');

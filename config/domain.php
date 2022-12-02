@@ -21,6 +21,5 @@ return [
     ],
   ],
   'domains' => [
-    'erapor6-1.test' => 'erapor6-1.test',
   ],
  ];

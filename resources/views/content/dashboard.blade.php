@@ -5,6 +5,8 @@
 @section('content')
     @if($user->hasRole('admin', session('semester_id')))
         @livewire('dashboard.admin')
+    @elseif($user->hasRole('tu', session('semester_id')))
+        @livewire('dashboard.admin')
     @elseif($user->hasRole('guru', session('semester_id')))
         @livewire('dashboard.guru')
     @elseif($user->hasRole('siswa', session('semester_id')))

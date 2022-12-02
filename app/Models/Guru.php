@@ -36,7 +36,7 @@ class Guru extends Model
 			$gelar_depan = $this->gelar_depan()->get()->unique()->implode('kode', '. ') . '. ';
 		}
 		if($this->gelar_belakang()->exists()){
-			$gelar_belakang = ', ' . $this->gelar_belakang()->get()->unique()->implode('kode', '. ') . '.';
+			$gelar_belakang = ', ' . $this->gelar_belakang()->get()->unique()->implode('kode', '., ') . '.';
 		}
 		return $gelar_depan . strtoupper($this->attributes['nama']). $gelar_belakang;
 	}

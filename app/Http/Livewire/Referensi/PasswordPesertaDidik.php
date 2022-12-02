@@ -37,7 +37,7 @@ class PasswordPesertaDidik extends Component
             })->paginate($this->per_page),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Password Peserta Didik"]
-            ]
+            ],
         ]);
     }
 }

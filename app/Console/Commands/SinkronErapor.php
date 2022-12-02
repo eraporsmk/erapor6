@@ -104,10 +104,45 @@ class SinkronErapor extends Command
             'kompetensi-dasar', 
             'capaian-pembelajaran',
         ];
+        $ref_lokal = 0;
         if(in_array($satuan, $server_dashboard)){
             $this->info('Mengambil data '.$this->get_table($satuan));
             $hitung_data = $this->ambil_data($satuan.'/hitung', $args);
-            $this->hitung_data($hitung_data, $satuan, $sekolah, $semester, $args);
+            if($satuan == 'wilayah'){
+                $ref_lokal = Mst_wilayah::count();
+            } elseif($satuan == 'kompetensi-dasar'){
+                $ref_lokal = Kompetensi_dasar::count();
+            } else {
+                try {
+                    $ref_lokal = Capaian_pembelajaran::where(function($query){
+                        $query->where('is_dir', 1);
+                    })->count();
+                } catch (\Exception $e){
+                    $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Jalankan php artisan erapor:update']);
+                    return $this->error("\n".'Proses pengambilan data '.$this->get_table($satuan).' gagal! Jalankan php artisan erapor:update');
+                }
+            }
+            if($hitung_data && $hitung_data->dapodik > -1){
+                if($hitung_data->dapodik > $ref_lokal){
+                    $this->hitung_data($hitung_data, $satuan, $sekolah, $semester, $args);
+                } else {
+                    $bar = $this->output->createProgressBar($ref_lokal);
+                    $bar->start(0);
+                    for($i=1;$i<=$ref_lokal;$i++){
+                        $bar->advance();
+                    }
+                    $bar->finish();
+                    if($this->argument('akses')){
+                        $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => 'Sinkronisasi '.$this->get_table($satuan).' berhasil']);
+                    }
+                    return $this->info("\n".'Proses pengambilan data '.$this->get_table($satuan).' berhasil!');
+                }
+            } else {
+                if($this->argument('akses')){
+                    $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon!']);
+                }
+                return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon!');
+            }
         } else {
             $sync_data = [
                 'wilayah', 
@@ -122,38 +157,33 @@ class SinkronErapor extends Command
         }
     }
     private function hitung_data($hitung_data, $satuan, $sekolah, $semester, $args){
-        if($hitung_data && $hitung_data->dapodik){
-            $limit = 500;
-            $this->info('Memproses data '.$this->get_table($satuan));
-            $bar = $this->output->createProgressBar($hitung_data->dapodik);
-            $bar->start(0);
-            if($hitung_data->dapodik > $limit){
-                for ($counter = 0; $counter <= $hitung_data->dapodik; $counter += $limit) {
-                    $args = [
-                        'created_at' => $args['created_at'],
-                        'offset' => $counter,
-                        'limit' => $limit,
-                    ];
-                    $referensi = $this->ambil_data($satuan, $args);
-                    $this->proses_data($referensi, $satuan, $sekolah->user, $semester, $bar);
-                    sleep(3);
-                }
-            } else {
+        $limit = 1000;
+        $this->info('Memproses data '.$this->get_table($satuan));
+        $bar = $this->output->createProgressBar($hitung_data->dapodik);
+        $bar->start(0);
+        if($hitung_data->dapodik > $limit){
+            for ($counter = 0; $counter <= $hitung_data->dapodik; $counter += $limit) {
                 $args = [
                     'created_at' => $args['created_at'],
-                    'offset' => 0,
+                    'offset' => $counter,
                     'limit' => $limit,
                 ];
                 $referensi = $this->ambil_data($satuan, $args);
                 $this->proses_data($referensi, $satuan, $sekolah->user, $semester, $bar);
             }
-            if($this->argument('akses')){
-                $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => 'Sinkronisasi '.$this->get_table($satuan).' berhasil']);
-            }
-            $this->info("\n".'Sinkronisasi '.$this->get_table($satuan).' berhasil'."\n"."\n");
         } else {
-            return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Data Anda telah lengkap!');
+            $args = [
+                'created_at' => $args['created_at'],
+                'offset' => 0,
+                'limit' => $limit,
+            ];
+            $referensi = $this->ambil_data($satuan, $args);
+            $this->proses_data($referensi, $satuan, $sekolah->user, $semester, $bar);
         }
+        if($this->argument('akses')){
+            $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => 'Sinkronisasi '.$this->get_table($satuan).' berhasil']);
+        }
+        $this->info("\n".'Sinkronisasi '.$this->get_table($satuan).' berhasil'."\n"."\n");
     }
     private function proses_data($referensi, $satuan, $user, $semester, $bar){
         if($referensi){
@@ -220,7 +250,7 @@ class SinkronErapor extends Command
     }
     private function ambil_data($satuan, $data_sync){
         try {
-            $response = Http::post($this->url_server('dashboard', 'api/sinkronisasi/'.$satuan), $data_sync);
+            $response = Http::post('http://app.erapor-smk.net/api/sinkronisasi/'.$satuan, $data_sync);
             if($response->status() == 200){
                 return $response->object();
             } else {
@@ -235,10 +265,6 @@ class SinkronErapor extends Command
             return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: 500');
         }
     }
-    private function url_server($server, $ep){
-        return config('erapor.'.$server).$ep;
-    }
-    
     private function proses_kd($data){
         $find = Mata_pelajaran::find($data->mata_pelajaran_id);
         if($find){
@@ -307,6 +333,7 @@ class SinkronErapor extends Command
                     'created_at' => $data->created_at,
                     'updated_at' => $data->updated_at,
                     'last_sync' => $data->last_sync,
+                    'is_dir' => 1,
                 ]
             );
         }

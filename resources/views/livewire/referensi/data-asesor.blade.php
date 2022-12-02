@@ -31,7 +31,7 @@
                             @endforeach
                         @else
                         <tr>
-                            <td class="text-center" colspan="5">Tidak ada data untuk ditampilkan</td>
+                            <td class="text-center" colspan="6">Tidak ada data untuk ditampilkan</td>
                         </tr>
                         @endif
                     </tbody>
@@ -68,6 +68,8 @@
         $('#detilGuru').modal('hide');
     })
     window.addEventListener('ref_gelar_depan', event => {
+        $('#gelar_depan').val('')
+        $('#gelar_belakang').val('')
         $('#gelar_depan').html('<option value="">== Pilih Gelar Depan ==</option>')
         $.each(event.detail.ref_gelar_depan, function (i, item) {
             $('#gelar_depan').append($('<option>', { 
@@ -75,9 +77,6 @@
                 text : item.kode
             }));
         });
-    })
-    window.addEventListener('gelar_depan', event => {
-        $('#gelar_depan').val(event.detail.gelar_depan)
     })
     window.addEventListener('ref_gelar_belakang', event => {
         $('#gelar_belakang').html('<option value="">== Pilih Gelar Belakang ==</option>')
@@ -88,8 +87,10 @@
             }));
         });
     })
+    window.addEventListener('gelar_depan', event => {
+        $('#gelar_depan').val(event.detail.gelar_depan)
+    });
     window.addEventListener('gelar_belakang', event => {
-        console.log(event.detail.gelar_belakang);
         $('#gelar_belakang').val(event.detail.gelar_belakang)
     })
     window.addEventListener('ref_dudi', event => {

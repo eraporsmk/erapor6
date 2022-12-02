@@ -21,6 +21,11 @@ class PesertaDidikAktif extends Component
     use WithPagination, LivewireAlert;
     protected $paginationTheme = 'bootstrap';
     public $search = '';
+    
+    private function loggedUser(){
+        return auth()->user();
+    }
+    
     public function updatingSearch()
     {
         $this->resetPage();
@@ -28,6 +33,10 @@ class PesertaDidikAktif extends Component
     public function loadPerPage(){
         $this->resetPage();
     }
+    protected $listeners = [
+        'proses_sinkron',
+        'show_progress'
+    ];
     public $sortby = 'nama';
     public $sortbydesc = 'ASC';
     public $per_page = 10;
@@ -65,15 +74,16 @@ class PesertaDidikAktif extends Component
     public $filter_tingkat;
     public $filter_jurusan;
     public $filter_rombel;
-
-    public function render()
-    {
-        $user = auth()->user();
-        if($user->hasRole('wali', session('semester_id'))){
-            $this->rombongan_belajar_id = $user->guru->rombongan_belajar->rombongan_belajar_id;
+    public $result = [];
+    
+    public function mount(){
+        if($this->loggedUser()->hasRole('wali', session('semester_id'))){
+            $this->rombongan_belajar_id = $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id;
         } else {
             $this->rombongan_belajar_id = NULL;
         }
+    }
+    public function render(){
         return view('livewire.referensi.peserta-didik-aktif', [
             'collection' => Peserta_didik::whereHas('anggota_rombel', $this->kondisi())
             ->with(['anggota_rombel' => $this->kondisi()])
@@ -109,7 +119,13 @@ class PesertaDidikAktif extends Component
             'pekerjaan_wali' => Pekerjaan::get(),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Peserta Didik Aktif"]
-            ]
+            ],
+            'tombol_add' => ($this->rombongan_belajar_id) ? [
+                'wire' => 'sinkronisasi',
+                'link' => '',
+                'color' => 'warning',
+                'text' => 'Sinkronisasi'
+            ] : NULL
         ]);
     }
     public function kondisi(){
@@ -236,9 +252,9 @@ class PesertaDidikAktif extends Component
     public function tutup(){
         $this->reset(['pd_id', 'pd', 'nama', 'nis', 'nisn', 'nik', 'jenis_kelamin', 'tempat_tanggal_lahir', 'agama', 'status', 'anak_ke', 'alamat', 'rt_rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'sekolah_asal', 'diterima_kelas', 'diterima', 'email', 'nama_ayah', 'kerja_ayah', 'nama_ibu', 'kerja_ibu', 'nama_wali', 'alamat_wali', 'telp_wali', 'kerja_wali']);
     }
-    public function syncPD(){
+    public function syncPD($pd_id = NULL, $nama = NULL){
         $data_sync = [
-            'peserta_didik_id' => $this->pd_id,
+            'peserta_didik_id' => ($pd_id) ? $pd_id : $this->pd_id,
             'sekolah_id'		=> session('sekolah_id'),
         ];
         $response = Http::withHeaders([
@@ -246,7 +262,16 @@ class PesertaDidikAktif extends Component
         ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/diterima-dikelas'), $data_sync);
         if($response->status() == 200){
             $data = $response->object();
-            $this->diterima_kelas = ($data->data) ? $data->data->nama : '';
+            $diterima_kelas = '';
+            if($pd_id){
+                if($data->data){
+                    Peserta_didik::where('peserta_didik_id', $pd_id)->whereNull('diterima_kelas')->update(['diterima_kelas' => $data->data->nama]);
+                    $diterima_kelas = $data->data->nama;
+                }
+            } else {
+                $this->diterima_kelas = ($data->data) ? $data->data->nama : '';
+            }
+            $this->result[$nama] = $diterima_kelas;
         }
     }
     private function url_server($server, $ep){
@@ -267,5 +292,16 @@ class PesertaDidikAktif extends Component
             $data_rombel = Rombongan_belajar::where('jurusan_sp_id', $this->filter_jurusan)->where('tingkat', $this->filter_tingkat)->get();
             $this->dispatchBrowserEvent('data_rombel', ['data_rombel' => $data_rombel]);
         }
+    }
+    public function updatedFilterRombel(){
+        $this->rombongan_belajar_id = $this->filter_rombel;
+    }
+    public function sinkronisasi(){
+        $this->reset(['result']);
+        $data_siswa = Peserta_didik::whereHas('anggota_rombel', $this->kondisi())->select('peserta_didik_id', 'nama')->orderBy('nama')->get();
+        foreach($data_siswa as $siswa){
+            $this->syncPD($siswa->peserta_didik_id, $siswa->nama);
+        }
+        $this->emit('progress');
     }
 }

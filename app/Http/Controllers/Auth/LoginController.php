@@ -149,30 +149,25 @@ class LoginController extends Controller
         );
         try {
             $data_sync = [
-                'username_dapo'		=> $request->email,
-                'password_dapo'		=> $request->password,
-                'npsn'				=> $request->npsn,
+                'npsn' => $request->npsn,
+                'email' => $request->email,
+                'password' => $request->password,
             ];
-            $url = $this->url_server('dapodik', 'sync/registrasi');
-            //$url = 'http://localhost:8383/erapor_server/sync/registrasi';
-            $response = Http::withBasicAuth('admin', '1234')->asForm()->post($url, $data_sync);
+            $response = Http::withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/register', $data_sync);
             $data = $response->object();
             if($response->successful()){
-                return $this->create_user($data);
+                return $this->create_user($data, $request->email, $request->password);
             } else {
                 session()->flash('status', $data->message);
                 return redirect()->route('register');
             }
         } catch (\Exception $e){
-            session()->flash('status', 'Registrasi Gagal. Server pusat tidak merespon');
+            session()->flash('status', 'Registrasi gagal. Server pusat tidak merespon');
             return redirect()->route('register');
             $this->error($e->getMessage());
         }
     }
-    private function url_server($server, $ep){
-        return config('erapor.'.$server).$ep;
-    }
-    private function create_user($data){
+    private function create_user($data, $email, $password){
         if(!$data->data){
             session()->flash('status', $data->message);
             return redirect()->route('register');
@@ -271,8 +266,8 @@ class LoginController extends Controller
             $user = User::create([
                 'sekolah_id' => $sekolah->sekolah_id,
                 'name' => 'Administrator',
-                'email' => $data->username_dapo,
-                'password' => bcrypt($data->password_dapo),
+                'email' => $email,
+                'password' => bcrypt($password),
             ]);
             $adminRole = Role::where('name', 'admin')->first();
             $team = Team::updateOrCreate([

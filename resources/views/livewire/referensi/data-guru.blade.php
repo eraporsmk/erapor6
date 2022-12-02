@@ -84,5 +84,7 @@
     window.addEventListener('gelar_belakang', event => {
         $('#gelar_belakang').val(event.detail.gelar_belakang)
     })
+    $('#gelar_depan').trigger('change')
+    $('#gelar_belakang').trigger('change')
 </script>
 @endpush

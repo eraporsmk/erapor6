@@ -643,6 +643,7 @@ class RefCP extends Command
                             'created_at' => Carbon::create('2022', '07', '01', '00', '00', '01'),
                             'updated_at' => now(),
                             'last_sync' => now(),
+                            'is_dir' => 1,
                         ]
                     );
                 } else {

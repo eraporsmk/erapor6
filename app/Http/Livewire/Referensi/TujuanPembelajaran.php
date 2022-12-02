@@ -38,7 +38,8 @@ class TujuanPembelajaran extends Component
             'collection' => Tujuan_pembelajaran::with(['cp.mata_pelajaran'])->where($this->kondisi())->orderBy($this->sortby, $this->sortbydesc)
             ->orderBy('updated_at', $this->sortbydesc)
                 ->when($this->search, function($query){
-                    $this->kondisi($this->search);
+                    $this->kondisi();
+                    /**/
                     //$query->orWhere('cp.elemen', 'ILIKE', '%' . $this->search . '%');
                     //$query->orWhere('cp.mata_pelajaran.nama', 'ILIKE', '%' . $this->search . '%');
             })->paginate($this->per_page),
@@ -53,41 +54,49 @@ class TujuanPembelajaran extends Component
             ]
         ]);
     }
-    private function kondisi($search = NULL){
-        $callback = function($query) use ($search){
+    private function kondisi(){
+        $callback = function($query){
+            if($this->search){
+                $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');                
+            }
             $query->whereHas('cp', function($query){
-                $query->whereHas('mata_pelajaran', function($query){
-                    $query->whereHas('pembelajaran', function($query){
-                        $query->where('guru_id', session('guru_id'));
-                        $query->whereNotNull('kelompok_id');
-                        $query->where('sekolah_id', session('sekolah_id'));
-                        $query->where('semester_id', session('semester_aktif'));
-                        $query->orWhere('guru_pengajar_id', session('guru_id'));
-                        $query->whereNotNull('kelompok_id');
-                        $query->where('sekolah_id', session('sekolah_id'));
-                        $query->where('semester_id', session('semester_aktif'));
-                    });
+                $query->whereHas('pembelajaran', function($query){
+                    $query->where('guru_id', session('guru_id'));
+                    $query->whereNotNull('kelompok_id');
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    if($this->search){
+                        $query->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');                
+                    }
+                    $query->orWhere('guru_pengajar_id', session('guru_id'));
+                    $query->whereNotNull('kelompok_id');
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    if($this->search){
+                        $query->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');                
+                    }
                 });
             });
-            if($search){
-                $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');
-            }
             $query->orWhereHas('kd', function($query){
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('guru_id', session('guru_id'));
                     $query->whereNotNull('kelompok_id');
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
+                    if($this->search){
+                        $query->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');                
+                    }
                     $query->orWhere('guru_pengajar_id', session('guru_id'));
                     $query->whereNotNull('kelompok_id');
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
+                    if($this->search){
+                        $query->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');                
+                    }
                 });
             });
-            if($search){
-                $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');
-            }
         };
+        return $callback;
     }
     public function getId($tp_id, $aksi){
         $this->tp_id = $tp_id;

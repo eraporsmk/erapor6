@@ -52,7 +52,7 @@ $configData = Helper::applClasses();
               </div>
             </div>
           @endif
-        <form class="auth-login-form mt-2" method="POST" action="{{ route('register') }}">
+        <form class="auth-login-form mt-2" method="POST" action="{{ route('registrasi') }}">
           @csrf
           <div class="mb-1">
             <label for="register-username" class="form-label">NPSN</label>

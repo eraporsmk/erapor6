@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Referensi;
 
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Livewire\WithFileUploads;
@@ -14,6 +15,8 @@ use App\Models\Gelar_ptk;
 use App\Models\Agama;
 use App\Models\Jenis_ptk;
 use App\Models\Status_kepegawaian;
+use App\Models\User;
+use App\Models\Role;
 use Carbon\Carbon;
 
 class DataInstruktur extends Component
@@ -35,6 +38,7 @@ class DataInstruktur extends Component
     public $file_excel;
     public $imported_data = [];
     public $hapus = TRUE;
+    public $update = TRUE;
     public $guru_id;
     public $readonly;
     public $disabled;
@@ -69,8 +73,9 @@ class DataInstruktur extends Component
     public $dudi_id;
     public $opsi_dudi = FALSE;
     public $file_path;
+    public $tanggal_lahir_str;
 
-    protected $listeners = ['confirmed'];
+    protected $listeners = ['confirmed', 'setTglLahir'];
 
     public function render()
     {
@@ -132,7 +137,6 @@ class DataInstruktur extends Component
             $this->nik[$urut] = $data['nik'];
             $this->jenis_kelamin[$urut] = $data['jenis_kelamin'];
             $this->tempat_lahir[$urut] = $data['tempat_lahir'];
-            //$this->tanggal_lahir[$urut] = $data['tanggal_lahir']->format('Y-m-d');
             $this->tanggal_lahir[$urut] = (is_object($data['tanggal_lahir'])) ? $data['tanggal_lahir']->format('Y-m-d') : now()->format('Y-m-d');
             $this->agama[$urut] = $data['agama'];
             $this->alamat_jalan[$urut] = $data['alamat_jalan'];
@@ -152,7 +156,7 @@ class DataInstruktur extends Component
         $this->validate(
             [
                 'nama.*' => 'required',
-                'nik.*' => 'required|min:16|max:16',
+                'nik.*' => 'required|min:16|max:16|unique:guru,nik',
                 'email.*' => 'required|unique:guru,email',
             ],
             [
@@ -162,6 +166,7 @@ class DataInstruktur extends Component
                 'nik.*.max' => 'NIK maksimal harus 16 digit!',
                 'email.*.required' => 'Email tidak boleh kosong!',
                 'email.*.unique' => 'Email sudah terdaftar!',
+                'nik.*.unique' => 'NIK sudah terdaftar!',
             ]
         );
         foreach($this->nama as $urut => $nama){
@@ -197,10 +202,15 @@ class DataInstruktur extends Component
                 );
             }
         }
+        $this->reset(['imported_data']);
+        $this->reset(['guru_id', 'gelar_depan', 'gelar_belakang', 'nuptk', 'nip', 'nik', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama_id', 'rt', 'rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'email', 'jenis_ptk_id', 'status_kepegawaian_id']);
         $this->emit('close-modal');
         $this->alert('success', 'Berhasil', [
             'text' => 'Data Instruktur berhasil disimpan'
         ]);
+    }
+    private function loggedUser(){
+        return auth()->user();
     }
     public function detil($id){
         $this->reset(['guru_id', 'gelar_depan', 'gelar_belakang', 'nuptk', 'nip', 'nik', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama_id', 'rt', 'rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'email', 'jenis_ptk_id', 'status_kepegawaian_id']);
@@ -209,7 +219,6 @@ class DataInstruktur extends Component
         foreach($this->guru->gelar_depan->unique() as $gelar_depan){
             $this->gelar_depan[] = $gelar_depan->gelar_akademik_id;
         }
-        //->unique()->implode('display_name', ', ')
         foreach($this->guru->gelar_belakang->unique() as $gelar_belakang){
             $this->gelar_belakang[] = $gelar_belakang->gelar_akademik_id;
         }
@@ -219,7 +228,9 @@ class DataInstruktur extends Component
         $this->nik = $this->guru->nik;
         $this->jenis_kelamin = $this->guru->jenis_kelamin;
         $this->tempat_lahir = $this->guru->tempat_lahir;
-        $this->tanggal_lahir = $this->guru->tanggal_lahir_indo;
+        //$this->tanggal_lahir = $this->guru->tanggal_lahir_indo;
+        $this->tanggal_lahir = $this->guru->tanggal_lahir;
+        $this->tanggal_lahir_str = Carbon::createFromTimeStamp(strtotime($this->guru->tanggal_lahir))->translatedFormat('j F Y');
         $this->agama_id = $this->guru->agama_id;
         $this->alamat = $this->guru->alamat;
         $this->rt = $this->guru->rt;
@@ -244,16 +255,12 @@ class DataInstruktur extends Component
         $this->emit('detilGuru');
     }
     private function updateGelar($data){
-        $find = Gelar_ptk::where(function($query){
+        $find = Gelar_ptk::where(function($query) use ($data){
             $query->where('sekolah_id', session('sekolah_id'));
             $query->where('guru_id', $this->guru_id);
+            $query->where('gelar_akademik_id', $data);
         })->first();
-        if($find){
-            $find->gelar_akademik_id = $data;
-            $find->ptk_id = $this->guru_id;
-            $find->last_sync = now();
-            $find->save();
-        } else {
+        if(!$find){
             Gelar_ptk::create(
                 [
                     'gelar_ptk_id' => Str::uuid(),
@@ -267,26 +274,92 @@ class DataInstruktur extends Component
         }
     }
     public function perbaharui(){
+        $data = Guru::with(['pengguna'])->find($this->guru_id);
+        $validation = ($data->pengguna) ? ['required', 'email', 'max:255', Rule::unique('users')->ignore($data->pengguna->user_id, 'user_id')] : ['required', 'email', 'max:255', Rule::unique('users')];
+        $this->validate(
+            [
+                'email' => $validation,
+                'tanggal_lahir' => ['required', 'date'],
+                'nuptk' => ['nullable', 'min:16', 'max:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')],
+                'nik' => ['nullable', 'min:16', 'max:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')]
+            ],
+            [
+                'email.required' => 'Email tidak boleh kosong!',
+                'email.email' => 'Email tidak valid!',
+                'email.unique' => 'Email sudah terdaftar di Database!',
+                'tanggal_lahir.required' => 'Tanggal Lahir tidak boleh kosong!',
+                'tanggal_lahir.date' => 'Format Tanggal Lahir salah!',
+                'nik.min' => 'NIK minimal harus 16 digit!',
+                'nik.max' => 'NIK maksimal harus 16 digit!',
+                'nik.unique' => 'NIK sudah terdaftar!',
+                'nik.numeric' => 'NIK harus berupa angka!',
+                'nuptk.min' => 'NIK minimal harus 16 digit!',
+                'nuptk.max' => 'NIK maksimal harus 16 digit!',
+                'nuptk.unique' => 'NIK sudah terdaftar!',
+                'nuptk.numeric' => 'NIK harus berupa angka!',
+            ]
+        );
         Gelar_ptk::where(function($query){
             $query->has('gelar_depan');
             $query->where('guru_id', $this->guru_id);
             $query->whereNotIn('gelar_akademik_id', $this->gelar_depan);
+        })->delete();
+        Gelar_ptk::where(function($query){
+            $query->has('gelar_belakang');
+            $query->where('guru_id', $this->guru_id);
+            $query->whereNotIn('gelar_akademik_id', $this->gelar_belakang);
         })->delete();
         if($this->gelar_depan){
             foreach($this->gelar_depan as $depan){
                 $this->updateGelar($depan);
             }
         }
-        Gelar_ptk::where(function($query){
-            $query->has('gelar_belakang');
-            $query->where('guru_id', $this->guru_id);
-            $query->whereNotIn('gelar_akademik_id', $this->gelar_belakang);
-        })->delete();
         if($this->gelar_belakang){
             foreach($this->gelar_belakang as $belakang){
                 $this->updateGelar($belakang);
             }
         }
+        $data->nama = $this->nama;
+        $data->nuptk = $this->nuptk;
+        $data->nip = $this->nip;
+        $data->nik = $this->nik;
+        $data->jenis_kelamin = $this->jenis_kelamin;
+        $data->tempat_lahir = $this->tempat_lahir;
+        $data->tanggal_lahir = $this->tanggal_lahir;
+        $data->agama_id = $this->agama_id;
+        $data->alamat = $this->alamat;
+        $data->rt = $this->rt;
+        $data->rw = $this->rw;
+        $data->desa_kelurahan = $this->desa_kelurahan;
+        $data->kecamatan = $this->kecamatan;
+        $data->kode_pos = $this->kode_pos;
+        $data->no_hp = $this->no_hp;
+        $data->email = $this->email;
+        if($data->save()){
+            $user = User::where('email', $this->email)->first();
+            $role = Role::where('name', 'guru')->first();
+            if($user){
+                $user->email = $this->email;
+                $user->save();
+            } else {
+                $new_password = strtolower(Str::random(8));
+                $user = User::create([
+                    'name' => $data->nama,
+                    'email' => $this->email,
+                    'nuptk'	=> $this->nuptk,
+                    'password' => bcrypt($new_password),
+                    'last_sync'	=> now(),
+                    'sekolah_id'	=> session('sekolah_id'),
+                    'password_dapo'	=> md5($new_password),
+                    'guru_id'	=> $this->guru_id,
+                    'default_password' => $new_password,
+                ]);
+            }
+            if(!$user->hasRole($role, session('semester_id'))){
+                $user->attachRole($role, session('semester_id'));
+            }
+        }
+        $this->reset(['guru_id', 'gelar_depan', 'gelar_belakang', 'nuptk', 'nip', 'nik', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama_id', 'rt', 'rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'email', 'jenis_ptk_id', 'status_kepegawaian_id']);
         $this->emit('close-modal');
         $this->alert('success', 'Data '.$this->data.' berhasil diperbaharui', [
             'position' => 'center'
@@ -315,5 +388,9 @@ class DataInstruktur extends Component
                 'position' => 'center'
             ]);
         }
+    }
+    public function setTglLahir($value){
+        $this->tanggal_lahir = Carbon::createFromTimeStamp(strtotime($value))->format('Y-m-d');
+        $this->tanggal_lahir_str = Carbon::createFromTimeStamp(strtotime($value))->translatedFormat('j F Y');
     }
 }

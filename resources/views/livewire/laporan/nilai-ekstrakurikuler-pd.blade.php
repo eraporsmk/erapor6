@@ -17,7 +17,7 @@
             @foreach ($item->anggota_rombel->anggota_ekskul as $anggota_ekskul)
             <tr>
                 <td>{{$anggota_ekskul->rombongan_belajar->kelas_ekskul->nama_ekskul}}</td>
-                <td>{{$anggota_ekskul->rombongan_belajar->kelas_ekskul->guru->nama}}</td>
+                <td>{{$anggota_ekskul->rombongan_belajar->kelas_ekskul->guru->nama_lengkap}}</td>
                 <td>{{($anggota_ekskul->single_nilai_ekstrakurikuler) ? nilai_ekskul($anggota_ekskul->single_nilai_ekstrakurikuler->nilai) : '-'}}</td>
                 <td>{{($anggota_ekskul->single_nilai_ekstrakurikuler) ? $anggota_ekskul->single_nilai_ekstrakurikuler->deskripsi_ekskul : '-'}}</td>
             </tr>

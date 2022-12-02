@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Laporan;
 
+use Illuminate\Support\Str;
 use Livewire\Component;
 use App\Models\Peserta_didik;
 use App\Models\Pembelajaran;
@@ -16,13 +17,13 @@ class LegerKurmer extends Component
     public $rombongan_belajar = [];
     public $data_siswa = [];
     public $data_pembelajaran = [];
+    public $merdeka;
 
     public function render()
     {
         $this->semester_id = session('semester_id');
-        if($this->loggedUser()->hasRole('waka', session('semester_id'))){
-            $tombol_add = NULL;
-        } elseif($this->check_walas()){
+        $tombol_add = NULL;
+        if($this->check_walas()){
             $rombel = $this->loggedUser()->guru->rombongan_belajar;
             $this->rombongan_belajar_id = ($rombel) ? $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id : NULL;
             $link = ($rombel) ? route('unduhan.unduh-leger-nilai-kurmer', ['rombongan_belajar_id' => $this->rombongan_belajar_id]) : 'javascript:void(0)';
@@ -55,6 +56,7 @@ class LegerKurmer extends Component
                 $query->whereNotNull('no_urut');
             })->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
             $this->show = TRUE;
+            $this->merdeka = Str::contains($this->loggedUser()->guru->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
         }
     }
     private function loggedUser(){
@@ -77,7 +79,7 @@ class LegerKurmer extends Component
         }
     }
     public function updatedTingkat(){
-        $this->reset(['rombongan_belajar_id', 'data_siswa']);
+        $this->reset(['rombongan_belajar_id', 'data_siswa', 'show']);
         if($this->tingkat){
             $data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
                 $query->where('tingkat', $this->tingkat);
@@ -92,17 +94,21 @@ class LegerKurmer extends Component
         }
     }
     public function updatedRombonganBelajarId(){
-        $this->reset(['data_siswa', 'data_pembelajaran']);
-        $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
-            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-        })->with(['anggota_rombel' => function($query){
-            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-        }])->orderBy('nama')->get();
-        $this->data_pembelajaran = Pembelajaran::where(function($query){
-            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            $query->whereNotNull('kelompok_id');
-            $query->whereNotNull('no_urut');
-        })->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
-        $this->show = TRUE;
+        $this->reset(['data_siswa', 'data_pembelajaran', 'show']);
+        if($this->rombongan_belajar_id){
+            $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            })->with(['anggota_rombel' => function($query){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            }])->orderBy('nama')->get();
+            $this->data_pembelajaran = Pembelajaran::where(function($query){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+            })->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
+            $rombongan_belajar = Rombongan_belajar::find($this->rombongan_belajar_id);
+            $this->merdeka = Str::contains($rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
+            $this->show = TRUE;
+        }
     }
 }

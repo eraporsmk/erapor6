@@ -2,7 +2,7 @@
     @include('panels.breadcrumb')
     <div class="content-body">
         <div class="card">
-            @role('waka', session('semester_id'))
+            @role(['waka', 'tu'], session('semester_id'))
             <form wire:ignore.self wire:submit.prevent="store">
                 <div class="card-body">
                     <div class="row mb-2">

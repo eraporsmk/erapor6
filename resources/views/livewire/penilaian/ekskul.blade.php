@@ -12,8 +12,8 @@
                     </div>
                     <div class="row mb-2">
                         <label for="rombongan_belajar_id" class="col-sm-3 col-form-label">Ekstrakurikuler</label>
-                        <div class="col-sm-9">
-                            <select id="rombongan_belajar_id" class="form-select" wire:model="rombongan_belajar_id" wire:change="changeEkskul">
+                        <div class="col-sm-9" wire:ignore>
+                            <select id="rombongan_belajar_id" class="form-select" wire:model="rombongan_belajar_id" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Nama Ekstrakurikuler ==" data-search-off="true">
                                 <option value="">== Pilih Nama Ekstrakurikuler ==</option>
                                 @foreach ($collection as $item)
                                 <option value="{{$item->rombongan_belajar_id}}">{{$item->nama_ekskul}}</option>
@@ -23,13 +23,16 @@
                     </div>
                     <div class="row mb-2{{($show) ? '' : ' d-none'}}">
                         <label for="rombongan_belajar_id_reguler" class="col-sm-3 col-form-label">Filter Kelas</label>
-                        <div class="col-sm-9">
-                            <select id="rombongan_belajar_id_reguler" class="form-select" wire:model="rombongan_belajar_id_reguler" wire:change="changeReguler">
+                        <div class="col-sm-9" wire:ignore>
+                            <select id="rombongan_belajar_id_reguler" class="form-select" wire:model="rombongan_belajar_id_reguler" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Semua Kelas ==" data-clear="true">
                                 <option value="">== Semua Kelas ==</option>
-                                @foreach ($data_rombel as $rombel)
-                                <option value="{{$rombel->rombongan_belajar_id}}">{{$rombel->nama}}</option>
-                                @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2{{($show) ? '' : ' d-none'}}">
+                        <label for="reset_nilai" class="col-sm-3 col-form-label">Reset Nilai Ekstrakurikuler</label>
+                        <div class="col-sm-9">
+                            <a class="btn btn-danger" wire:click="resetNilai">Reset Nilai {{$nama_ekskul}} {{($nama_rombel) ? 'Kelas '.$nama_rombel : ''}}</a>
                         </div>
                     </div>
                     <div class="table-responsive{{($show) ? '' : ' d-none'}}">
@@ -77,10 +80,19 @@
 </div>
 @push('scripts')
 <script>
-    $(document).ready(function() {
-        $('.select2').select2();
-
+    window.addEventListener('reset', event => {
+        $('#rombongan_belajar_id').val('');
+        $('#rombongan_belajar_id').trigger('change');
     });
+    window.addEventListener('data_rombongan_belajar', event => {
+        $('#rombongan_belajar_id_reguler').html('<option value="">== Pilih Rombongan Belajar ==</option>')
+        $.each(event.detail.data_rombongan_belajar, function (i, item) {
+            $('#rombongan_belajar_id_reguler').append($('<option>', { 
+                value: item.rombongan_belajar_id,
+                text : item.nama
+            }));
+        });
+    })
 </script>
 
 @endpush

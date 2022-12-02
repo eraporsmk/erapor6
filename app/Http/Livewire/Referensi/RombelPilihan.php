@@ -105,7 +105,7 @@ class RombelPilihan extends Component
         $this->getPengajar();
         $this->getKelompok($kurikulum);
         $this->getRombel();
-        $this->pembelajaran = Pembelajaran::where('rombongan_belajar_id', $rombongan_belajar_id)->whereNull('induk_pembelajaran_id')->orderBy('kelompok_id')->orderBy('no_urut')->orderBy('mata_pelajaran_id')->get();
+        $this->pembelajaran = Pembelajaran::where('rombongan_belajar_id', $rombongan_belajar_id)->whereNull('induk_pembelajaran_id')->orderBy('mata_pelajaran_id')->get();
         $pengajar = [];
         $kelompok_id = [];
         $no_urut = [];

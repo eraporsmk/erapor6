@@ -94,6 +94,8 @@
             } else {
                 $('#kelompok_id_'+i).val('')
             }
+            $('#kelompok_id_'+i).trigger('change')
+            $('#pengajar_'+i).trigger('change')
         });
     })
 </script>

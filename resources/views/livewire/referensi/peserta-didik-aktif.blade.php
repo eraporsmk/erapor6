@@ -3,7 +3,7 @@
     <div class="content-body">
         <div class="card">
             <div class="card-body">
-                @role(['admin', 'waka'], session('semester_id'))
+                @role(['admin', 'waka', 'tu'], session('semester_id'))
                 <div class="row justify-content-between mb-2">
                     <div class="col-4">
                         <div class="d-inline" wire:ignore>
@@ -42,7 +42,7 @@
                             <th class="text-center">Tempat, Tanggal Lahir</th>
                             <th class="text-center">Agama</th>
                             <th class="text-center">Kelas</th>
-                            @role(['admin', 'waka'], session('semester_id'))
+                            @role(['admin', 'waka', 'tu', 'wali'], session('semester_id'))
                             <th class="text-center">Detil</th>
                             @endrole
                         </tr>
@@ -57,7 +57,7 @@
                                 <td>{{$item->tempat_lahir}}, {{$item->tanggal_lahir}}</td>
                                 <td>{{$item->agama->nama}}</td>
                                 <td>{{($item->anggota_rombel) ? $item->anggota_rombel->rombongan_belajar->nama : '-'}}</td>
-                                @role(['admin', 'waka'], session('semester_id'))
+                                @role(['admin', 'waka', 'tu', 'wali'], session('semester_id'))
                                 <td class="text-center"><button class="btn btn-info btn-sm" wire:click="getID('{{$item->peserta_didik_id}}')">Detil</button></td>
                                 @endrole
                             </tr>
@@ -83,12 +83,16 @@
         </div>
     </div>
     @include('livewire.referensi.modal.detil-pd')
+    @include('livewire.referensi.modal.progress')
     @include('components.loader')
 </div>
 @push('scripts')
 <script>
     Livewire.on('show-modal', event => {
         $('#detilPD').modal('show');
+    })
+    Livewire.on('progress', event => {
+        $('#progressBar').modal('show');
     })
     Livewire.on('close-modal', event => {
         $('#detilPD').modal('hide');

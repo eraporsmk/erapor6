@@ -11,13 +11,14 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th class="text-center">No</th>
-                                <th class="text-center">Mata Pelajaran</th>
-                                <th class="text-center">Guru Mapel (Dapodik)</th>
-                                <th class="text-center">Guru Pengajar</th>
-                                <th class="text-center">Kelompok</th>
-                                <th class="text-center">No Urut</th>
-                                <th class="text-center">Reset</th>
+                                <th class="text-center" style="width: 3%">No</th>
+                                <th class="text-center" style="width: 25%">Mata Pelajaran</th>
+                                <th class="text-center" style="width: 9%">ID Mapel</th>
+                                <th class="text-center" style="width: 15%">Guru Mapel (Dapodik)</th>
+                                <th class="text-center" style="width: 20%">Guru Pengajar</th>
+                                <th class="text-center" style="width: 20%">Kelompok</th>
+                                <th class="text-center" style="width: 5%">No Urut</th>
+                                <th class="text-center" style="width: 3%">Reset</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,35 +30,27 @@
                                     @error('nama_mata_pelajaran.'.$item->pembelajaran_id) {{$message}} @enderror
                                 </td>
                                 <td class="align-top">
+                                    <input type="text" class="form-control" value="{{$item->mata_pelajaran_id}}" readonly>
+                                </td>
+                                <td class="align-top">
                                     <input type="text" class="form-control" value="{{$item->guru->nama_lengkap}}" readonly>
-                                    {{--$item->guru->nama_lengkap--}}
                                 </td>
                                 <td class="align-top">
                                     <div wire:ignore>
-                                        <select id="pengajar_{{$urut}}" class="form-select" wire:model.defer="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal">
+                                        <select id="pengajar_{{$urut}}" class="form-select" wire:model.defer="pengajar.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Guru Pengajar ==" data-parent="#pembelajaranModal" data-clear="true">
                                             <option value="">== Pilih Guru Pengajar ==</option>
-                                            {{--
-                                            @foreach ($guru_pengajar as $pengajar)
-                                                <option value="{{$pengajar->guru_id}}">{{$pengajar->nama_lengkap}}</option>
-                                            @endforeach
-                                            --}}
                                         </select>
                                     </div>
                                 </td>
                                 <td class="align-top">
                                     <div wire:ignore>
-                                        <select id="kelompok_id_{{$urut}}" class="form-select" wire:model.defer="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal">
+                                        <select id="kelompok_id_{{$urut}}" class="form-select" wire:model.defer="kelompok_id.{{$item->pembelajaran_id}}" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Kelompok ==" data-parent="#pembelajaranModal" data-clear="true">
                                             <option value="">== Pilih Kelompok ==</option>
-                                            {{--
-                                            @foreach ($data_kelompok as $kelompok)
-                                                <option value="{{$kelompok->kelompok_id}}">{{$kelompok->nama_kelompok}}</option>
-                                            @endforeach
-                                            --}}
                                         </select>
                                     </div>
                                 </td>
-                                <td class="align-top">
-                                    <input type="text" class="form-control @error('no_urut.'.$item->pembelajaran_id) is-invalid @enderror" wire:model.defer="no_urut.{{$item->pembelajaran_id}}">
+                                <td class="align-top text-center">
+                                    <input type="text" class="form-control text-center @error('no_urut.'.$item->pembelajaran_id) is-invalid @enderror" wire:model.defer="no_urut.{{$item->pembelajaran_id}}">
                                     @error('no_urut.'.$item->pembelajaran_id) {{$message}} @enderror
                                 </td>
                                 <td class="text-center">

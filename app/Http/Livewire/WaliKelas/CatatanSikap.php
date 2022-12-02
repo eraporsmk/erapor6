@@ -48,6 +48,7 @@ class CatatanSikap extends Component
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                 })->first();
+            $this->rombongan_belajar_id = $this->rombongan_belajar->rombongan_belajar_id;
             $this->merdeka = Str::contains($this->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
         }
     }
@@ -124,7 +125,7 @@ class CatatanSikap extends Component
                     $query->where('nama_kurikulum', 'ILIKE', '%REV%');
                 });
             })->find($rombongan_belajar_id);
-            if($rombongan_belajar->guru_id == session('guru_id')){
+            if($rombongan_belajar && $rombongan_belajar->guru_id == session('guru_id')){
                 return TRUE;
             } else {
                 return FALSE;
