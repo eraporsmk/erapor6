@@ -259,7 +259,7 @@ class PesertaDidikAktif extends Component
         ];
         $response = Http::withHeaders([
             'x-api-key' => session('sekolah_id'),
-        ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/diterima-dikelas'), $data_sync);
+        ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/diterima-dikelas', $data_sync);
         if($response->status() == 200){
             $data = $response->object();
             $diterima_kelas = '';
