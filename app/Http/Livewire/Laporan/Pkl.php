@@ -60,6 +60,7 @@ class Pkl extends Component
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->where('jenis_rombel', 1);
             })->first();
             $this->tingkat = $rombel->tingkat;
             if(Str::contains($rombel->kurikulum->nama_kurikulum, '2013')){
