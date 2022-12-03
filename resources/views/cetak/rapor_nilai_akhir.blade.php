@@ -49,8 +49,7 @@
 		<td>: {{$get_siswa->rombongan_belajar->sekolah->nama}}</td>
 		<td style="padding:0px;">Semester</td>
 		<td>: 
-			{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id}}/{{$get_siswa->rombongan_belajar->semester->tahun_ajaran_id + 1}}
-			{{--substr($get_siswa->rombongan_belajar->semester->nama,10)--}}
+			{{substr($get_siswa->rombongan_belajar->semester->nama,10)}}
 		</td>
 	</tr>
 	<tr>
