@@ -54,7 +54,7 @@
                     <div class="row mb-2">
                         <label for="nama_projek" class="col-sm-3 col-form-label">Nama Projek</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" id="nama_projek" wire:model.lazy="nama_projek">
+                            <input class="form-control" type="text" id="nama_projek" wire:model.defer="nama_projek">
                             @error('nama_projek')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -63,7 +63,7 @@
                     <div class="row mb-2">
                         <label for="deskripsi" class="col-sm-3 col-form-label">Deskripsi Projek</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" id="deskripsi" wire:model.lazy="deskripsi"></textarea>
+                            <textarea class="form-control" id="deskripsi" wire:model.defer="deskripsi"></textarea>
                             @error('deskripsi')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -85,7 +85,7 @@
                                     @foreach($kerja->elemen_budaya_kerja as $elemen)
                                     <tr class="table-{{warna_dimensi($kerja->budaya_kerja_id)}}">
                                         <td>
-                                            <div class="text-center"><input type="checkbox" wire:model="sub_elemen.{{$elemen->elemen_id}}" value="{{$kerja->budaya_kerja_id}}|{{$elemen->elemen_id}}" /></div>
+                                            <div class="text-center"><input type="checkbox" wire:model.defer="sub_elemen.{{$elemen->elemen_id}}" value="{{$kerja->budaya_kerja_id}}|{{$elemen->elemen_id}}" /></div>
                                         </td>
                                         <td>{{$kerja->aspek}}</td>
                                         <td>{{$elemen->elemen}}</td>

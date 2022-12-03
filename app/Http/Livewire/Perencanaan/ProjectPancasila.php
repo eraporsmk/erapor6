@@ -57,14 +57,12 @@ class ProjectPancasila extends Component
 			$query->with(['rombongan_belajar' => function($query){
                 $query->select('rombongan_belajar_id', 'nama');
             }]);
-			$query->where('sekolah_id', session('sekolah_id'));
-			$query->where('guru_id', $this->loggedUser()->guru_id);
+            $query->where('sekolah_id', session('sekolah_id'));
 			$query->where('semester_id', session('semester_aktif'));
-			$query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
-			$query->where('sekolah_id', session('sekolah_id'));
-			$query->where('semester_id', session('semester_aktif'));
-            $query->whereNotNull('kelompok_id');
-            $query->whereNotNull('no_urut');
+            $query->whereHas('induk', function($query){
+                $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+            });
 		};
         return view('livewire.perencanaan.project-pancasila', [
             'breadcrumbs' => $breadcrumbs,
@@ -206,6 +204,7 @@ class ProjectPancasila extends Component
         } else {
             $this->alert('error', 'Data Projek P5 gagal dihapus!');
         }
+        $this->reset(['projek', 'nama_projek', 'deskripsi']);
     }
     public function perbaharui(){
         $projek = $this->projek;

@@ -157,7 +157,7 @@ class RombelPilihan extends Component
         foreach($this->pembelajaran_id as $urut => $pembelajaran_id){
             $update = Pembelajaran::find($pembelajaran_id);
             $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$pembelajaran_id];
-            $update->guru_pengajar_id = $this->pengajar[$pembelajaran_id];
+            $update->guru_pengajar_id = (Str::isUuid($this->pengajar[$pembelajaran_id])) ? $this->pengajar[$pembelajaran_id] : NULL;
             $update->kelompok_id = $this->kelompok_id[$pembelajaran_id];
             $update->no_urut = $this->no_urut[$pembelajaran_id];
             $update->save();
