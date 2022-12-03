@@ -119,9 +119,6 @@ class DataEkstrakurikuler extends Component
     public function confirmed(){
         $this->getAnggota();
     }
-    private function url_server($server, $ep){
-        return config('erapor.'.$server).$ep;
-    }
     public function proses_sync(){
         $semester = Semester::find(session('semester_aktif'));
         $user = auth()->user();
@@ -134,10 +131,7 @@ class DataEkstrakurikuler extends Component
             'sekolah_id'		=> $user->sekolah->sekolah_id,
             'satuan'			=> $this->rombongan_belajar_id,
         ];
-        $response = Http::withHeaders([
-            'x-api-key' => $user->sekolah->sekolah_id,
-        ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_server('dapodik', 'api/anggota_ekskul_by_rombel'), $data_sync);
-        //->post('http://103.40.55.242/erapor_server/api/anggota_ekskul_by_rombel', $data_sync);
+        $response = Http::post('http://app.erapor-smk.net/api/dapodik/anggota_ekskul_by_rombel', $data_sync);
         $return = $response->object();
         if($return){
             $this->simpan_anggota_ekskul($return->dapodik, $user, $semester);
