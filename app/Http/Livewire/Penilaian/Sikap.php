@@ -112,7 +112,7 @@ class Sikap extends Component
     }
     public function confirmed()
     {
-        $a = Nilai_sikap::find($this->nilai_budaya_kerja_id);
+        $a = Nilai_budaya_kerja::find($this->nilai_budaya_kerja_id);
         $a->delete();
         $this->alert('success', 'Nilai sikap berhasil dihapus');
     }
