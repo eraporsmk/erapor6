@@ -144,7 +144,7 @@ class LoginController extends Controller
                 'email.unique' => 'Email sudah terdaftar!',
                 'email.required' => 'Email Dapodik Tidak boleh kosong!',
                 'password.required' => 'Password Dapodik Tidak boleh kosong!',
-                'password.confirmed' => 'Konfirmasi password tidak cocok.!',
+                'password.confirmed' => 'Konfirmasi password tidak sesuai.!',
             ]
         );
         try {

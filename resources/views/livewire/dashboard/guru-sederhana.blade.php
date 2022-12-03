@@ -57,7 +57,9 @@
                                 <td>{{$item->nama_mata_pelajaran}}</td>
                                 <td>{{($item->pengajar) ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap}}</td>
                                 <td class="text-center">{{$item->anggota_rombel_count}}</td>
-                                <td class="text-center">{{$item->anggota_dinilai}}</td>
+                                <td class="text-center">{{$item->anggota_rombel()->whereHas('nilai_akhir_mapel', function($query) use ($item){
+                                    $query->where('pembelajaran_id', $item->pembelajaran_id);
+                                })->count()}}</td>
                             </tr>
                         @empty
                             <tr>

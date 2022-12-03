@@ -70,9 +70,6 @@ class Guru extends Component
                     ]);
                     $query->withCount([
                         'anggota_rombel',
-                        'anggota_rombel as anggota_dinilai' => function($query){
-                            $query->has('nilai_akhir_mapel');
-                        }
                     ]);
                 },
                 'kurikulum'
