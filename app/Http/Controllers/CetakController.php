@@ -199,6 +199,12 @@ class CetakController extends Controller
 			'kenaikan',
 			'all_prakerin',
 			'single_catatan_wali',
+			'all_nilai_ekskul' => function($query){
+				$query->whereHas('ekstrakurikuler', function($query){
+					$query->where('semester_id', session('semester_aktif'));
+				});
+				$query->with(['ekstrakurikuler']);
+			},
 		])->find($request->route('anggota_rombel_id'));
 		$budaya_kerja = Budaya_kerja::with(['catatan_budaya_kerja' => function($query){
 			$query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
