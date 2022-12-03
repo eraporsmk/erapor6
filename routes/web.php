@@ -76,7 +76,7 @@ Route::middleware([
         Route::get('/bobot-keterampilan', [EraporController::class, 'bobot_keterampilan'])->name('bobot-keterampilan');
         Route::get('/penilaian-ukk', [EraporController::class, 'perencanaan_ukk'])->name('penilaian-ukk');
     });
-    Route::prefix('penilaian')->name('penilaian.')->middleware('team:guru')->group( function(){
+    Route::prefix('penilaian')->name('penilaian.')->middleware('team:guru,tu')->group( function(){
         //Route::get('/pusat-keunggulan', [EraporController::class, 'penilaian_pusat_keunggulan'])->name('pusat-keunggulan');
         Route::get('/nilai-akhir', [EraporController::class, 'nilai_akhir'])->name('nilai-akhir');
         Route::get('/kurikulum-merdeka', [EraporController::class, 'penilaian_kurikulum_merdeka'])->name('kurikulum-merdeka');
@@ -92,7 +92,7 @@ Route::middleware([
         Route::get('/ekstrakurikuler', [EraporController::class, 'penilaian_ekstrakurikuler'])->name('ekstrakurikuler');
         Route::get('/capaian-kompetensi', [EraporController::class, 'capaian_kompetensi'])->name('capaian-kompetensi');
     });
-    Route::prefix('laporan')->name('laporan.')->middleware('team:guru,tu')->group( function(){
+    Route::prefix('laporan')->name('laporan.')->middleware('team:guru')->group( function(){
     //Route::group(['prefix' => 'laporan', 'middleware' => ['role:guru']], function(){
         Route::get('/nilai-us', [EraporController::class, 'nilai_us'])->name('nilai-us');
         Route::get('/nilai-un', [EraporController::class, 'nilai_un'])->name('nilai-un');
