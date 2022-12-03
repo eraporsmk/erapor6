@@ -18,6 +18,7 @@
                         <li><b class="text-danger">[Perbaikan]</b> Tambah/Hapus Gelar PTK</li>
                         <li><b class="text-danger">[Perbaikan]</b> Unduh legger</li>
                         <li><b class="text-danger">[Perbaikan]</b> Akses menu PKL di login Wali Kelas yang merangkap sebagai pembina Ekstrakurikuler</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Akses menu Nilai Ekstrakurikuler di login Pembina Ekstrakurikuler yang merangkap sebagai pembina Tata Usaha</li>
                     </ol>
                     <legend><h3>Versi 6.0.0</h3></legend>
                     <ol>
