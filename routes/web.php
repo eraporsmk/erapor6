@@ -92,7 +92,7 @@ Route::middleware([
         Route::get('/ekstrakurikuler', [EraporController::class, 'penilaian_ekstrakurikuler'])->name('ekstrakurikuler');
         Route::get('/capaian-kompetensi', [EraporController::class, 'capaian_kompetensi'])->name('capaian-kompetensi');
     });
-    Route::prefix('laporan')->name('laporan.')->middleware('team:guru')->group( function(){
+    Route::prefix('laporan')->name('laporan.')->middleware('team:guru,tu')->group( function(){
     //Route::group(['prefix' => 'laporan', 'middleware' => ['role:guru']], function(){
         Route::get('/nilai-us', [EraporController::class, 'nilai_us'])->name('nilai-us');
         Route::get('/nilai-un', [EraporController::class, 'nilai_un'])->name('nilai-un');
