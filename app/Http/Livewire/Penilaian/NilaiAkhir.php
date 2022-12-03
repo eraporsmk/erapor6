@@ -235,24 +235,26 @@ class NilaiAkhir extends Component
             foreach(array_filter($this->tp_dicapai[$anggota_rombel_id]) as $tp_dicapai){
                 $tp_id[] = $tp_dicapai;
                 $tp = Tujuan_pembelajaran::find($tp_dicapai);
-                if($this->merdeka){
-                    $update = [
-                        'cp_id' => $tp->cp_id,
-                    ];
-                } else {
-                    $update = [
-                        'kd_id' => $tp->kd_id,
-                    ];
+                if($tp){
+                    if($this->merdeka){
+                        $update = [
+                            'cp_id' => $tp->cp_id,
+                        ];
+                    } else {
+                        $update = [
+                            'kd_id' => $tp->kd_id,
+                        ];
+                    }
+                    Tp_nilai::updateOrCreate(
+                        [
+                            'sekolah_id' => session('sekolah_id'),
+                            'anggota_rombel_id' => $anggota_rombel_id,
+                            'tp_id' => $tp_dicapai,
+                            'kompeten' => 1,
+                        ],
+                        $update
+                    );
                 }
-                Tp_nilai::updateOrCreate(
-                    [
-                        'sekolah_id' => session('sekolah_id'),
-                        'anggota_rombel_id' => $anggota_rombel_id,
-                        'tp_id' => $tp_dicapai,
-                        'kompeten' => 1,
-                    ],
-                    $update
-                );
             }
         }
         $this->hapus_tp_nilai($tp_id, $anggota_rombel_id, 1);
@@ -261,24 +263,26 @@ class NilaiAkhir extends Component
             foreach(array_filter($this->tp_belum_dicapai[$anggota_rombel_id]) as $tp_belum_dicapai){
                 $tp_id[] = $tp_belum_dicapai;
                 $tp = Tujuan_pembelajaran::find($tp_belum_dicapai);
-                if($this->merdeka){
-                    $update = [
-                        'cp_id' => $tp->cp_id,
-                    ];
-                } else {
-                    $update = [
-                        'kd_id' => $tp->kd_id,
-                    ];
+                if($tp){
+                    if($this->merdeka){
+                        $update = [
+                            'cp_id' => $tp->cp_id,
+                        ];
+                    } else {
+                        $update = [
+                            'kd_id' => $tp->kd_id,
+                        ];
+                    }
+                    Tp_nilai::updateOrCreate(
+                        [
+                            'sekolah_id' => session('sekolah_id'),
+                            'anggota_rombel_id' => $anggota_rombel_id,
+                            'tp_id' => $tp_belum_dicapai,
+                            'kompeten' => 0,
+                        ],
+                        $update
+                    );
                 }
-                Tp_nilai::updateOrCreate(
-                    [
-                        'sekolah_id' => session('sekolah_id'),
-                        'anggota_rombel_id' => $anggota_rombel_id,
-                        'tp_id' => $tp_belum_dicapai,
-                        'kompeten' => 0,
-                    ],
-                    $update
-                );
             }
         }
         $this->hapus_tp_nilai($tp_id, $anggota_rombel_id, 0);
