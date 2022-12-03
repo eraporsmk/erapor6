@@ -84,6 +84,7 @@ class CatatanSikap extends Component
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('guru_id', session('guru_id'));
+                    $query->where('jenis_rombel', 1);
                 });
             }
         })->with(['anggota_rombel' => function($query){
@@ -94,6 +95,7 @@ class CatatanSikap extends Component
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('guru_id', session('guru_id'));
+                    $query->where('jenis_rombel', 1);
                 });
             }
             $query->with([
