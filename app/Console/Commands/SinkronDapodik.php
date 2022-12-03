@@ -398,22 +398,25 @@ class SinkronDapodik extends Command
         foreach($dapodik as $data){
             $id_kelas_ekskul[] = $data->ID_kelas_ekskul;
             $this->insert_rombel($data, $user, $semester, TRUE);
-            Ekstrakurikuler::withTrashed()->updateOrCreate(
-                [
-                    'ekstrakurikuler_id' => $data->ID_kelas_ekskul,
-                ],
-                [
-                    'id_kelas_ekskul' => $data->ID_kelas_ekskul,
-                    'semester_id' => $data->semester_id,
-                    'sekolah_id'	=> $data->sekolah_id,
-                    'guru_id' => $data->ptk_id,
-                    'nama_ekskul' => $data->nm_ekskul,
-                    'is_dapodik' => 1,
-                    'rombongan_belajar_id'	=> $data->rombongan_belajar_id,
-                    'alamat_ekskul' => $data->rombongan_belajar->ruang->nm_ruang, 
-                    'last_sync'	=> now(),
-                ]
-            );
+            $find = Guru::find($data->ptk_id);
+            if($find){
+                Ekstrakurikuler::withTrashed()->updateOrCreate(
+                    [
+                        'ekstrakurikuler_id' => $data->ID_kelas_ekskul,
+                    ],
+                    [
+                        'id_kelas_ekskul' => $data->ID_kelas_ekskul,
+                        'semester_id' => $data->semester_id,
+                        'sekolah_id'	=> $data->sekolah_id,
+                        'guru_id' => $data->ptk_id,
+                        'nama_ekskul' => $data->nm_ekskul,
+                        'is_dapodik' => 1,
+                        'rombongan_belajar_id'	=> $data->rombongan_belajar_id,
+                        'alamat_ekskul' => $data->rombongan_belajar->ruang->nm_ruang, 
+                        'last_sync'	=> now(),
+                    ]
+                );
+            }
             $this->proses_sync('Memperoses', 'ekstrakurikuler', $i, count($dapodik), $user->sekolah_id);
             $bar->advance();
             $i++;
