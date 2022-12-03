@@ -32,7 +32,7 @@ class SheetNilaiImport implements ToCollection
                         'kompetensi_id' => ($this->merdeka) ? 4 : 1,
                     ],
                     [
-                        'nilai' => ($item[4] >= 0 && $item[4] <= 100 ) ? $item[4] : 0,
+                        'nilai' => ($item[4] >= 0 && $item[4] <= 100 ) ? number_format($item[4], 0) : 0,
                     ]
                 );
             }

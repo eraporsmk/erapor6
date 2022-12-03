@@ -221,7 +221,7 @@ class NilaiAkhir extends Component
                         'kompetensi_id' => ($this->merdeka) ? 4 : 1,
                     ],
                     [
-                        'nilai' => ($nilai_akhir) ? $nilai_akhir : 0,
+                        'nilai' => ($nilai_akhir) ? number_format($nilai_akhir,0) : 0,
                     ]
                 );
                 $this->simpan_tp_nilai($anggota_rombel_id);
