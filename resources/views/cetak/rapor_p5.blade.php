@@ -4,7 +4,7 @@
 	<tr>
 		<td style="width: 70%; font-size:25px; line-height:1.5; vertical-align:top">RAPOR PROJEK PENGUATAN PROFIL PELAJAR PANCASILA</td>
 		<td style="width: 30%" class="text-right">
-			<img src="{{($get_siswa->rombongan_belajar->sekolah && $get_siswa->rombongan_belajar->sekolah->logo_sekolah) ? '/storage/images/'.$get_siswa->rombongan_belajar->sekolah->logo_sekolah : '/images/tutwuri.png'}}" height="75" />
+			<img src="{{($get_siswa->rombongan_belajar->sekolah && $get_siswa->rombongan_belajar->sekolah->logo_sekolah) ? '/storage'.config('erapor.storage').'/images/'.$get_siswa->rombongan_belajar->sekolah->logo_sekolah : '/images/tutwuri.png'}}" height="75" />
 		</td>
 	</tr>
 </table>

@@ -94,7 +94,7 @@
                                 @endif
                             </label>
                             <div class="mb-1">
-                                <img src="{{($sekolah->logo_sekolah) ? asset('storage/images/'.$sekolah->logo_sekolah) : asset('images/tutwuri.png')}}" class="img-thumbnail" alt="Logo Sekolah">
+                                <img src="{{($sekolah->logo_sekolah) ? asset('storage'.config('erapor.storage').'/images/'.$sekolah->logo_sekolah) : asset('images/tutwuri.png')}}" class="img-thumbnail" alt="Logo Sekolah">
                             </div>
                             <input type="file" class="form-control" wire:model="photo">
                             @error('photo') <span class="text-danger">{{ $message }}</span> @enderror
