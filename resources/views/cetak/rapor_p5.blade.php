@@ -11,30 +11,26 @@
 <br>
 <table>
 	<tr>
-		<th style="width: 15%;font-weight:bold;" class="text-right">Nama Sekolah</th>
-		<th style="width: 25%;font-weight:normal;">: {{$get_siswa->rombongan_belajar->sekolah->nama}}</th>
-		<th style="width: 5%;font-weight:normal;"></th>
-		<th style="width: 15%;font-weight:bold;" class="text-right">Kelas</th>
-		<th style="width: 20%;font-weight:normal;">: {{$get_siswa->rombongan_belajar->nama}}</th>
+		<th style="width: 20%;font-weight:bold;" class="text-right">Nama Sekolah</th>
+		<th style="width: 45%;font-weight:normal;">{{$get_siswa->rombongan_belajar->sekolah->nama}}</th>
+		<th style="width: 20%;font-weight:bold;" class="text-right">Kelas</th>
+		<th style="width: 15%;font-weight:normal;">{{$get_siswa->rombongan_belajar->nama}}</th>
 	</tr>
 	<tr>
 		<th style="font-weight:bold;" class="text-right">Program Keahlian</th>
-		<th style="font-weight:normal;">: {{$get_siswa->rombongan_belajar->jurusan_sp->nama_jurusan_sp}}</th>
-		<th style="font-weight:normal;"></th>
+		<th style="font-weight:normal;">{{$get_siswa->rombongan_belajar->jurusan_sp->nama_jurusan_sp}}</th>
 		<th style="font-weight:bold;" class="text-right">Fase</th>
-		<th style="font-weight:normal;">: {{($get_siswa->rombongan_belajar->tingkat == 10) ? 'E' : 'F'}}</th>
+		<th style="font-weight:normal;">{{($get_siswa->rombongan_belajar->tingkat == 10) ? 'E' : 'F'}}</th>
 	</tr>
 	<tr>
 		<th style="font-weight:bold;" class="text-right">Nama Peserta Didik</th>
-		<th style="font-weight:normal;">: {{strtoupper($get_siswa->peserta_didik->nama)}}</th>
-		<th style="font-weight:normal;"></th>
+		<th style="font-weight:normal;">{{strtoupper($get_siswa->peserta_didik->nama)}}</th>
 		<th style="font-weight:bold;" class="text-right">Tahun Pelajaran</th>
-		<th style="font-weight:normal;">: {{$semester->tahun_ajaran_id}}/{{$semester->tahun_ajaran_id + 1}}</th>
+		<th style="font-weight:normal;">{{$semester->tahun_ajaran_id}}/{{$semester->tahun_ajaran_id + 1}}</th>
 	</tr>
 	<tr>
 		<th style="font-weight:bold;" class="text-right">NISN</th>
-		<th style="font-weight:normal;">: {{$get_siswa->peserta_didik->nisn}}</th>
-		<th style="font-weight:normal;"></th>
+		<th style="font-weight:normal;">{{$get_siswa->peserta_didik->nisn}}</th>
 		<th style="font-weight:normal;"></th>
 		<th style="font-weight:normal;"></th>
 	</tr>
