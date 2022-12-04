@@ -234,6 +234,7 @@ class CetakController extends Controller
 							'deskripsi_mata_pelajaran' => $callback,
 						]);
 						$query->whereNotNull('kelompok_id');
+						$query->whereNotNull('no_urut');
 						$query->orderBy('kelompok_id', 'asc');
 						$query->orderBy('no_urut', 'asc');
 					},
