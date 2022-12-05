@@ -99,17 +99,30 @@ class TambahCapaianPembelajaran extends Component
         }
         $last_id_ref = Capaian_pembelajaran::where('is_dir', 1)->count();
         $last_id_non_ref = Capaian_pembelajaran::where('is_dir', 0)->count();
-        Capaian_pembelajaran::create([
-            'cp_id' => ($last_id_non_ref) ? ($last_id_ref + $last_id_non_ref) + 1 : 1000,
-            'mata_pelajaran_id' => $this->mata_pelajaran_id,
-            'fase' => $fase,
-            'elemen' => $this->elemen,
-            'deskripsi' => $this->capaian_pembelajaran,
-            'aktif'				=> 1,
-			'last_sync' => now(),
-        ]);
+        $cp_id = $last_id_ref + 1000;
+        if($last_id_non_ref){
+            $cp_id = ($last_id_ref + $last_id_non_ref) + 1;
+        }
+        $this->simpan_cp($cp_id);
         session()->flash('message', 'Data Capaian Pembelajaran Berhasil disimpan');
         return redirect()->to('/referensi/capaian-pembelajaran');
+    }
+    public function simpan_cp($cp_id){
+        $find = Capaian_pembelajaran::find($cp_id);
+        if($find){
+            $cp_id = $cp_id + 1;
+            $this->simpan_cp($cp_id);
+        } else {
+            Capaian_pembelajaran::create([
+                'cp_id' => $cp_id,
+                'mata_pelajaran_id' => $this->mata_pelajaran_id,
+                'fase' => $fase,
+                'elemen' => $this->elemen,
+                'deskripsi' => $this->capaian_pembelajaran,
+                'aktif'				=> 1,
+                'last_sync' => now(),
+            ]);
+        }
     }
     private function kurikulum($string){
         if(Str::contains($string, 'REV')){
