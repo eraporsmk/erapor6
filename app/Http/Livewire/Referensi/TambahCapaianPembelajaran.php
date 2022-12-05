@@ -103,11 +103,11 @@ class TambahCapaianPembelajaran extends Component
         if($last_id_non_ref){
             $cp_id = ($last_id_ref + $last_id_non_ref) + 1;
         }
-        $this->simpan_cp($cp_id);
+        $this->simpan_cp($cp_id, $fase);
         session()->flash('message', 'Data Capaian Pembelajaran Berhasil disimpan');
         return redirect()->to('/referensi/capaian-pembelajaran');
     }
-    public function simpan_cp($cp_id){
+    public function simpan_cp($cp_id, $fase){
         $find = Capaian_pembelajaran::find($cp_id);
         if($find){
             $cp_id = $cp_id + 1;
