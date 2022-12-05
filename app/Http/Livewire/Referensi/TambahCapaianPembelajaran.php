@@ -111,7 +111,7 @@ class TambahCapaianPembelajaran extends Component
         $find = Capaian_pembelajaran::find($cp_id);
         if($find){
             $cp_id = $cp_id + 1;
-            $this->simpan_cp($cp_id);
+            $this->simpan_cp($cp_id, $fase);
         } else {
             Capaian_pembelajaran::create([
                 'cp_id' => $cp_id,
