@@ -130,8 +130,8 @@ class ProjectPancasila extends Component
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
             $query->whereHas('induk', function($query){
+                $query->where('mata_pelajaran_id', '200040000');
                 $query->where('guru_id', $this->loggedUser()->guru_id);
-                $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
             });
             //$query->where('guru_id', $this->loggedUser()->guru_id);
             //$query->whereNotNull('induk_pembelajaran_id');

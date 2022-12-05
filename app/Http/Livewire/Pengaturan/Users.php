@@ -144,7 +144,7 @@ class Users extends Component
                 } else {
                     $user->detachRole($WalasRole, session('semester_id'));
                 }
-                $find_mapel_p5 = Pembelajaran::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->has('tema')->first();
+                $find_mapel_p5 = Pembelajaran::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->where('mata_pelajaran_id', '200040000')->has('tema')->first();
                 if($find_mapel_p5){
                     if(!$user->hasRole($p5Role, session('semester_id'))){
                         $user->attachRole($p5Role, session('semester_id'));
