@@ -134,7 +134,7 @@ class DataRombonganBelajar extends Component
             'nama_mata_pelajaran' => $this->nama_mata_pelajaran,
             'pembelajaran_id' => $this->pembelajaran_id,
         ]);
-        foreach($this->pembelajaran as $urut => $pembelajaran){
+        /*foreach($this->pembelajaran as $urut => $pembelajaran){
             $this->dispatchBrowserEvent('pharaonic.select2.load', [
                 'component' => $this->id,
                 'target'    => '#pengajar_'.$urut,
@@ -143,7 +143,7 @@ class DataRombonganBelajar extends Component
                 'component' => $this->id,
                 'target'    => '#kelompok_id_'.$urut,
             ]);
-        }
+        }*/
         $this->dispatchBrowserEvent('pharaonic.select2.init');
     }
     public function simpanPembelajaran(){
@@ -161,7 +161,7 @@ class DataRombonganBelajar extends Component
             $update = Pembelajaran::find($pembelajaran_id);
             $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$update->pembelajaran_id];
             $update->guru_pengajar_id = (Str::isUuid($this->pengajar[$update->pembelajaran_id])) ? $this->pengajar[$update->pembelajaran_id] : NULL;
-            $update->kelompok_id = (is_int($this->kelompok_id[$update->pembelajaran_id])) ? $this->kelompok_id[$update->pembelajaran_id] : NULL;
+            $update->kelompok_id = (is_numeric($this->kelompok_id[$update->pembelajaran_id])) ? $this->kelompok_id[$update->pembelajaran_id] : NULL;
             $update->no_urut = $this->no_urut[$update->pembelajaran_id];
             $update->save();
         }

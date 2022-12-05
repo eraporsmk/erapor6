@@ -117,14 +117,14 @@ class RombelPilihan extends Component
             $no_urut[$pembelajaran->pembelajaran_id] = $pembelajaran->no_urut;
             $nama_mata_pelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran->nama_mata_pelajaran;
             $pembelajaran_id[] = $pembelajaran->pembelajaran_id;
-            $this->dispatchBrowserEvent('pharaonic.select2.load', [
+            /*$this->dispatchBrowserEvent('pharaonic.select2.load', [
                 'component' => $this->id,
                 'target'    => '#pengajar_'.$urut,
             ]);
             $this->dispatchBrowserEvent('pharaonic.select2.load', [
                 'component' => $this->id,
                 'target'    => '#kelompok_id_'.$urut,
-            ]);
+            ]);*/
         }
         $this->pengajar = $pengajar;
         $this->kelompok_id = $kelompok_id;
@@ -158,7 +158,7 @@ class RombelPilihan extends Component
             $update = Pembelajaran::find($pembelajaran_id);
             $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$update->pembelajaran_id];
             $update->guru_pengajar_id = (Str::isUuid($this->pengajar[$update->pembelajaran_id])) ? $this->pengajar[$update->pembelajaran_id] : NULL;
-            $update->kelompok_id = (is_int($this->kelompok_id[$update->pembelajaran_id])) ? $this->kelompok_id[$update->pembelajaran_id] : NULL;
+            $update->kelompok_id = (is_numeric($this->kelompok_id[$update->pembelajaran_id])) ? $this->kelompok_id[$update->pembelajaran_id] : NULL;
             $update->no_urut = $this->no_urut[$update->pembelajaran_id];
             $update->save();
         }
@@ -206,7 +206,9 @@ class RombelPilihan extends Component
     public function getKelompok($kurikulum){
         $this->data_kelompok = Kelompok::where(function($query) use ($kurikulum){
             $query->where('kurikulum', $kurikulum);
-            $query->orWhere('kurikulum', 0);
+            if($kurikulum != 2022){
+                $query->orWhere('kurikulum', 0);
+            }
         })->orderBy('kelompok_id')->get();
     }
     public function getRombel(){

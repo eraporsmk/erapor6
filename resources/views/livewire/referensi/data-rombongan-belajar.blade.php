@@ -68,35 +68,5 @@
     Livewire.on('show-pembelajaran', event => {
         $('#pembelajaranModal').modal('show');
     })
-    window.addEventListener('pembelajaran', event => {
-        $.each(event.detail.pembelajaran_id, function (i, pembelajaran_id) {
-            $('#pengajar_'+i).html('<option>== Pilih Guru Pengajar ==</option>');
-            $('#kelompok_id_'+i).html('<option>== Pilih Kelompok ==</option>');
-            $.each(event.detail.guru_pengajar, function (a, item) {
-                $('#pengajar_'+i).append($('<option>', { 
-                    value: item.guru_id,
-                    text : item.nama_lengkap,
-                }));
-            });
-            $.each(event.detail.data_kelompok, function (a, item) {
-                $('#kelompok_id_'+i).append($('<option>', { 
-                    value: item.kelompok_id,
-                    text : item.nama_kelompok,
-                }));
-            });
-            if(event.detail.pengajar[pembelajaran_id]){
-                $('#pengajar_'+i).val(event.detail.pengajar[pembelajaran_id])
-            } else {
-                $('#pengajar_'+i).val('')
-            }
-            if(event.detail.kelompok_id[pembelajaran_id]){
-                $('#kelompok_id_'+i).val(event.detail.kelompok_id[pembelajaran_id])
-            } else {
-                $('#kelompok_id_'+i).val('')
-            }
-            $('#kelompok_id_'+i).trigger('change')
-            $('#pengajar_'+i).trigger('change')
-        });
-    })
 </script>
 @endpush
