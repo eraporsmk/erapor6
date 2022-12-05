@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Semester;
 use App\Models\Mst_wilayah;
 use App\Models\Sekolah;
+use App\Models\Team;
 use Validator;
 
 class ProsesRegistrasi extends Command
