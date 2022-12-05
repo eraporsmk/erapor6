@@ -161,7 +161,7 @@ class DataRombonganBelajar extends Component
             $update = Pembelajaran::find($pembelajaran_id);
             $update->nama_mata_pelajaran = $this->nama_mata_pelajaran[$update->pembelajaran_id];
             $update->guru_pengajar_id = (Str::isUuid($this->pengajar[$update->pembelajaran_id])) ? $this->pengajar[$update->pembelajaran_id] : NULL;
-            $update->kelompok_id = $this->kelompok_id[$update->pembelajaran_id];
+            $update->kelompok_id = (is_int($this->kelompok_id[$update->pembelajaran_id])) ? $this->kelompok_id[$update->pembelajaran_id] : NULL;
             $update->no_urut = $this->no_urut[$update->pembelajaran_id];
             $update->save();
         }
