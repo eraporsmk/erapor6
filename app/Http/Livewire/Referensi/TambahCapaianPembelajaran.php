@@ -97,9 +97,10 @@ class TambahCapaianPembelajaran extends Component
         } else {
             $fase = 'F';
         }
-        $last_id_ref = Capaian_pembelajaran::count();
+        $last_id_ref = Capaian_pembelajaran::where('is_dir', 1)->count();
+        $last_id_non_ref = Capaian_pembelajaran::where('is_dir', 0)->count();
         Capaian_pembelajaran::create([
-            'cp_id' => $last_id_ref + 1000,
+            'cp_id' => ($last_id_non_ref) ? ($last_id_ref + $last_id_non_ref) + 1 : 1000,
             'mata_pelajaran_id' => $this->mata_pelajaran_id,
             'fase' => $fase,
             'elemen' => $this->elemen,
