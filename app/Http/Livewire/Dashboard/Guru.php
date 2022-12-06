@@ -45,17 +45,30 @@ class Guru extends Component
     {
         $cara_penilaian = config('global.'.session('sekolah_id').'.'.session('semester_aktif').'.cara_penilaian');
         return view('livewire.dashboard.guru-'.$cara_penilaian, [
-            'mapel_diampu' => Pembelajaran::where($this->kondisi())->with(['rombongan_belajar' => function($query){
-                    $query->select('rombongan_belajar_id', 'nama', 'guru_id');
-                    $query->with(['wali_kelas' => function($query){
-                        $query->select('guru_id', 'nama');
-                    }]);
-                }])->withCount([
+            'rombel_diampu' => Rombongan_belajar::whereHas('pembelajaran', function($query){
+                $query->where($this->kondisi());
+                /**/
+            })->with(['pembelajaran' => function($query){
+                $query->where('semester_id', session('semester_aktif'));
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+                $query->where('semester_id', session('semester_aktif'));
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->withCount([
                     'anggota_rombel',
                     'anggota_rombel as anggota_dinilai' => function($query){
                         $query->has('nilai_akhir_mapel');
                     },
-                ])->orderBy('mata_pelajaran_id', 'asc')->get(),
+                ]);
+            }
+            ])->with(['wali_kelas' => function($query){
+                $query->select('guru_id', 'nama');
+            }])->orderBy('tingkat')->get(),
             'rombongan_belajar' => ($this->loggedUser()->hasRole('wali', session('semester_id'))) ? Rombongan_belajar::with([
                 'pembelajaran' => function($query){
                     $query->whereNotNull('kelompok_id');

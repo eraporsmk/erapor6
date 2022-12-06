@@ -212,7 +212,7 @@ class NilaiAkhir extends Component
             ]
         );
         foreach($this->nilai as $anggota_rombel_id => $nilai_akhir){
-            if($nilai_akhir > -1){
+            if($nilai_akhir && $nilai_akhir > -1){
                 Nilai_akhir::updateOrCreate(
                     [
                         'sekolah_id' => session('sekolah_id'),

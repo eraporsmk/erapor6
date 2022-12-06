@@ -16,15 +16,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($mapel_diampu as $key => $item)
+                        <?php
+                        $no=1;
+                        ?>
+                        @forelse ($rombel_diampu as $key => $mapel_diampu)
+                        @foreach ($mapel_diampu->pembelajaran as $item)
                             <tr>
-                                <td class="text-center">{{$key + 1}}</td>
+                                <td class="text-center">{{$no++}}</td>
                                 <td>{{$item->nama_mata_pelajaran}}</td>
-                                <td>{{$item->rombongan_belajar->nama}}</td>
-                                <td>{{($item->rombongan_belajar->wali_kelas) ? $item->rombongan_belajar->wali_kelas->nama_lengkap : '-'}}</td>
+                                <td>{{$mapel_diampu->nama}}</td>
+                                <td>{{($mapel_diampu->wali_kelas) ? $mapel_diampu->wali_kelas->nama_lengkap : '-'}}</td>
                                 <td class="text-center">{{$item->anggota_rombel_count}}</td>
-                                <td class="text-center">{{$item->anggota_dinilai}}</td>
+                                <td class="text-center">{{$item->anggota_rombel()->whereHas('nilai_akhir_mapel', function($query) use ($item){
+                                    $query->where('pembelajaran_id', $item->pembelajaran_id);
+                                })->count()}}</td>
                             </tr>
+                        @endforeach
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center">Tidak ada data untuk ditampilkan</td>
