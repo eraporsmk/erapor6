@@ -27,16 +27,21 @@ class RoleSeeder extends Seeder
 			array('name' => 'wali', 'display_name' => 'Wali Kelas','description' => 'Wali Kelas'),
 			array('name' => 'pembina_ekskul', 'display_name' => 'Pembina Ekstrakurikuler','description' => 'Pembina Ekstrakurikuler'),
 			array('name' => 'eksternal', 'display_name' => 'Penguji Eksternal UKK','description' => 'Penguji Eksternal UKK'),
+			array('name' => 'guru-p5', 'display_name' => 'Koord P5', 'description' => 'Koord P5')
 		);
-		DB::table('roles')->truncate();
+		//DB::table('roles')->truncate();
     	foreach($roles as $role){
-    		DB::table('roles')->insert([
-    			'name' => $role['name'],
-    			'display_name' => $role['display_name'],
-    			'description' => $role['description'],
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
-    		]);
+    		DB::table('roles')->updateOrInsert(
+				[
+					'name' => $role['name'],
+				],
+				[
+					'display_name' => $role['display_name'],
+					'description' => $role['description'],
+					'created_at' => date('Y-m-d H:i:s'),
+					'updated_at' => date('Y-m-d H:i:s'),
+    			]
+			);
  
     	}
     }
