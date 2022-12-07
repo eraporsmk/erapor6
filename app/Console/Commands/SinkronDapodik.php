@@ -213,7 +213,8 @@ class SinkronDapodik extends Command
                     ];
                     $response = Http::withHeaders([
                         'x-api-key' => $sekolah->sekolah_id,
-                        'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)',
+                        'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+                        'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
                     ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/'.$satuan, $data_sync);
                     //->post($this->url_1server('dapodik', 'api/'.$satuan), $data_sync);
                     if($response->status() == 200){
@@ -300,11 +301,10 @@ class SinkronDapodik extends Command
                 'offset' => $data['offset'],
                 'satuan' => $data['satuan'],
             ];
-            /*$response = Http::withHeaders([
-                'x-api-key' => $user->sekolah_id,
-            ])->withBasicAuth('admin', '1234')->asForm()->post($this->url_s1erver('dapodik', 'api/'.$satuan), $data_sync);*/
             $response = Http::withHeaders([
                 'x-api-key' => $sekolah->sekolah_id,
+                'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+                'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/'.$satuan, $data_sync);
             if($response->status() == 200){
                 return $response->object();
