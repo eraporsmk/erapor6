@@ -119,6 +119,6 @@ class Sekolah extends Model
 		return $this->hasMany(Deskripsi_mata_pelajaran::class, 'sekolah_id', 'sekolah_id');
 	}
 	public function nilai_projek(){
-		return $this->hasMany(Nilai_budaya_kerja::class, 'sekolah_id', 'sekolah_id');
+		return $this->hasMany(Catatan_budaya_kerja::class, 'sekolah_id', 'sekolah_id');
 	}
 }

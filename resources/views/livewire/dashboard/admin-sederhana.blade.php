@@ -88,7 +88,7 @@
                     </div>
                     <h2 class="fw-bolder">
                         <a data-bs-toggle="tooltip" data-bs-title="Jumlah Peserta Didik yang telah dinilai P5">
-                        {{$sekolah->nilai_keterampilan_count}}
+                        {{$sekolah->nilai_projek_count}}
                         </a>
                     </h2>
                     <p class="card-text">Projek Penguatan Profil Pelajar Pancasila</p>
