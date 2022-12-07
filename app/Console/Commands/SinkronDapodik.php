@@ -213,6 +213,7 @@ class SinkronDapodik extends Command
                     ];
                     $response = Http::withHeaders([
                         'x-api-key' => $sekolah->sekolah_id,
+                        'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)',
                     ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/'.$satuan, $data_sync);
                     //->post($this->url_1server('dapodik', 'api/'.$satuan), $data_sync);
                     if($response->status() == 200){
