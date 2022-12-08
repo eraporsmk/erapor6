@@ -34,7 +34,7 @@
                             }
                             ?>
                             <tr>
-                                <td class="align-top">{{$item->pembelajaran->nama_mata_pelajaran}}</td>
+                                <td class="align-top">{{$item->mata_pelajaran->nama}}</td>
                                 <td class="text-center align-top">
                                     {{$item->fase}}
                                 </td>
