@@ -54,11 +54,13 @@ class Guru extends Component
                 $query->where('guru_id', $this->loggedUser()->guru_id);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
                 $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
                 $query->withCount([
                     'anggota_rombel',
                     'anggota_rombel as anggota_dinilai' => function($query){

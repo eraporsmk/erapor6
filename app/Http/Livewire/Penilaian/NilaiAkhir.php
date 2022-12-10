@@ -84,12 +84,14 @@ class NilaiAkhir extends Component
             $query->where('guru_id', $this->loggedUser()->guru_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
             $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
         };
     }
     public function updatedTingkat(){
@@ -126,6 +128,7 @@ class NilaiAkhir extends Component
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
             })->first();
             $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
             $this->getSiswa();

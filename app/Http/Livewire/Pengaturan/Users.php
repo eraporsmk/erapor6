@@ -86,6 +86,7 @@ class Users extends Component
 		} else {
             $find_user_email = User::where('email', $user->email)->where($field, '<>', $user->peserta_didik_id)->first();
 		}
+        $find_user_email = User::where('email', $user->email)->first();
 		if($find_user_email){
 			$user->email = strtolower($random).'@erapor-smk.net';
 		}

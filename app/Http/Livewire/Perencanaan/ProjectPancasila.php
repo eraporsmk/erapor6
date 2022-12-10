@@ -85,6 +85,7 @@ class ProjectPancasila extends Component
                         ->from('pembelajaran')
                         ->whereNotNull('kelompok_id')
                         ->whereNotNull('no_urut')
+                        //->whereNull('induk_pembelajaran_id')
                         ->where('sekolah_id', session('sekolah_id'))
                         ->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');
                     });
@@ -133,15 +134,6 @@ class ProjectPancasila extends Component
                 $query->where('mata_pelajaran_id', '200040000');
                 $query->where('guru_id', $this->loggedUser()->guru_id);
             });
-            //$query->where('guru_id', $this->loggedUser()->guru_id);
-            //$query->whereNotNull('induk_pembelajaran_id');
-            //$query->has('tema');
-            //$query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
-            //$query->whereNotNull('induk_pembelajaran_id');
-            //$query->has('tema');
-            //if($this->rombongan_belajar_id){
-                //$query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            //}
         };
     }
     public function store(){

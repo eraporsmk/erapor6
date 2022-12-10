@@ -72,6 +72,7 @@ class TambahKompetensiDasar extends Component
             $query->where('guru_id', $this->loggedUser()->guru_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
             $query->whereHas('rombongan_belajar', function($query){
                 $query->whereHas('kurikulum', function($query){
                     $query->where('nama_kurikulum', 'ILIKE', '%REV%');
@@ -83,6 +84,7 @@ class TambahKompetensiDasar extends Component
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
             $query->whereHas('rombongan_belajar', function($query){
                 $query->whereHas('kurikulum', function($query){
                     $query->where('nama_kurikulum', 'ILIKE', '%REV%');

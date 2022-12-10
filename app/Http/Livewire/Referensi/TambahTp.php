@@ -108,6 +108,7 @@ class TambahTp extends Component
             $pembelajaran = Pembelajaran::where(function($query){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
+                $query->whereNull('induk_pembelajaran_id');
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
             })->first();
@@ -160,12 +161,14 @@ class TambahTp extends Component
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
             $query->where('guru_id', $this->loggedUser()->guru_id);
+            $query->whereNull('induk_pembelajaran_id');
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
             $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
+            $query->whereNull('induk_pembelajaran_id');
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
         };
