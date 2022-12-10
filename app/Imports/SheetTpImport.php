@@ -39,40 +39,42 @@ class SheetTpImport implements ToCollection
                     ]));
                 } else {
                     $tp = Tujuan_pembelajaran::find($item[4]);
-                    if($this->merdeka){
-                        $update = [
-                            'cp_id' => $tp->cp_id,
-                        ];
-                    } else {
-                        $update = [
-                            'kd_id' => $tp->kd_id,
-                        ];
-                    }
-                    $json = Storage::disk('public')->get($folder.'/'.$file);
-                    $json = json_decode($json);
-                    if($item[5] && !$item[7]){
-                        $tp_kompeten[] = $item[4];
-                        Tp_nilai::updateOrCreate(
-                            [
-                                'sekolah_id' => session('sekolah_id'),
-                                'anggota_rombel_id' => $json->anggota_rombel_id,
-                                'tp_id' => $item[4],
-                                'kompeten' => 1,
-                            ],
-                            $update
-                        );
-                    }
-                    if(!$item[5] && $item[7]){
-                        $tp_inkompeten[] = $item[4];
-                        Tp_nilai::updateOrCreate(
-                            [
-                                'sekolah_id' => session('sekolah_id'),
-                                'anggota_rombel_id' => $json->anggota_rombel_id,
-                                'tp_id' => $item[4],
-                                'kompeten' => 0,
-                            ],
-                            $update
-                        );
+                    if ($tp) {
+                        if ($this->merdeka) {
+                            $update = [
+                                'cp_id' => $tp->cp_id,
+                            ];
+                        } else {
+                            $update = [
+                                'kd_id' => $tp->kd_id,
+                            ];
+                        }
+                        $json = Storage::disk('public')->get($folder . '/' . $file);
+                        $json = json_decode($json);
+                        if ($item[5] && !$item[7]) {
+                            $tp_kompeten[] = $item[4];
+                            Tp_nilai::updateOrCreate(
+                                [
+                                    'sekolah_id' => session('sekolah_id'),
+                                    'anggota_rombel_id' => $json->anggota_rombel_id,
+                                    'tp_id' => $item[4],
+                                    'kompeten' => 1,
+                                ],
+                                $update
+                            );
+                        }
+                        if (!$item[5] && $item[7]) {
+                            $tp_inkompeten[] = $item[4];
+                            Tp_nilai::updateOrCreate(
+                                [
+                                    'sekolah_id' => session('sekolah_id'),
+                                    'anggota_rombel_id' => $json->anggota_rombel_id,
+                                    'tp_id' => $item[4],
+                                    'kompeten' => 0,
+                                ],
+                                $update
+                            );
+                        }
                     }
                 }
             }
