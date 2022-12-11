@@ -51,11 +51,11 @@ class Guru extends Component
             })->with(['pembelajaran' => function($query){
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
-                $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->where('guru_id', session('guru_id'));
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
                 $query->whereNull('induk_pembelajaran_id');
-                $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+                $query->orWhere('guru_pengajar_id', session('guru_id'));
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->whereNotNull('kelompok_id');
@@ -90,7 +90,30 @@ class Guru extends Component
                 'kurikulum'
                 ])->where(function($query){
                     $query->where('jenis_rombel', 1);
-                    $query->where('guru_id', $this->loggedUser()->guru_id);
+                    $query->where('guru_id', session('guru_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->where('sekolah_id', session('sekolah_id'));
+                })->first() : NULL,
+            'rombel_pilihan' => ($this->loggedUser()->hasRole('wali', session('semester_id'))) ? Rombongan_belajar::with([
+                'pembelajaran' => function($query){
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->with([
+                        'guru' => function($query){
+                            $query->select('guru_id', 'nama');
+                        }, 
+                        'pengajar' => function($query){
+                            $query->select('guru_id', 'nama');
+                        }
+                    ]);
+                    $query->withCount([
+                        'anggota_rombel',
+                    ]);
+                },
+                'kurikulum'
+                ])->where(function($query){
+                    $query->where('jenis_rombel', 16);
+                    $query->where('guru_id', session('guru_id'));
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                 })->first() : NULL,
@@ -160,10 +183,10 @@ class Guru extends Component
         return function($query){
             $query->where('semester_id', session('semester_aktif'));
             $query->where('sekolah_id', session('sekolah_id'));
-            $query->where('guru_id', $this->loggedUser()->guru_id);
+            $query->where('guru_id', session('guru_id'));
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+            $query->orWhere('guru_pengajar_id', session('guru_id'));
             $query->where('semester_id', session('semester_aktif'));
             $query->where('sekolah_id', session('sekolah_id'));
             $query->whereNotNull('kelompok_id');

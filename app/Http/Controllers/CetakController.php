@@ -185,6 +185,7 @@ class CetakController extends Controller
 							'nilai_akhir_pengetahuan' => $callback,
 							'nilai_akhir_keterampilan' => $callback,
 							'nilai_akhir_pk' => $callback,
+							'nilai_akhir_kurmer' => $callback,
 							'deskripsi_mata_pelajaran' => $callback,
 						]);
 						$query->whereNull('induk_pembelajaran_id');
@@ -231,8 +232,15 @@ class CetakController extends Controller
 							});
 						};
 						$query->with([
+							'anggota_rombel' => function($query) use ($get_siswa){
+								$query->where('peserta_didik_id', $get_siswa->peserta_didik_id);
+							},
 							'kelompok',
+							'nilai_akhir' => $callback,
 							'nilai_akhir_pengetahuan' => $callback,
+							'nilai_akhir_keterampilan' => $callback,
+							'nilai_akhir_pk' => $callback,
+							'nilai_akhir_kurmer' => $callback,
 							'deskripsi_mata_pelajaran' => $callback,
 						]);
 						$query->whereNull('induk_pembelajaran_id');

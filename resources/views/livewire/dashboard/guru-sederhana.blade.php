@@ -78,6 +78,44 @@
                 </table>
             </div>
         </div>
+        @if($rombel_pilihan)
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Anda adalah Wali Kelas Rombel Matpel Pilihan {{($rombel_pilihan) ? $rombel_pilihan->nama : '-'}}</h4>
+                <h5 class="card-title">Daftar Mata Pelajaran di Rombel Matpel Pilihan {{($rombel_pilihan) ? $rombel_pilihan->nama : '-'}}</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">#</th>
+                            <th class="text-center align-middle">Mata Pelajaran</th>
+                            <th class="text-center align-middle">Guru Mata Pelajaran</th>
+                            <th class="text-center align-middle">Jml Peserta Didik</th>
+                            <th class="text-center align-middle">Jml Peserta Didik Dinilai</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($rombel_pilihan)
+                        @forelse ($rombel_pilihan->pembelajaran as $item)
+                            <tr>
+                                <td class="text-center">{{$loop->iteration}}</td>
+                                <td>{{$item->nama_mata_pelajaran}}</td>
+                                <td>{{($item->pengajar) ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap}}</td>
+                                <td class="text-center">{{$item->anggota_rombel_count}}</td>
+                                <td class="text-center">{{$item->anggota_rombel()->whereHas('nilai_akhir_mapel', function($query) use ($item){
+                                    $query->where('pembelajaran_id', $item->pembelajaran_id);
+                                })->count()}}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">Tidak ada data untuk ditampilkan</td>
+                            </tr>
+                        @endforelse
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @endif
         @endrole
         @role('waka_salah', session('semester_id'))
         <div class="card">

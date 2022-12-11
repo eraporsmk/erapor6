@@ -24,17 +24,19 @@ class SheetNilaiImport implements ToCollection
         if($rombongan_belajar_id == $this->rombongan_belajar_id && $pembelajaran_id == $this->pembelajaran_id){
             unset($collection[0], $collection[1], $collection[2], $collection[3], $collection[4], $collection[5], $collection[6]);
             foreach($collection as $item){
-                Nilai_akhir::updateOrCreate(
-                    [
-                        'sekolah_id' => session('sekolah_id'),
-                        'anggota_rombel_id' => $item[1],
-                        'pembelajaran_id' => $this->pembelajaran_id,
-                        'kompetensi_id' => ($this->merdeka) ? 4 : 1,
-                    ],
-                    [
-                        'nilai' => ($item[4] >= 0 && $item[4] <= 100 ) ? number_format($item[4], 0) : 0,
-                    ]
-                );
+                if ($item[1]) {
+                    Nilai_akhir::updateOrCreate(
+                        [
+                            'sekolah_id' => session('sekolah_id'),
+                            'anggota_rombel_id' => $item[1],
+                            'pembelajaran_id' => $this->pembelajaran_id,
+                            'kompetensi_id' => ($this->merdeka) ? 4 : 1,
+                        ],
+                        [
+                            'nilai' => ($item[4] >= 0 && $item[4] <= 100) ? number_format($item[4], 0) : 0,
+                        ]
+                    );
+                }
             }
         }
     }

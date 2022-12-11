@@ -22,7 +22,7 @@
                                 @foreach($collection as $item)
                                 <tr>
                                     <td>{{$item->nama}}</td>
-                                    <td>{{$item->wali_kelas->nama}}</td>
+                                    <td>{{$item->wali_kelas->nama_lengkap}}</td>
                                     <td class="text-center">{{$item->tingkat}}</td>
                                     <td>{{($item->jurusan_sp) ? $item->jurusan_sp->nama_jurusan_sp : '-'}}</td>
                                     <td>{{$item->kurikulum->nama_kurikulum}}</td>
