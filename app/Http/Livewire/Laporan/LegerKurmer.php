@@ -51,7 +51,7 @@ class LegerKurmer extends Component
                 $query->where('rombongan_belajar_id', $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id);
             }])->orderBy('nama')->get();
             $this->data_pembelajaran = Pembelajaran::where(function($query){
-                $//query->where('rombongan_belajar_id', $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id);
+                //$//query->where('rombongan_belajar_id', $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id);
                 $query->whereHas('rombongan_belajar', function($query){
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
