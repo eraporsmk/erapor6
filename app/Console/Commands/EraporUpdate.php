@@ -86,8 +86,7 @@ class EraporUpdate extends Command
             $this->call('custom:ref');
             $this->info('Menambah referensi CP');
             $this->call('ref:cp');
-        }
-            
+        }   
         $ajaran = [
             [
                 'tahun_ajaran_id' => 2020,
@@ -224,5 +223,8 @@ class EraporUpdate extends Command
             ]
         );
         $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi '.$version);
+        $this->info('Info Perbaikan:');
+        $this->info('1. Perbaikan cetak P5');
+        $this->info('2. Penambahan maks 100 karakter Capaian Kompetensi');
     }
 }

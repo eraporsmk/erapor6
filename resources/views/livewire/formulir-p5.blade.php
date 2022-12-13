@@ -75,22 +75,24 @@
                     <tr>
                         <td rowspan="2">{{$siswa->nama}}</td>
                         @foreach ($rencana_budaya_kerja as $rencana)
-                        @foreach ($rencana->aspek_budaya_kerja as $aspek)
-                        <td class="text-center">
-                            <select id="nilai" class="form-select" wire:ignore wire:model="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$aspek->aspek_budaya_kerja_id}}">
-                                <option value="">-</option>
-                                @foreach ($opsi_budaya_kerja as $opsi)
-                                <option value="{{$opsi->opsi_id}}|{{($aspek->elemen_id) ? $aspek->elemen_id : 0}}">{{$opsi->nama}}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        @endforeach
+                            @foreach ($rencana->aspek_budaya_kerja as $aspek)
+                            <td class="text-center">
+                                <select id="nilai" class="form-select" wire:ignore wire:model="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$aspek->aspek_budaya_kerja_id}}">
+                                    <option value="">-</option>
+                                    @foreach ($opsi_budaya_kerja as $opsi)
+                                    <option value="{{$opsi->opsi_id}}|{{($aspek->elemen_id) ? $aspek->elemen_id : 0}}">{{$opsi->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            @endforeach
                         @endforeach
                     </tr>
                     <tr>
-                        <td colspan="{{$jumlah_elemen + 1}}">
-                            <textarea title="Catatan proses" placeholder="Catatan proses" wire:ignore wire:model="deskripsi.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
+                        @foreach ($rencana_budaya_kerja as $rencana)
+                        <td colspan="{{$rencana->aspek_budaya_kerja->count()}}">
+                            <textarea title="Catatan proses" placeholder="Catatan proses" wire:ignore wire:model="deskripsi.{{$rencana->rencana_budaya_kerja_id}}.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
                         </td>
+                        @endforeach
                     </tr>
                     @endforeach
                 </tbody>

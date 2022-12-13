@@ -100,12 +100,18 @@ class P5bk extends Component
                             });
                         });
                     });
+                    $query->with(['rencana_budaya_kerja' => function($query){
+                        $query->with(['catatan_budaya_kerja']);
+                    }]);
                 }, 'catatan_budaya_kerja']);
             }])->orderBy('nama')->get();
             foreach($this->data_siswa as $siswa){
                 foreach($siswa->anggota_rombel->nilai_budaya_kerja as $nilai_budaya_kerja){
                     $this->nilai[$siswa->anggota_rombel->anggota_rombel_id][$nilai_budaya_kerja->aspek_budaya_kerja_id] = $nilai_budaya_kerja->opsi_id.'|'.$nilai_budaya_kerja->elemen_id;
-                    $this->deskripsi[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->catatan_budaya_kerja) ? $siswa->anggota_rombel->catatan_budaya_kerja->catatan : '';
+                    $catatan_budaya_kerja = $nilai_budaya_kerja->rencana_budaya_kerja->catatan_budaya_kerja()->where('anggota_rombel_id', $siswa->anggota_rombel->anggota_rombel_id)->first();
+                    if($catatan_budaya_kerja){
+                        $this->deskripsi[$nilai_budaya_kerja->rencana_budaya_kerja->rencana_budaya_kerja_id][$siswa->anggota_rombel->anggota_rombel_id] = ($catatan_budaya_kerja) ? $catatan_budaya_kerja->catatan : '';
+                    }
                 }
             }
             $this->show = TRUE;
@@ -171,18 +177,25 @@ class P5bk extends Component
         }
     }
     public function store(){
-        foreach($this->nilai as $anggota_rombel_id => $nilai_p5){
-            if(isset($this->deskripsi[$anggota_rombel_id])){
-                Catatan_budaya_kerja::updateOrCreate(
-                    [
-                        'sekolah_id' => session('sekolah_id'),
-                        'anggota_rombel_id' => $anggota_rombel_id,
-                    ],
-                    [
-                        'catatan' => $this->deskripsi[$anggota_rombel_id]
-                    ]
-                );
+        foreach($this->deskripsi as $rencana_budaya_kerja_id => $catatan_budaya_kerja){
+            foreach($catatan_budaya_kerja as $anggota_rombel_id => $catatan){
+                if($catatan){
+                    Catatan_budaya_kerja::updateOrCreate(
+                        [
+                            'sekolah_id' => session('sekolah_id'),
+                            'rencana_budaya_kerja_id' => $rencana_budaya_kerja_id,
+                            'anggota_rombel_id' => $anggota_rombel_id,
+                        ],
+                        [
+                            'catatan' => $catatan
+                        ]
+                    );
+                } else {
+                    Catatan_budaya_kerja::where('rencana_budaya_kerja_id', $rencana_budaya_kerja_id)->where('anggota_rombel_id', $anggota_rombel_id)->delete();
+                }
             }
+        }
+        foreach($this->nilai as $anggota_rombel_id => $nilai_p5){
             foreach($nilai_p5 as $aspek_budaya_kerja_id => $nilai){
                 $collection = Str::of($nilai)->explode('|');
                 Nilai_budaya_kerja::updateOrCreate(

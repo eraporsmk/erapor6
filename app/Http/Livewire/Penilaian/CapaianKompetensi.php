@@ -193,32 +193,6 @@ class CapaianKompetensi extends Component
             $this->show_reset = TRUE;
         }
     }
-    private function kondisi_old(){
-        return function($query){
-            $query->where('guru_id', $this->loggedUser()->guru_id);
-            /*$query->whereHas('rombongan_belajar', function($query){
-                $query->whereHas('kurikulum', function($query){
-                    $query->where('nama_kurikulum', 'ILIKE', '%REV%');
-                });
-            });*/
-            $query->whereNotNull('kelompok_id');
-            $query->whereNotNull('no_urut');
-            if($this->rombongan_belajar_id){
-                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            }
-            $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
-            /*$query->whereHas('rombongan_belajar', function($query){
-                $query->whereHas('kurikulum', function($query){
-                    $query->where('nama_kurikulum', 'ILIKE', '%REV%');
-                });
-            });*/
-            $query->whereNotNull('kelompok_id');
-            $query->whereNotNull('no_urut');
-            if($this->rombongan_belajar_id){
-                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            }
-        };
-    }
     public function changeTingkat(){
         $this->reset(['data_rombongan_belajar', 'rombongan_belajar_id', 'data_pembelajaran', 'pembelajaran_id', 'data_siswa', 'show', 'show_reset']);
         if($this->tingkat){
@@ -276,21 +250,6 @@ class CapaianKompetensi extends Component
                         $query->with('tp');
                     }
                 ]);
-                /*$query->with([
-                    'nilai_rapor_pk' => function($query){
-                        $query->where('pembelajaran_id', $this->pembelajaran_id);
-                    },
-                    'nilai_kd_pk' => function($query){
-                        $query->where('pembelajaran_id', $this->pembelajaran_id);
-                    },
-                    'nilai_kd_pk_tertinggi' => function($query){
-                        $query->where('pembelajaran_id', $this->pembelajaran_id);
-                    },
-                    'nilai_kd_pk_terendah' => function($query){
-                        $query->where('pembelajaran_id', $this->pembelajaran_id);
-                    },
-                    
-                ]);*/
             }])->orderBy('nama')->get();
             foreach($this->data_siswa as $siswa){
                 if($siswa->anggota_rombel->single_deskripsi_mata_pelajaran){
@@ -308,6 +267,16 @@ class CapaianKompetensi extends Component
         }
     }
     public function store(){
+        $this->validate(
+            [
+                'deskripsi_kompeten.*' => 'nullable|string|max:100',
+                'deskripsi_inkompeten.*' => 'nullable|string|max:100',
+            ],
+            [
+                'deskripsi_kompeten.*.max' => 'Deskripsi maksimal 100 karakter!',
+                'deskripsi_inkompeten.*.max' => 'Deskripsi maksimal 100 karakter!',
+            ]
+        );
         foreach($this->deskripsi_kompeten as $anggota_rombel_id => $deskripsi_kompeten){
             Deskripsi_mata_pelajaran::updateOrCreate(
                 [

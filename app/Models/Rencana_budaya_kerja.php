@@ -27,4 +27,8 @@ class Rencana_budaya_kerja extends Model
 	{
 		return $this->hasMany(Aspek_budaya_kerja::class, 'rencana_budaya_kerja_id', 'rencana_budaya_kerja_id');
 	}
+	public function catatan_budaya_kerja()
+	{
+		return $this->hasOne(Catatan_budaya_kerja::class, 'rencana_budaya_kerja_id', 'rencana_budaya_kerja_id');
+	}
 }

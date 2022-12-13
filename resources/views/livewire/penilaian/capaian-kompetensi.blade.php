@@ -68,10 +68,16 @@
                                             {{($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : 0}}
                                         </td>
                                         <td>
-                                            <textarea wire:model.defer="deskripsi_kompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control" rows="5"></textarea>
+                                            <textarea wire:model.defer="deskripsi_kompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control @error('deskripsi_kompeten.'.$siswa->anggota_rombel->anggota_rombel_id) is-invalid @enderror" rows="5"></textarea>
+                                            @error('deskripsi_kompeten.'.$siswa->anggota_rombel->anggota_rombel_id) 
+                                            <span class="text-danger fw-bold">{{$message}} </span>
+                                            @enderror
                                         </td>
                                         <td>
-                                            <textarea wire:model.defer="deskripsi_inkompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control" rows="5"></textarea>
+                                            <textarea wire:model.defer="deskripsi_inkompeten.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="textarea form-control @error('deskripsi_inkompeten.'.$siswa->anggota_rombel->anggota_rombel_id) is-invalid @enderror" rows="5"></textarea>
+                                            @error('deskripsi_inkompeten.'.$siswa->anggota_rombel->anggota_rombel_id) 
+                                            <span class="text-danger fw-bold">{{$message}} </span>
+                                            @enderror
                                         </td>
                                     </tr>
                                 @endforeach

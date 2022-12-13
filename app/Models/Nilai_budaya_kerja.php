@@ -29,6 +29,14 @@ class Nilai_budaya_kerja extends Model
 	}
     public function rencana_budaya_kerja()
     {
+        return $this->hasOneThrough(
+            Rencana_budaya_kerja::class, 
+            Aspek_budaya_kerja::class,
+            'aspek_budaya_kerja_id', // Foreign key on the cars table...
+            'rencana_budaya_kerja_id', // Foreign key on the owners table...
+            'aspek_budaya_kerja_id', // Local key on the mechanics table...
+            'rencana_budaya_kerja_id' // Local key on the cars table...
+        );
         return $this->belongsTo(Rencana_budaya_kerja::class, 'rencana_budaya_kerja_id', 'rencana_budaya_kerja_id');
     }
     public function aspek_budaya_kerja()
