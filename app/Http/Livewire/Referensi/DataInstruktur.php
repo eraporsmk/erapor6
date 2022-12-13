@@ -156,12 +156,13 @@ class DataInstruktur extends Component
         $this->validate(
             [
                 'nama.*' => 'required',
-                'nik.*' => 'required|min:16|max:16|unique:guru,nik',
+                'nik.*' => 'required|numeric|min:16|max:16|unique:guru,nik',
                 'email.*' => 'required|unique:guru,email',
             ],
             [
                 'nama.*.required' => 'Nama tidak boleh kosong!',
                 'nik.*.required' => 'NIK tidak boleh kosong!',
+                'nik.*.numeric' => 'NIK harus berupa angka!',
                 'nik.*.min' => 'NIK minimal harus 16 digit!',
                 'nik.*.max' => 'NIK maksimal harus 16 digit!',
                 'email.*.required' => 'Email tidak boleh kosong!',

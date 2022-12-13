@@ -158,12 +158,13 @@ class DataAsesor extends Component
         $this->validate(
             [
                 'nama.*' => 'required',
-                'nik.*' => 'required|min:16|max:16|unique:guru,nik',
+                'nik.*' => 'required|numeric|min:16|max:16|unique:guru,nik',
                 'email.*' => 'required|unique:guru,email',
             ],
             [
                 'nama.*.required' => 'Nama tidak boleh kosong!',
                 'nik.*.required' => 'NIK tidak boleh kosong!',
+                'nik.*.numeric' => 'NIK harus berupa angka!',
                 'nik.*.min' => 'NIK minimal harus 16 digit!',
                 'nik.*.max' => 'NIK maksimal harus 16 digit!',
                 'email.*.required' => 'Email tidak boleh kosong!',
@@ -285,8 +286,8 @@ class DataAsesor extends Component
             [
                 'email' => $validation,
                 'tanggal_lahir' => ['required', 'date'],
-                'nuptk' => ['nullable', 'min:16', 'max:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')],
-                'nik' => ['nullable', 'min:16', 'max:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')]
+                'nuptk' => ['nullable', 'numeric', 'min:16', 'max:16', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')],
+                'nik' => ['nullable', 'numeric', 'min:16', 'max:16', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')]
             ],
             [
                 'email.required' => 'Email tidak boleh kosong!',
