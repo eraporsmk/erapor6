@@ -195,7 +195,7 @@ class SinkronDapodik extends Command
         if(in_array($satuan, $server_dashboard)){
             $this->call('sinkron:erapor', ['satuan' => $satuan, 'email' => $sekolah->user->email, 'created_at' => 1]);
         } else {
-            //try {
+            try {
                 $updated_at = NULL;
                 if($satuan == 'mata_pelajaran_kurikulum'){
                     $updated_at = Mata_pelajaran_kurikulum::orderBy('updated_at', 'DESC')->first()->created_at;
@@ -212,12 +212,6 @@ class SinkronDapodik extends Command
                         'last_sync'         => NULL,
                     ];
                     $response = http_client($satuan, $data_sync, 'http://app.erapor-smk.net/api/dapodik');
-                    //$response = Http::withHeaders([
-                    //    'x-api-key' => $sekolah->sekolah_id,
-                    //    'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
-                    //    'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                    //])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/'.$satuan, $data_sync);
-                    //->post($this->url_1server('dapodik', 'api/'.$satuan), $data_sync);
                     if($response->status() == 200){
                         $this->info('Memproses '.$this->get_table($satuan));
                         return $response->object();
@@ -232,10 +226,10 @@ class SinkronDapodik extends Command
                 } else {
                     return $this->error('Sekolah tidak memiliki pengguna Admin');
                 }
-            //} catch (\Exception $e){
-                //$this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
-                //return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$e->getMessage());
-            //}
+            } catch (\Exception $e){
+                $this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
+                return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$e->getMessage());
+            }
         }
     }
     private function proses_data($dapodik, $satuan, $user, $semester){
