@@ -226,5 +226,7 @@ class EraporUpdate extends Command
         $this->info('Info Perbaikan:');
         $this->info('1. Perbaikan cetak P5');
         $this->info('2. Penambahan maks 100 karakter Capaian Kompetensi');
+        $this->info('3. Kecualikan sub mapel saat input Capaian Kompetensi');
+        $this->info('4. Maksimal karakter Capaian Kompetensi bisa di atur oleh Admin di menu Pengaturan Umum');
     }
 }

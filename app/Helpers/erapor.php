@@ -4,6 +4,7 @@ use App\Models\Agama;
 use App\Models\Pembelajaran;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Http;
 
 function filter_agama_siswa($pembelajaran_id, $rombongan_belajar_id){
     $ref_agama = Agama::all();
@@ -461,4 +462,15 @@ function nama_table($table){
     $data = str_replace('_', ' ', $table);
     $data = str_replace('ref.', '', $data);
     return ucwords($data);
+}
+function http_client($satuan, $data_sync, $url){
+    //dump($satuan);
+    //dd($data_sync);
+    $response = Http::withOptions([
+        'verify' => false,
+    ])->withHeaders([
+        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+        'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    ])->retry(3, 100)->post($url.'/'.$satuan, $data_sync);
+    return $response;
 }

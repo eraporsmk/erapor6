@@ -32,7 +32,7 @@ class Index extends Component
     public $photo;
     public $sekolah;
     public $cara_penilaian;
-
+    public $max_karakter = '';
     protected $rules = [
         'kepala_sekolah' => 'required',
         'semester_id' => 'required',
@@ -89,6 +89,7 @@ class Index extends Component
         $rombel_4_tahun = Rombel_empat_tahun::where('sekolah_id', session('sekolah_id'))->where('semester_id', session('semester_aktif'))->select('rombongan_belajar_id')->get();
         $plucked = $rombel_4_tahun->pluck('rombongan_belajar_id');
         $this->rombel_4_tahun = $plucked->all();
+        $this->max_karakter = (config('global.'.session('sekolah_id').'.'.session('semester_aktif').'.max_karakter') ?? 100);
     }
     public function render()
     {
@@ -142,6 +143,16 @@ class Index extends Component
                 ]
             );
         }
+        Setting::updateOrCreate(
+            [
+                'key' => 'max_karakter',
+                'sekolah_id' => session('sekolah_id'),
+                'semester_id' => session('semester_aktif'),
+            ],
+            [
+                'value' => $this->max_karakter,
+            ]
+        );
         Setting::updateOrCreate(
             [
                 'key' => 'zona',

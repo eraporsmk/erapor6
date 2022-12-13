@@ -105,6 +105,7 @@ class CapaianKompetensi extends Component
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
             })->first();
             $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
             $this->getSiswa();
@@ -267,14 +268,15 @@ class CapaianKompetensi extends Component
         }
     }
     public function store(){
+        $max_karakter = (config('global.'.session('sekolah_id').'.'.session('semester_aktif').'.max_karakter') ?? 100);
         $this->validate(
             [
-                'deskripsi_kompeten.*' => 'nullable|string|max:100',
-                'deskripsi_inkompeten.*' => 'nullable|string|max:100',
+                'deskripsi_kompeten.*' => 'nullable|string|max:'.$max_karakter,
+                'deskripsi_inkompeten.*' => 'nullable|string|max:'.$max_karakter,
             ],
             [
-                'deskripsi_kompeten.*.max' => 'Deskripsi maksimal 100 karakter!',
-                'deskripsi_inkompeten.*.max' => 'Deskripsi maksimal 100 karakter!',
+                'deskripsi_kompeten.*.max' => 'Deskripsi maksimal '.$max_karakter.' karakter!',
+                'deskripsi_inkompeten.*.max' => 'Deskripsi maksimal '.$max_karakter.' karakter!',
             ]
         );
         foreach($this->deskripsi_kompeten as $anggota_rombel_id => $deskripsi_kompeten){

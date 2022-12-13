@@ -85,6 +85,18 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="mb-1">
+                            <label for="max_karakter" class="form-label">Jumlah Maksimal Karakter Deskripsi Capaian Kompetensi</label>
+                            <div wire:ignore>
+                                <select wire:model="max_karakter" class="form-select" data-pharaonic="select2" data-component-id="{{ $this->id }}" data-placeholder="== Pilih Jumlah Maksimal Karakter ==">
+                                    <option value="100">100 Karakter</option>
+                                    <option value="200">200 Karakter</option>
+                                    <option value="300">300 Karakter</option>
+                                    <option value="400">400 Karakter</option>
+                                    <option value="500">500 Karakter</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-5">
                         <div class="mb-1 text-center">
@@ -104,10 +116,10 @@
             </div>
             <div class="card-footer">
                 <!--button type="submit" class="btn btn-primary">Simpan</button-->
-                <div class="spinner-border text-primary" role="status" wire:loading wire:target="photo">
+                <div class="spinner-border text-primary" role="status" wire:loading>
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <button type="submit" class="btn btn-primary" wire:target="photo" wire:loading.remove>Simpan</button>
+                <button type="submit" class="btn btn-primary" wire:loading.remove>Simpan</button>
             </div>
             </form>
         </div>
