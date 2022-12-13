@@ -61,12 +61,14 @@ class CapaianKompetensi extends Component
             $query->where('guru_id', $this->loggedUser()->guru_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
             $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
             if($this->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
         };
     }
     public function updatedTingkat(){
@@ -182,8 +184,8 @@ class CapaianKompetensi extends Component
                 $this->deskripsi_kompeten[$siswa->anggota_rombel->anggota_rombel_id] = $siswa->anggota_rombel->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan;
                 $this->deskripsi_inkompeten[$siswa->anggota_rombel->anggota_rombel_id] = $siswa->anggota_rombel->single_deskripsi_mata_pelajaran->deskripsi_keterampilan;
             } else {
-                $this->deskripsi_kompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_kompeten->count()) ? 'Menunjukkan penguasaan yang baik dalam '.strtolower($siswa->anggota_rombel->tp_kompeten->implode('tp.deskripsi', ' dan ')) : NULL;
-                $this->deskripsi_inkompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_inkompeten->count()) ? 'Perlu ditingkatkan dalam '.strtolower($siswa->anggota_rombel->tp_inkompeten->implode('tp.deskripsi', ' dan ')) : NULL;
+                $this->deskripsi_kompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_kompeten->count()) ? 'Menunjukkan penguasaan yang baik dalam '.lcfirst($siswa->anggota_rombel->tp_kompeten->implode('tp.deskripsi', ' dan ')) : NULL;
+                $this->deskripsi_inkompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_inkompeten->count()) ? 'Perlu ditingkatkan dalam '.lcfirst($siswa->anggota_rombel->tp_inkompeten->implode('tp.deskripsi', ' dan ')) : NULL;
             }
         }
         $this->show = TRUE;

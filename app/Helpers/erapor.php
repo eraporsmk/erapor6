@@ -2,6 +2,8 @@
 use App\Models\Peserta_didik;
 use App\Models\Agama;
 use App\Models\Pembelajaran;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 function filter_agama_siswa($pembelajaran_id, $rombongan_belajar_id){
     $ref_agama = Agama::all();
@@ -360,4 +362,103 @@ function tingkat_kelas($kelas_10, $kelas_11, $kelas_12, $kelas_13){
     });
     //dd($filtered->all());
     return $filtered->implode('tingkat', ', ');
+}
+function table_sync(){
+    return [
+        'ref.paket_ukk',
+        'ref.kompetensi_dasar',
+        'ref.capaian_pembelajaran',
+        'users',
+        'unit_ukk',
+        'tujuan_pembelajaran',
+        'tp_nilai',
+        'sekolah',
+        'rombongan_belajar',
+        'rombel_4_tahun',
+        'rencana_ukk',
+        'rencana_penilaian',
+        'rencana_budaya_kerja',
+        'rapor_pts',
+        'ptk_keluar',
+        'prestasi',
+        'prakerin',
+        'peserta_didik',
+        'pembelajaran',
+        'pd_keluar',
+        'nilai_us',
+        'nilai_un',
+        'nilai_ukk',
+        'nilai_tp',
+        'nilai_sumatif',
+        'nilai_sikap',
+        'nilai_remedial',
+        'nilai_rapor',
+        'nilai_karakter',
+        'nilai_ekstrakurikuler',
+        'nilai_budaya_kerja',
+        'nilai_akhir',
+        'nilai',
+        'mou',
+        'kewirausahaan',
+        'kenaikan_kelas',
+        'kd_nilai',
+        'jurusan_sp',
+        'guru',
+        'gelar_ptk',
+        'ekstrakurikuler',
+        'dudi',
+        'deskripsi_sikap',
+        'deskripsi_mata_pelajaran',
+        'catatan_wali',
+        'catatan_ppk',
+        'catatan_budaya_kerja',
+        'bobot_keterampilan',
+        'bimbing_pd',
+        'aspek_budaya_kerja',
+        'asesor',
+        'anggota_rombel',
+        'anggota_kewirausahaan',
+        'anggota_akt_pd',
+        'akt_pd',
+        'absensi',
+    ];
+}
+function get_table($table, $sekolah_id, $tahun_ajaran_id, $semester_id, $count = NULL){
+    $request = DB::table($table)->where(function($query) use ($table, $sekolah_id, $tahun_ajaran_id, $semester_id){
+        if(in_array($table, ['ref.kompetensi_dasar'])){
+            $query->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                      ->from('users')
+                      ->whereColumn('ref.kompetensi_dasar.user_id', 'users.user_id');
+            });
+            $query->whereRaw('updated_at > last_sync');
+        }
+        if(in_array($table, ['ref.paket_ukk', 'users']) || Schema::hasColumn($table, 'sekolah_id')){
+            $query->where('sekolah_id', $sekolah_id);
+            $query->whereRaw('updated_at > last_sync');
+        }
+        if(in_array($table, ['ref.capaian_pembelajaran'])){
+            $query->where('is_dir', 0);
+            $query->whereRaw('updated_at > last_sync');
+        }
+        if (Schema::hasColumn($table, 'tahun_ajaran_id')) {
+            $query->where('tahun_ajaran_id', $tahun_ajaran_id);
+        }
+        if (Schema::hasColumn($table, 'semester_id')) {
+            $query->where('semester_id', $semester_id);
+        }
+        if (Schema::hasColumn($table, 'last_sync')) {
+            $query->whereRaw('updated_at > last_sync');
+        }
+    });
+    if($count){
+        return $request->count();
+    } else {
+        return $request->get();
+    }
+}
+function nama_table($table){
+    $data = str_replace('_', ' ', $table);
+    $data = str_replace('ref.', '', $data);
+    return ucwords($data);
 }

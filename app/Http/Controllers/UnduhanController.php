@@ -109,14 +109,14 @@ class UnduhanController extends Controller
 	public function template_tp(){
 		if(request()->route('id')){
 			if(Str::isUuid(request()->route('id'))){
-				$kd = Kompetensi_dasar::with(['pembelajaran'])->find(request()->route('id'));
-				$nama_file = 'Template TP '.$kd->id_kompetensi.' Mata Pelajaran ' . $kd->pembelajaran->nama_mata_pelajaran;
+				$kd = Kompetensi_dasar::with(['pembelajaran.rombongan_belajar'])->find(request()->route('id'));
+				$nama_file = 'Template TP Mata Pelajaran ' . $kd->pembelajaran->nama_mata_pelajaran . ' Kelas '.$kd->pembelajaran->rombongan_belajar->nama;
 				$nama_file = clean($nama_file);
 				$nama_file = $nama_file . '.xlsx';
 				return (new TemplateTp)->query(request()->route('id'))->download($nama_file);
 			} else {
 				$cp = Capaian_pembelajaran::with(['pembelajaran'])->find(request()->route('id'));
-				$nama_file = 'Template TP '.$cp->elemen.' Mata Pelajaran ' . $cp->pembelajaran->nama_mata_pelajaran;
+				$nama_file = 'Template TP Mata Pelajaran ' . $cp->pembelajaran->nama_mata_pelajaran. ' Kelas '.$cp->pembelajaran->rombongan_belajar->nama;
 				$nama_file = clean($nama_file);
 				$nama_file = $nama_file . '.xlsx';
 				return (new TemplateTp)->query(request()->route('id'))->download($nama_file);

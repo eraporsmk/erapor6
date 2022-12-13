@@ -77,23 +77,24 @@ class LoginController extends Controller
         ]);*/
         $messages = [
 			'email.required' => 'Email tidak boleh kosong',
-            //'email.exists' => 'Email tidak terdaftar',
+            'email.exists' => 'Email tidak terdaftar',
+            'email.email' => 'Email tidak valid',
             'password.required' => 'Password tidak boleh kosong'
 		];
 		$validator = Validator::make(request()->all(), [
-			'email' => 'required|exists:users,nuptk',
+			'email' => 'required|email|exists:users',
             'password' => 'required',
 		 ],
 		$messages
-		);
-        //->validate();
-        $login = $request->email;
+		)->validate();
+        /*$login = $request->email;
 		if ($validator->fails()) {
 			$fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nisn';
 			
 		} else {
 			$fieldType = 'nuptk';
-		}
+		}*/
+        $fieldType = 'email';
 		if (auth()->attempt([$fieldType => $request->email, 'password' => $request->password])) {
             $semester = Semester::where('semester_id', $request->semester)->first();
             $request->session()->put('semester_id', $semester->nama);
@@ -119,12 +120,9 @@ class LoginController extends Controller
                     $user->attachRole('admin', $team);
                 }
             }
-            //return redirect(session()->get('url.intended'));
-            //return redirect()->intended();
             return redirect()->route('index');
-            //return redirect()->intended($this->redirectTo());
         }
-        session()->flash('status', 'Kredensial tidak valid');
+        session()->flash('status', 'Password salah');
         return redirect()->back();
     }
     public function show_signup_form()

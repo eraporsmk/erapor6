@@ -4,6 +4,11 @@
         <div class="card">
             <div class="card-body">
                 <div id="form">
+                    <legend><h3>Versi 6.0.2</h3></legend>
+                    <ol>
+                        <li><b class="text-success">[Pembaharuan]</b> Aktifasi pengiriman data e-Rapor ke server Direktorat SMK</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Beberapa laporan bug. Selengkapnya bisa dilihat di <a href="https://github.com/eraporsmk/erapor6/commits/main" target="_blank">disini</a></li>
+                    </ol>
                     <legend><h3>Versi 6.0.1</h3></legend>
                     <ol>
                         <li><b class="text-success">[Pembaharuan]</b> Menambah menu Nilai Ekstrakurikuler di login Wali Kelas</li>

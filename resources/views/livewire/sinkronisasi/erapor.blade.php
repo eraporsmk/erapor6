@@ -1,41 +1,128 @@
 <div>
     @include('panels.breadcrumb')
     <div class="content-body">
+        @if ($show)
+            <div class="card text-white bg-dark text-center">
+                <div class="card-body fs-4 p-1" id="syncText">{{ $status }}</div>
+            </div>
+        @endif
+        <div class="row match-height">
+            <div class="col-lg-8">
+                <div class="card card-congratulation-medal">
+                    <div class="card-body p-0">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td rowspan="4" width="10%" class="table-light">
+                                    <img src="/images/logo.png" alt="Logo" style="max-width: 100px">
+                                </td>
+                                <td width="30%" class="table-light fw-bold">NPSN Sekolah</td>
+                                <td width="60%">{{ $sekolah->npsn }}</td>
+                            </tr>
+                            <tr>
+                                <td class="table-light">Nama Sekolah</td>
+                                <td>{{ $sekolah->nama }}</td>
+                            </tr>
+                            <tr>
+                                <td class="table-light">Alamat Sekolah</td>
+                                <td>{{ $sekolah->alamat }}</td>
+                            </tr>
+                            <tr>
+                                <td class="table-light">Desa Kelurahan Sekolah</td>
+                                <td>{{ $sekolah->desa_kelurahan }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <p>Pengiriman data terakhir dilakukan pada <br>
+                            <strong>10 Desember 2022 09:20</strong>
+                        </p>
+                        @if ($show)
+                            <button class="btn btn-lg btn-success" type="button" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="visually-hidden">Loading...</span>
+                            </button>
+                        @else
+                            <button class="btn btn-success btn-lg" wire:click="mulaiKirim"><i
+                                    class="fa-solid fa-cloud-arrow-up"></i> KIRIM DATA</button>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-white bg-secondary text-center">
+            <div class="card-body fs-4 p-1">DATA YANG MENGALAMI PERUBAHAN</div>
+        </div>
         <div class="card">
-            <div class="card-header py-1 px-1">
-                <h2><i class="fa-solid fa-school-flag"></i> Identitas Sekolah</h2>
-              </div>
-            <div class="card-body"></div>
-            <hr>
-            <div class="card-header py-0 pb-1 border-bottom">
-                <h2><i class="fa-solid fa-signal"></i> Status Koneksi</h2>
-                <button class="btn btn-success">TERHUBUNG</button>
-            </div>
-            <div class="card-body text-center py-1">
-                <p>Pengiriman data dilakukan terakhir <strong>16 Oktober 2019</strong></p>
-                <button class="btn btn-success btn-lg"><i class="fa-solid fa-arrows-rotate"></i> SINKRONISASI</button>
-            </div>
-            <div class="card-header py-0 pb-1 border-bottom">
-                <h2><i class="fa-solid fa-list-check"></i> Data yang Mengalami Perubahan</h2>
-            </div>
             <div class="card-body py-1">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th width="5%">No</th>
-                            <th width="80%">Nama Tabel</th>
-                            <th width="15%">Jml Data</th>
+                            <th width="5%" class="text-center">No</th>
+                            <th width="80%" class="text-center">Data</th>
+                            <th width="15%" class="text-center">Jml Data</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td>2</td>
-                            <td class="text-center">3</td>
-                        </tr>
+                        <?php 
+                        $no = 1;
+                        $jml = 0;
+                        ?>
+                        @foreach ($table_sync as $sync)
+                            @if($sync['count'])
+                            <tr>
+                                <td class="text-center">{{$no}}</td>
+                                <td>{{$sync['data']}}</td>
+                                <td class="text-center">{{$sync['count']}}</td>
+                            </tr>
+                            <?php
+                            $jml += $sync['count'];
+                            $no++;
+                            ?>
+                            @endif 
+                        @endforeach
                     </tbody>
+                    <tfoot>
+                        @if($jml)
+                        <tr>
+                            <th class="text-end" colspan="2">Jumlah</th>
+                            <th class="text-center">{{$jml}}</th>
+                        </tr> 
+                        @else
+                        <tr>
+                            <td class="text-center" colspan="3">Tidak ada untuk ditampilkan</td>
+                        </tr>
+                        @endif
+                    </tfoot>
                 </table>
             </div>
         </div>
     </div>
 </div>
+@push('scripts')
+    <script>
+        var myInterval;
+        function myTimer() {
+            $.get("/api/hitung/{{ $sekolah->sekolah_id }}", function(data, status) {
+                if (data.output) {
+                    if (data.output.jumlah) {
+                        $('#syncText').text(data.output.table + ' (' + data.output.inserted + '/' + data.output
+                            .jumlah + ')');
+                    } else {
+                        $('#syncText').text(data.output.table);
+                    }
+                }
+            });
+        }
+        Livewire.on('prosesSync', function() {
+            myInterval = setInterval(myTimer, 500);
+        })
+        Livewire.on('finishSync', function(e) {
+            clearInterval(myInterval);
+        })
+    </script>
+@endpush

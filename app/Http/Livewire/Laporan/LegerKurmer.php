@@ -86,9 +86,9 @@ class LegerKurmer extends Component
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('jenis_rombel', 1);
-                $query->whereHas('kurikulum', function($query){
-                    $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
-                });
+                //$query->whereHas('kurikulum', function($query){
+                    //$query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                //});
             })->get();
             $this->dispatchBrowserEvent('data_rombongan_belajar', ['data_rombongan_belajar' => $data_rombongan_belajar]);
         }

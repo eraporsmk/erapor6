@@ -56,7 +56,7 @@ class EraporUpdate extends Command
             $symlink = readlink(public_path('storage'));
             $storage = public_path('storage');
             if($symlink == $storage){
-                File::deleteDirectory($storage);
+                Storage::deleteDirectory(public_path('storage'));
                 $this->call('storage:link');
             }
         }
@@ -81,10 +81,12 @@ class EraporUpdate extends Command
         if(!Gelar::count()){
             $this->call('db:seed', ['class' => 'GelarSeeder']);
         }
-        $this->info('Menambah referensi Mata Pelajaran');
-        $this->call('custom:ref');
-        $this->info('Menambah referensi CP');
-        $this->call('ref:cp');
+        if (version_compare(config('global.app_version'), $version) > 0) {
+            $this->info('Menambah referensi Mata Pelajaran');
+            $this->call('custom:ref');
+            $this->info('Menambah referensi CP');
+            $this->call('ref:cp');
+        }
             
         $ajaran = [
             [

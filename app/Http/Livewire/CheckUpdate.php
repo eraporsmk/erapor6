@@ -18,7 +18,7 @@ class CheckUpdate extends Component
         ]);
     }
     public function mount(){
-        $response = Http::post('http://api.erapor-smk.net/api/version');
+        $response = Http::post('http://app.erapor-smk.net/api/version');
         if($response->successful()){
             $version = $response->object();
             if (version_compare($version->version, config('global.app_version')) > 0) {
