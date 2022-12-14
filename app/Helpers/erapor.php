@@ -2,6 +2,7 @@
 use App\Models\Peserta_didik;
 use App\Models\Agama;
 use App\Models\Pembelajaran;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Http;
@@ -473,4 +474,7 @@ function http_client($satuan, $data_sync, $url){
         'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
     ])->retry(3, 100)->post($url.'/'.$satuan, $data_sync);
     return $response;
+}
+function merdeka($nama_kurikulum){
+    return Str::contains($nama_kurikulum, 'Merdeka');
 }

@@ -1,6 +1,6 @@
 @extends('layouts.cetak')
 @section('content')
-@if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false)
+@if (!merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum))
 <table border="0" width="100%">
 	<tr>
     	<td style="width: 20%;padding:0px;">Nama Peserta Didik</td>
@@ -64,7 +64,7 @@
 </table>
 @endif
 <br />
-@if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false)
+@if (!merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum))
 <div class="strong"><strong>A.&nbsp;&nbsp;Sikap</strong></div>
 <table class="table table-bordered" border="1">
 	<thead>
@@ -89,10 +89,10 @@
 <table class="table table-bordered" border="1">
 	<thead>
 		<tr>
-			<th style="vertical-align:middle;width: 2px;" class="text-center">No</th>
-			<th style="vertical-align:middle;width: 250px;">Mata Pelajaran</th>
-			<th style="vertical-align:middle;width: 50px;" class="text-center">Nilai Akhir</th>
-			<th style="vertical-align: middle;" class="text-center">Capaian Kompetensi</th>
+			<th style="vertical-align:middle;" class="text-center" width="7%">No</th>
+			<th style="vertical-align:middle;" class="text-center" width="30%" >Mata Pelajaran</th>
+			<th style="vertical-align:middle;" class="text-center" width="10%" >Nilai Akhir</th>
+			<th style="vertical-align:middle;" class="text-center" width="48%" >Capaian Kompetensi</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -115,7 +115,12 @@
 	?>
 	@foreach($get_pembelajaran as $pembelajaran)
 	<?php
-	$rasio_p = ($pembelajaran->rasio_p) ? $pembelajaran->rasio_p : 50;
+	if(merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum)){
+		$nilai_akhir = ($pembelajaran->nilai_akhir_kurmer) ? number_format($pembelajaran->nilai_akhir_kurmer->nilai, 0) : 0;
+	} else {
+		$nilai_akhir = ($pembelajaran->nilai_akhir_pengetahuan) ? number_format($pembelajaran->nilai_akhir_pengetahuan->nilai,0) : 0;
+	}
+	/*$rasio_p = ($pembelajaran->rasio_p) ? $pembelajaran->rasio_p : 50;
 	$rasio_k = ($pembelajaran->rasio_k) ? $pembelajaran->rasio_k : 50;
 	$nilai_pengetahuan_value = ($pembelajaran->nilai_akhir_kurmer) ? $pembelajaran->nilai_akhir_kurmer->nilai : 0;
 	$nilai_keterampilan_value = ($pembelajaran->nilai_akhir_keterampilan) ? $pembelajaran->nilai_akhir_keterampilan->nilai : 0;
@@ -124,7 +129,7 @@
 	$nilai_akhir				= ($nilai_akhir_pengetahuan + $nilai_akhir_keterampilan) / 100;
 	$nilai_akhir				= ($nilai_akhir) ? number_format($nilai_akhir,0) : 0;
 	$nilai_akhir				= ($pembelajaran->nilai_akhir) ? $pembelajaran->nilai_akhir->nilai : 0;
-	$kkm = $pembelajaran->skm;
+	$kkm = $pembelajaran->skm;*/
 	$produktif = array(4,5,9,10,13);
 	if(in_array($pembelajaran->kelompok_id,$produktif)){
 		$produktif = 1;
@@ -132,14 +137,14 @@
 		$produktif = 0;
 	}
 	$all_pembelajaran[$pembelajaran->kelompok->nama_kelompok][] = array(
-		'deskripsi_mata_pelajaran' => $pembelajaran->deskripsi_mata_pelajaran,
+		'deskripsi_mata_pelajaran' => $pembelajaran->single_deskripsi_mata_pelajaran,
 		'nama_mata_pelajaran'	=> $pembelajaran->nama_mata_pelajaran,
-		'nilai_akhir_pengetahuan'	=> $nilai_pengetahuan_value,
-		'nilai_akhir_keterampilan'	=> $nilai_keterampilan_value,
+		//'nilai_akhir_pengetahuan'	=> $nilai_pengetahuan_value,
+		//'nilai_akhir_keterampilan'	=> $nilai_keterampilan_value,
 		'nilai_akhir'	=> $nilai_akhir,
-		'predikat'	=> konversi_huruf($kkm, $nilai_akhir, $produktif),
+		//'predikat'	=> konversi_huruf($kkm, $nilai_akhir, $produktif),
 		//'nilai_akhir_pk' => ($pembelajaran->nilai_akhir_pk) ? $pembelajaran->nilai_akhir_pk->nilai : 0,
-		'nilai_akhir_pk' => $nilai_pengetahuan_value,
+		//'nilai_akhir_pk' => $nilai_pengetahuan_value,
 	);
 	$i=1;
 	?>
@@ -156,69 +161,51 @@
 	@foreach($data_pembelajaran as $pembelajaran)
 	<?php 
 	$pembelajaran = (object) $pembelajaran; 
-	$rowspan = 1;
-	if($pembelajaran->deskripsi_mata_pelajaran->count()){
-		foreach ($pembelajaran->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran){
-			if($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan){
-				$rowspan = $pembelajaran->deskripsi_mata_pelajaran->count() + 2;
-			} elseif($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$deskripsi_mata_pelajaran->deskripsi_keterampilan || $deskripsi_mata_pelajaran && !$deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan){
-				$rowspan = $pembelajaran->deskripsi_mata_pelajaran->count() + 1;
-			}
-		}
-	}
 	?>
 		<tr>
-			<td class="text-center" rowspan="{{$rowspan}}" style="vertical-align:middle;">{{$i++}}</td>
-			<td rowspan="{{$rowspan}}" style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
-			<td class="text-center" rowspan="{{$rowspan}}" style="vertical-align:middle;">{{$pembelajaran->nilai_akhir}}</td>
-			@if (!$pembelajaran->deskripsi_mata_pelajaran->count())
-			<td class="text-center" style="vertical-align:middle;">-</td>
+			<td class="text-center" style="vertical-align:middle;">{{$i++}}</td>
+			<td style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
+			<td class="text-center" style="vertical-align:middle;">{{$pembelajaran->nilai_akhir}}</td>
+			<td style="vertical-align:middle;">
+			@if($pembelajaran->deskripsi_mata_pelajaran)
+				@if($pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan)
+				{!!  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+				<div class="kotak"><hr class="baris"></div>
+				{!! $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+				@endif
+				@if($pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan)
+				{!!  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+				@endif
+				@if(!$pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan)
+				{!!  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+				@endif
 			@endif
+			</td>
 		</tr>
-		@foreach ($pembelajaran->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran)
-			@if($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan)
-			<tr>
-				<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_pengetahuan : '-' !!}</td>
-			</tr>
-			<tr>
-				<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_keterampilan : '-' !!}</td>
-			</tr>
-			@else
-				@if($deskripsi_mata_pelajaran && $deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$deskripsi_mata_pelajaran->deskripsi_keterampilan)
-				<tr>
-					<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_pengetahuan : '-' !!}</td>
-				</tr>
-				@endif
-				@if($deskripsi_mata_pelajaran && !$deskripsi_mata_pelajaran->deskripsi_pengetahuan && $deskripsi_mata_pelajaran->deskripsi_keterampilan)
-				<tr>
-					<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_keterampilan : '-' !!}</td>
-				</tr>
-				@endif
-			@endif
-		@endforeach
 	@endforeach
 	@endforeach
 	@if($find_anggota_rombel_pilihan)
 	@foreach($find_anggota_rombel_pilihan->rombongan_belajar->pembelajaran as $pembelajaran)
-	<?php
-	$rowspan = 1;
-	if($pembelajaran->deskripsi_mata_pelajaran->count()){
-		$rowspan = $pembelajaran->deskripsi_mata_pelajaran->count() + 2;
-	}
-	?>
 	<tr>
-		<td rowspan="{{$rowspan}}" class="text-center" style="vertical-align:middle;">{{isset($i) ? $i : 1}}</td>
-		<td rowspan="{{$rowspan}}" style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
-		<td rowspan="{{$rowspan}}" class="text-center" style="vertical-align:middle;">{{($pembelajaran->nilai_akhir_kurmer) ? $pembelajaran->nilai_akhir_kurmer->nilai : 0}}</td>
+		<td class="text-center" style="vertical-align:middle;">{{isset($i) ? $i : 1}}</td>
+		<td style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
+		<td class="text-center" style="vertical-align:middle;">{{($pembelajaran->nilai_akhir_kurmer) ? $pembelajaran->nilai_akhir_kurmer->nilai : 0}}</td>
+		<td style="vertical-align:middle;">
+		@if($pembelajaran->single_deskripsi_mata_pelajaran)
+			@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
+			{!!  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+			<div class="kotak"><hr class="baris"></div>
+			{!! $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+			@endif
+			@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
+			{!!  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+			@endif
+			@if(!$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
+			{!!  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+			@endif
+		@endif
+		</td>
 	</tr>
-	@foreach ($pembelajaran->deskripsi_mata_pelajaran as $deskripsi_mata_pelajaran)
-	<tr>
-		<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_pengetahuan : '-' !!}</td>
-	</tr>
-	<tr>
-		<td>{!! ($deskripsi_mata_pelajaran) ? $deskripsi_mata_pelajaran->deskripsi_keterampilan : '-' !!}</td>
-	</tr>
-	@endforeach
 	@endforeach
 	@endif
 	</tbody>

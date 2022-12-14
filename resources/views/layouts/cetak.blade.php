@@ -17,6 +17,9 @@
             font-size: 13px;
         }
         .table tbody tr th, .table tbody tr td, table tr td, table tr th {padding: 5px !important;line-height:1 !important;}
+        hr.baris {
+            margin: 0; color: #000; height: 1px; width: 102.5%; margin-bottom: 5px; margin-top: 5px;
+        }
     </style>
 </head>
 <body>

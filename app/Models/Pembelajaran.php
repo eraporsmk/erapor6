@@ -180,6 +180,9 @@ class Pembelajaran extends Model
 	public function deskripsi_mata_pelajaran(){
 		return $this->hasMany(Deskripsi_mata_pelajaran::class, 'pembelajaran_id', 'pembelajaran_id');
 	}
+	public function single_deskripsi_mata_pelajaran(){
+		return $this->hasOne(Deskripsi_mata_pelajaran::class, 'pembelajaran_id', 'pembelajaran_id');
+	}
 	public function getSkmAttribute()
     {
 		if($this->kkm){
