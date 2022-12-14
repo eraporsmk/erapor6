@@ -15,6 +15,7 @@
                     @endif
                 @endrole
                 @if($show)
+                @json($merdeka)
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -33,9 +34,17 @@
                             @foreach ($data_pembelajaran as $pembelajaran)
                             <?php
                             if($merdeka){
-                                $nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+                                if($pembelajaran->rombongan_belajar->jenis_rombel == 1){
+                                    $nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+                                } else {
+                                    $nilai = $pembelajaran->nilai_akhir_kurmer()->where('anggota_rombel_id', $item->anggota_pilihan->anggota_rombel_id)->first();
+                                }
                             } else {
-                                $nilai = $pembelajaran->nilai_akhir_pengetahuan()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+                                if($pembelajaran->rombongan_belajar->jenis_rombel == 1){
+                                    $nilai = $pembelajaran->nilai_akhir_pengetahuan()->where('anggota_rombel_id', $item->anggota_rombel->anggota_rombel_id)->first();
+                                } else {
+                                    $nilai = $pembelajaran->nilai_akhir_pengetahuan()->where('anggota_rombel_id', $item->anggota_pilihan->anggota_rombel_id)->first();
+                                }
                             }
                             ?>
                             <td class="text-center">{{($nilai) ? $nilai->nilai : '-'}}</td>

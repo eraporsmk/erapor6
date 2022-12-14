@@ -270,6 +270,9 @@ class CetakController extends Controller
 		//return view('cetak.rapor_nilai', $params);
 		//return view('cetak.rapor_catatan', $params);
 		$pdf = PDF::loadView('cetak.blank', $params, [], [
+			'mode' => '+aCJK',
+			'autoScriptToLang' => true,
+			'autoLangToFont' => true,
 			'format' => 'A4',
 			'margin_left' => 15,
 			'margin_right' => 15,
@@ -427,25 +430,28 @@ class CetakController extends Controller
 			'peserta_didik', 
 			'nilai_budaya_kerja',
 			'rombongan_belajar.sekolah',
-			'catatan_budaya_kerja',
 		])->find($anggota_rombel_id);
 		$params = array(
 			'semester' => Semester::find(session('semester_aktif')),
 			'get_siswa'	=> $get_siswa,
 			'rencana_budaya_kerja' => Rencana_budaya_kerja::where('rombongan_belajar_id', $get_siswa->rombongan_belajar_id)
-			->with(['aspek_budaya_kerja' => function($query) use ($anggota_rombel_id){
-				$query->with([
-					'budaya_kerja.elemen_budaya_kerja' => function($query) use ($anggota_rombel_id){
-						$query->with(['nilai_budaya_kerja' => function($query) use ($anggota_rombel_id){
-							$query->where('anggota_rombel_id', $anggota_rombel_id);
-						}]);
-						$query->whereHas('nilai_budaya_kerja', function($query) use ($anggota_rombel_id){
-							$query->where('anggota_rombel_id', $anggota_rombel_id);
-						});
-					},
-				]);
-			}])
-			->get(),
+			->with([
+				'aspek_budaya_kerja' => function($query) use ($anggota_rombel_id){
+					$query->with([
+						'budaya_kerja.elemen_budaya_kerja' => function($query) use ($anggota_rombel_id){
+							$query->with(['nilai_budaya_kerja' => function($query) use ($anggota_rombel_id){
+								$query->where('anggota_rombel_id', $anggota_rombel_id);
+							}]);
+							$query->whereHas('nilai_budaya_kerja', function($query) use ($anggota_rombel_id){
+								$query->where('anggota_rombel_id', $anggota_rombel_id);
+							});
+						},
+					]);
+				},
+				'catatan_budaya_kerja' => function($query) use ($anggota_rombel_id){
+					$query->where('anggota_rombel_id', $anggota_rombel_id);
+				},
+			])->get(),
 			'opsi_budaya_kerja' => Opsi_budaya_kerja::where('opsi_id', '<>', 1)->orderBy('updated_at', 'ASC')->get(),
 			'budaya_kerja' => Budaya_kerja::orderBy('budaya_kerja_id')->get(),
 		);

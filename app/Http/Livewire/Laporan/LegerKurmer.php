@@ -47,11 +47,15 @@ class LegerKurmer extends Component
         } elseif($this->check_walas()){
             $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
                 $query->where('rombongan_belajar_id', $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id);
-            })->with(['anggota_rombel' => function($query){
-                $query->where('rombongan_belajar_id', $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id);
-            }])->orderBy('nama')->get();
-            $this->data_pembelajaran = Pembelajaran::where(function($query){
-                //$//query->where('rombongan_belajar_id', $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id);
+            })->with([
+                'anggota_rombel' => function($query){
+                    $query->where('rombongan_belajar_id', $this->loggedUser()->guru->rombongan_belajar->rombongan_belajar_id);
+                },
+                'anggota_pilihan' => function($query){
+                    $query->where('semester_id', session('semester_aktif'));
+                }
+            ])->orderBy('nama')->get();
+            $this->data_pembelajaran = Pembelajaran::with(['rombongan_belajar'])->where(function($query){
                 $query->whereHas('rombongan_belajar', function($query){
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
@@ -102,18 +106,33 @@ class LegerKurmer extends Component
     public function updatedRombonganBelajarId(){
         $this->reset(['data_siswa', 'data_pembelajaran', 'show']);
         if($this->rombongan_belajar_id){
+            $rombongan_belajar = Rombongan_belajar::find($this->rombongan_belajar_id);
             $this->data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            })->with(['anggota_rombel' => function($query){
-                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
-            }])->orderBy('nama')->get();
-            $this->data_pembelajaran = Pembelajaran::where(function($query){
+            })->with([
+                'anggota_rombel' => function($query){
+                    $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                },
+                'anggota_pilihan' => function($query){
+                    $query->where('semester_id', session('semester_aktif'));
+                }
+            ])->orderBy('nama')->get();
+            /*$this->data_pembelajaran = Pembelajaran::where(function($query){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
                 $query->whereNull('induk_pembelajaran_id');
+            })->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();*/
+            $this->data_pembelajaran = Pembelajaran::with(['rombongan_belajar'])->where(function($query) use ($rombongan_belajar){
+                $query->whereHas('rombongan_belajar', function($query) use ($rombongan_belajar){
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->where('guru_id', $rombongan_belajar->guru_id);
+                });
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
             })->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
-            $rombongan_belajar = Rombongan_belajar::find($this->rombongan_belajar_id);
             $this->merdeka = Str::contains($rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
             $this->show = TRUE;
         }

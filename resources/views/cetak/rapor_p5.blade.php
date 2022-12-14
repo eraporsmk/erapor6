@@ -74,11 +74,11 @@
 	<tbody>
 		@foreach ($rencana->aspek_budaya_kerja->unique('budaya_kerja_id') as $item)
 			<tr>
-				<th colspan="5"><strong class="strong">{{$item->budaya_kerja->aspek}}</strong> {{$loop->iteration}}</th>
+				<th colspan="5"><strong class="strong">{{$item->budaya_kerja->aspek}}</strong></th>
 			</tr>
 			@foreach ($item->budaya_kerja->elemen_budaya_kerja as $elemen)
 			<tr>
-				<td><span style="font-weight:bold;">{{$elemen->elemen}}.</span> {{$elemen->deskripsi}} {{$loop->iteration}}</td>
+				<td><span style="font-weight:bold;">{{$elemen->elemen}}.</span> {{$elemen->deskripsi}}</td>
 				@foreach ($opsi_budaya_kerja as $opsi)
 				<?php
 				$nilai_budaya_kerja = $elemen->nilai_budaya_kerja()->whereHas('rencana_budaya_kerja', function($query) use ($rencana){

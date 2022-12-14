@@ -110,9 +110,29 @@ class CapaianKompetensi extends Component
             $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
             $this->getSiswa();
             $this->show = TRUE;
-            //$data_rencana = Rencana_penilaian::select('rencana_penilaian_id', 'pembelajaran_id', 'kompetensi_id', 'nama_penilaian')->where('pembelajaran_id', $pembelajaran->pembelajaran_id)->where('kompetensi_id', $this->kompetensi_id)->get();
-            //$this->dispatchBrowserEvent('data_rencana', ['data_rencana' => $data_rencana]);
         }
+    }
+    private function getNilaiSiswa(){
+        $callback = function($query){
+            $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            $query->with([
+                'nilai_akhir_mapel' => function($query){
+                    $query->where('pembelajaran_id', $this->pembelajaran_id);
+                    if($this->merdeka){
+                        $query->where('kompetensi_id', 4);
+                    } else {
+                        $query->where('kompetensi_id', 1);
+                    }
+                },
+            ]);
+        };
+        $get_mapel_agama = filter_agama_siswa($this->pembelajaran_id, $this->rombongan_belajar_id);
+        $this->data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama, $callback){
+            $query->whereHas('anggota_rombel', $callback);
+            if($get_mapel_agama){
+                $query->where('agama_id', $get_mapel_agama);
+            }
+        })->with(['anggota_rombel' => $callback])->orderBy('nama')->get();
     }
     private function getSiswa(){
         $callback = function($query){
@@ -185,8 +205,8 @@ class CapaianKompetensi extends Component
                 $this->deskripsi_kompeten[$siswa->anggota_rombel->anggota_rombel_id] = $siswa->anggota_rombel->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan;
                 $this->deskripsi_inkompeten[$siswa->anggota_rombel->anggota_rombel_id] = $siswa->anggota_rombel->single_deskripsi_mata_pelajaran->deskripsi_keterampilan;
             } else {
-                $this->deskripsi_kompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_kompeten->count()) ? 'Menunjukkan penguasaan yang baik dalam '.lcfirst($siswa->anggota_rombel->tp_kompeten->implode('tp.deskripsi', ' dan ')) : NULL;
-                $this->deskripsi_inkompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_inkompeten->count()) ? 'Perlu ditingkatkan dalam '.lcfirst($siswa->anggota_rombel->tp_inkompeten->implode('tp.deskripsi', ' dan ')) : NULL;
+                $this->deskripsi_kompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_kompeten->count()) ? 'Menunjukkan penguasaan yang baik dalam '.mb_convert_encoding(lcfirst($siswa->anggota_rombel->tp_kompeten->implode('tp.deskripsi', ' dan ')), 'UTF-8', 'UTF-8') : NULL;
+                $this->deskripsi_inkompeten[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->tp_inkompeten->count()) ? 'Perlu ditingkatkan dalam '.mb_convert_encoding(lcfirst($siswa->anggota_rombel->tp_inkompeten->implode('tp.deskripsi', ' dan ')), 'UTF-8', 'UTF-8') : NULL;
             }
         }
         $this->show = TRUE;
@@ -268,6 +288,7 @@ class CapaianKompetensi extends Component
         }
     }
     public function store(){
+        $this->getNilaiSiswa();
         $max_karakter = (config('global.'.session('sekolah_id').'.'.session('semester_aktif').'.max_karakter') ?? 100);
         $this->validate(
             [
@@ -280,18 +301,22 @@ class CapaianKompetensi extends Component
             ]
         );
         foreach($this->deskripsi_kompeten as $anggota_rombel_id => $deskripsi_kompeten){
-            Deskripsi_mata_pelajaran::updateOrCreate(
-                [
-                    'sekolah_id' => session('sekolah_id'),
-                    'anggota_rombel_id' => $anggota_rombel_id,
-                    'pembelajaran_id' => $this->pembelajaran_id,
-                ],
-                [
-                    'deskripsi_pengetahuan' => $deskripsi_kompeten,
-                    'deskripsi_keterampilan' => $this->deskripsi_inkompeten[$anggota_rombel_id],
-                    'last_sync' => now(),
-                ]
-            );
+            if($deskripsi_kompeten){
+                Deskripsi_mata_pelajaran::updateOrCreate(
+                    [
+                        'sekolah_id' => session('sekolah_id'),
+                        'anggota_rombel_id' => $anggota_rombel_id,
+                        'pembelajaran_id' => $this->pembelajaran_id,
+                    ],
+                    [
+                        'deskripsi_pengetahuan' => $deskripsi_kompeten,
+                        'deskripsi_keterampilan' => $this->deskripsi_inkompeten[$anggota_rombel_id],
+                        'last_sync' => now(),
+                    ]
+                );
+            } else {
+                Deskripsi_mata_pelajaran::where('anggota_rombel_id', $anggota_rombel_id)->where('pembelajaran_id', $this->pembelajaran_id)->delete();
+            }
         }
         $this->flash('success', 'Capaian Kompetensi berhasil disimpan', [], '/penilaian/capaian-kompetensi');
     }

@@ -23,6 +23,12 @@ class Peserta_didik extends Model
 	{
 		return $this->hasOne(Anggota_rombel::class, 'peserta_didik_id', 'peserta_didik_id');
 	}
+	public function anggota_pilihan()
+	{
+		return $this->hasOne(Anggota_rombel::class, 'peserta_didik_id', 'peserta_didik_id')->whereHas('rombongan_belajar', function($query){
+			$query->where('jenis_rombel', 16);
+		});
+	}
 	public function anggota_ekskul()
 	{
 		return $this->hasOne(Anggota_rombel::class, 'peserta_didik_id', 'peserta_didik_id');

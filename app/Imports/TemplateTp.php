@@ -35,7 +35,7 @@ class TemplateTp implements ToCollection//, WithStartRow
                             Tujuan_pembelajaran::updateOrCreate(
                                 [
                                     'kd_id' => $this->id,
-                                    'deskripsi' => $tp[1],
+                                    'deskripsi' => mb_convert_encoding($tp[1], 'UTF-8', 'UTF-8'),
                                 ],
                                 [
                                     'last_sync' => now(),
@@ -45,7 +45,7 @@ class TemplateTp implements ToCollection//, WithStartRow
                             Tujuan_pembelajaran::updateOrCreate(
                                 [
                                     'cp_id' => $this->id,
-                                    'deskripsi' => $tp[1],
+                                    'deskripsi' => mb_convert_encoding($tp[1], 'UTF-8', 'UTF-8'),
                                 ],
                                 [
                                     'last_sync' => now(),

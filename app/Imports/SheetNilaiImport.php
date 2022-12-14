@@ -24,7 +24,7 @@ class SheetNilaiImport implements ToCollection
         if($rombongan_belajar_id == $this->rombongan_belajar_id && $pembelajaran_id == $this->pembelajaran_id){
             unset($collection[0], $collection[1], $collection[2], $collection[3], $collection[4], $collection[5], $collection[6]);
             foreach($collection as $item){
-                if ($item[1]) {
+                if ($item[1] && is_numeric($item[4])) {
                     Nilai_akhir::updateOrCreate(
                         [
                             'sekolah_id' => session('sekolah_id'),

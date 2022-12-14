@@ -295,6 +295,9 @@ class Users extends Component
     }
     public function confirmReset(){
         $user = User::find($this->user_id);
+        if(!$user->default_password){
+            $user->default_password = strtolower(Str::random(8));
+        }
         $user->password = bcrypt($user->default_password);
         if($user->save()){
             $this->alert('success', 'Berhasil', [

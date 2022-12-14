@@ -138,7 +138,7 @@ Route::middleware([
         Route::get('/template-nilai-akhir/{pembelajaran_id?}', [UnduhanController::class, 'template_nilai_akhir'])->name('template-nilai-akhir');
         Route::get('/template-nilai-kd/{rencana_penilaian_id?}', [UnduhanController::class, 'template_nilai_kd'])->name('template-nilai-kd');
         Route::get('/template-nilai-tp/{rencana_penilaian_id?}', [UnduhanController::class, 'template_nilai_tp'])->name('template-nilai-tp');
-        Route::get('/template-tp/{id?}', [UnduhanController::class, 'template_tp'])->name('template-tp');
+        Route::get('/template-tp/{id?}/{rombongan_belajar_id?}/{pembelajaran_id?}', [UnduhanController::class, 'template_tp'])->name('template-tp');
     });
     Route::prefix('wali-kelas')->name('wali-kelas.')->middleware('team:wali,waka,tu')->group( function(){
     //Route::group(['prefix' => 'wali-kelas', 'middleware' => ['role:guru'], 'name' => 'wali-kelas.'], function(){

@@ -77,7 +77,7 @@
                         @foreach ($rencana_budaya_kerja as $rencana)
                             @foreach ($rencana->aspek_budaya_kerja as $aspek)
                             <td class="text-center">
-                                <select id="nilai" class="form-select" wire:ignore wire:model="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$aspek->aspek_budaya_kerja_id}}">
+                                <select id="nilai" class="form-select" wire:ignore wire:model.defer="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$aspek->aspek_budaya_kerja_id}}">
                                     <option value="">-</option>
                                     @foreach ($opsi_budaya_kerja as $opsi)
                                     <option value="{{$opsi->opsi_id}}|{{($aspek->elemen_id) ? $aspek->elemen_id : 0}}">{{$opsi->nama}}</option>
@@ -90,7 +90,7 @@
                     <tr>
                         @foreach ($rencana_budaya_kerja as $rencana)
                         <td colspan="{{$rencana->aspek_budaya_kerja->count()}}">
-                            <textarea title="Catatan proses" placeholder="Catatan proses" wire:ignore wire:model="deskripsi.{{$rencana->rencana_budaya_kerja_id}}.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
+                            <textarea title="Catatan proses" placeholder="Catatan proses" wire:ignore wire:model.defer="deskripsi.{{$rencana->rencana_budaya_kerja_id}}.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control"></textarea>
                         </td>
                         @endforeach
                     </tr>

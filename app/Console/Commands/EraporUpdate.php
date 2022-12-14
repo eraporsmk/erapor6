@@ -229,5 +229,12 @@ class EraporUpdate extends Command
         $this->info('3. Kecualikan sub mapel saat input Capaian Kompetensi');
         $this->info('4. Maksimal karakter Capaian Kompetensi bisa di atur oleh Admin di menu Pengaturan Umum');
         $this->info('5. Urutan abjad di cetak rapor akademik');
+        $this->info('6. Perbaikan nama mapel saat import TP');
+        $this->info('7. Perbaikan penambahan bahasa cina di cetak rapor');
+        $this->info('8. Perbaikan nilai rombel pilihan di legger walas & wakakur');
+        $this->info('9. Catatan proses P5 yang tidak sesuai dengan inputan');
+        $this->info('10. Reset password pengguna, kembalikan password hilang');
+        $this->info('11. Perbaikan input Capaian Kompetensi, deskripsi hilang ketika inputan invalid (melebihi maksimal karakter yang diijinkan)');
+        $this->info('12. Validasi numeric saat import nilai');
     }
 }

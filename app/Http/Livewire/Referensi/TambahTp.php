@@ -23,6 +23,7 @@ class TambahTp extends Component
     public $tingkat;
     public $jenis_rombel;
     public $rombongan_belajar_id;
+    public $pembelajaran_id;
     public $mata_pelajaran_id;
     public $kompetensi_id;
     public $cp_id;
@@ -112,6 +113,7 @@ class TambahTp extends Component
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
             })->first();
+            $this->pembelajaran_id = $pembelajaran->pembelajaran_id;
             if($this->merdeka){
                 if($this->mata_pelajaran_id){
                     $fase = 'F';

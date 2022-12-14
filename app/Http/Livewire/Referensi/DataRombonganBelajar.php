@@ -67,7 +67,7 @@ class DataRombonganBelajar extends Component
                 'kurikulum' => function($query){
                     $query->select('kurikulum_id', 'nama_kurikulum');
                 },
-            ])->orderBy($this->sortby, $this->sortbydesc)
+            ])->orderBy($this->sortby, $this->sortbydesc)->orderBy('nama', $this->sortbydesc)
                 ->when($this->search, function($query) {
                     $query->where('nama', 'ILIKE', '%' . $this->search . '%')
                     ->orWhereIn('guru_id', function($query){

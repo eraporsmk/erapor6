@@ -42,7 +42,11 @@
                         @error('template_excel') <span class="error">{{ $message }}</span> @enderror
                     </div>
                     <div class="col-6 d-grid">
-                        <a class="btn btn-primary" href="{{route('unduhan.template-tp', ['id' => $cp_id])}}">Unduh Template TP</a>
+                        <a class="btn btn-primary" href="{{route('unduhan.template-tp', [
+                            'id' => $cp_id,
+                            'rombongan_belajar_id' => $rombongan_belajar_id,
+                            'pembelajaran_id' => $pembelajaran_id,
+                        ])}}">Unduh Template TP</a>
                     </div>
                 </div>
                 <div class="row mb-2 {{($show && $show_kd) ? '' : 'd-none'}}">
@@ -51,7 +55,11 @@
                         @error('template_excel') <span class="error">{{ $message }}</span> @enderror
                     </div>
                     <div class="col-6 d-grid">
-                        <a class="btn btn-primary" href="{{route('unduhan.template-tp', ['id' => $kd_id])}}">Unduh Template TP</a>
+                        <a class="btn btn-primary" href="{{route('unduhan.template-tp', [
+                            'id' => $kd_id,
+                            'rombongan_belajar_id' => $rombongan_belajar_id,
+                            'pembelajaran_id' => $pembelajaran_id,
+                        ])}}">Unduh Template TP</a>
                     </div>
                 </div>
             </div>
