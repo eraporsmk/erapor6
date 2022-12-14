@@ -49,7 +49,8 @@ class Guru extends Component
                 $query->where($this->kondisi());
                 /**/
             })->with(['pembelajaran' => function($query){
-                $query->where('semester_id', session('semester_aktif'));
+                $query->where($this->kondisi());
+                /*$query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('guru_id', session('guru_id'));
                 $query->whereNotNull('kelompok_id');
@@ -60,7 +61,7 @@ class Guru extends Component
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
-                $query->whereNull('induk_pembelajaran_id');
+                $query->whereNull('induk_pembelajaran_id');*/
                 $query->withCount([
                     'anggota_rombel',
                     'anggota_rombel as anggota_dinilai' => function($query){
@@ -186,11 +187,13 @@ class Guru extends Component
             $query->where('guru_id', session('guru_id'));
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
             $query->orWhere('guru_pengajar_id', session('guru_id'));
             $query->where('semester_id', session('semester_aktif'));
             $query->where('sekolah_id', session('sekolah_id'));
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
         };
     }
     public function generateNilai($pembelajaran_id, $kompentesi_id){

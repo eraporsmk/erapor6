@@ -156,15 +156,14 @@ class DataInstruktur extends Component
         $this->validate(
             [
                 'nama.*' => 'required',
-                'nik.*' => 'required|numeric|min:16|max:16|unique:guru,nik',
+                'nik.*' => 'required|numeric|digits:16|unique:guru,nik',
                 'email.*' => 'required|unique:guru,email',
             ],
             [
                 'nama.*.required' => 'Nama tidak boleh kosong!',
                 'nik.*.required' => 'NIK tidak boleh kosong!',
                 'nik.*.numeric' => 'NIK harus berupa angka!',
-                'nik.*.min' => 'NIK minimal harus 16 digit!',
-                'nik.*.max' => 'NIK maksimal harus 16 digit!',
+                'nik.*.digits' => 'NIK harus 16 digit!',
                 'email.*.required' => 'Email tidak boleh kosong!',
                 'email.*.unique' => 'Email sudah terdaftar!',
                 'nik.*.unique' => 'NIK sudah terdaftar!',
@@ -281,8 +280,8 @@ class DataInstruktur extends Component
             [
                 'email' => $validation,
                 'tanggal_lahir' => ['required', 'date'],
-                'nuptk' => ['nullable', 'min:16', 'max:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')],
-                'nik' => ['nullable', 'min:16', 'max:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')]
+                'nuptk' => ['nullable', 'digits:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')],
+                'nik' => ['required', 'digits:16', 'numeric', Rule::unique('guru')->ignore($this->guru_id, 'guru_id')]
             ],
             [
                 'email.required' => 'Email tidak boleh kosong!',
@@ -290,12 +289,11 @@ class DataInstruktur extends Component
                 'email.unique' => 'Email sudah terdaftar di Database!',
                 'tanggal_lahir.required' => 'Tanggal Lahir tidak boleh kosong!',
                 'tanggal_lahir.date' => 'Format Tanggal Lahir salah!',
-                'nik.min' => 'NIK minimal harus 16 digit!',
-                'nik.max' => 'NIK maksimal harus 16 digit!',
+                'nik.required' => 'NIK tidak boleh kosong!',
+                'nik.digits' => 'NIK harus 16 digit!',
                 'nik.unique' => 'NIK sudah terdaftar!',
                 'nik.numeric' => 'NIK harus berupa angka!',
-                'nuptk.min' => 'NIK minimal harus 16 digit!',
-                'nuptk.max' => 'NIK maksimal harus 16 digit!',
+                'nuptk.digits' => 'NUPTK harus 16 digit!',
                 'nuptk.unique' => 'NIK sudah terdaftar!',
                 'nuptk.numeric' => 'NIK harus berupa angka!',
             ]
