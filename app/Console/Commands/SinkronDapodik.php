@@ -301,7 +301,7 @@ class SinkronDapodik extends Command
             //    'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
             //    'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             //])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/'.$satuan, $data_sync);
-            $response = http_client($sekolah->sekolah_id, $satuan, $data_sync, 'http://app.erapor-smk.net/api/dapodik');
+            $response = http_client($satuan, $data_sync, 'http://app.erapor-smk.net/api/dapodik');
             if($response->status() == 200){
                 return $response->object();
             } else {
@@ -325,6 +325,23 @@ class SinkronDapodik extends Command
             $dapodik = $this->ambil_dapo($user, $semester, 'referensi', $data);
             if($dapodik && $dapodik->dapodik){
                 $this->update_wilayah($dapodik->dapodik);
+            }
+        }
+    }
+    private function cari_mapel($user, $semester, $mata_pelajaran_id){
+        $find = Mata_pelajaran::find($mata_pelajaran_id);
+        if(!$find){
+            $data = [
+                'table' => 'ref.mata_pelajaran',
+                'where' => 'mata_pelajaran_id',
+                'value' => $mata_pelajaran_id,
+                'limit' => '',
+                'offset' => '',
+                'satuan' => 1,
+            ];
+            $dapodik = $this->ambil_dapo($user, $semester, 'referensi', $data);
+            if($dapodik && $dapodik->dapodik){
+                $this->insert_mata_pelajaran($dapodik->dapodik, $user, $semester);
             }
         }
     }
@@ -791,6 +808,7 @@ class SinkronDapodik extends Command
                 $induk = Pembelajaran::withTrashed()->find($induk_pembelajaran_id);
             }
             $find = Rombongan_belajar::find($data->rombongan_belajar_id);
+            $mapel = $this->cari_mapel($user, $semester, $data->mata_pelajaran_id);
             if($find){
                 Pembelajaran::withTrashed()->updateOrCreate(
                     [
@@ -825,24 +843,31 @@ class SinkronDapodik extends Command
         }
     }
     private function insert_mata_pelajaran($data, $user, $semester){
-        $jurusan = Jurusan::find($data->jurusan_id);
-        if($jurusan){
-            Mata_pelajaran::updateOrCreate(
-                [
-                    'mata_pelajaran_id' => $data->mata_pelajaran_id,
-                ],
-                [
-                    'jurusan_id' 				=> $data->jurusan_id,
-                    'nama'						=> $data->nama,
-                    'pilihan_sekolah'			=> $data->pilihan_sekolah,
-                    'pilihan_kepengawasan'		=> $data->pilihan_kepengawasan,
-                    'pilihan_buku'				=> $data->pilihan_buku,
-                    'pilihan_evaluasi'			=> $data->pilihan_evaluasi,
-                    'deleted_at'				=> $data->expired_date,
-                    'last_sync'					=> now(),
-                ]
-            );
+        if($data->jurusan_id){
+            $jurusan = Jurusan::find($data->jurusan_id);
+            if($jurusan){
+                $this->simpan_mapel($data);
+            }
+        } else {
+            $this->simpan_mapel($data);
         }
+    }
+    private function simpan_mapel($data){
+        Mata_pelajaran::updateOrCreate(
+            [
+                'mata_pelajaran_id' => $data->mata_pelajaran_id,
+            ],
+            [
+                'jurusan_id' 				=> $data->jurusan_id,
+                'nama'						=> $data->nama,
+                'pilihan_sekolah'			=> $data->pilihan_sekolah,
+                'pilihan_kepengawasan'		=> $data->pilihan_kepengawasan,
+                'pilihan_buku'				=> $data->pilihan_buku,
+                'pilihan_evaluasi'			=> $data->pilihan_evaluasi,
+                'deleted_at'				=> $data->expired_date,
+                'last_sync'					=> now(),
+            ]
+        );
     }
     private function simpan_kurikulum($dapodik, $user, $semester){
         $i=1;
