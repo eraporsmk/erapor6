@@ -39,6 +39,7 @@ function filter_pembelajaran_agama($agama_siswa, $nama_agama){
 	$nama_agama = trim($nama_agama);
 	$agama_siswa = str_replace('KongHuChu', 'Konghuchu', $agama_siswa);
 	$agama_siswa = str_replace('Kong Hu Chu', 'Konghuchu', $agama_siswa);
+    $agama_siswa = str_replace('Kepercayaan ', '', $agama_siswa);
     if ($agama_siswa == $nama_agama) {
         return true;
     } else {
