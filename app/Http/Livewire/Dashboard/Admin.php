@@ -43,6 +43,10 @@ class Admin extends Component
             $query->whereHas('pembelajaran', function($query){
                 $query->where('sekolah_id', session('sekolah_id'));
             });
+        })->orWhereHas('kd', function($query){
+            $query->whereHas('pembelajaran', function($query){
+                $query->where('sekolah_id', session('sekolah_id'));
+            });
         })->count();
         $this->status_penilaian = ($this->status->status) ? TRUE: FALSE;
         $this->sekolah = Sekolah::withCount([
@@ -83,6 +87,7 @@ class Admin extends Component
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
                 });
+                $query->whereNotNull('rencana_budaya_kerja_id');
             }
         ])->find(session('sekolah_id'));
         return view('livewire.dashboard.admin-'.$cara_penilaian, [
