@@ -236,5 +236,6 @@ class EraporUpdate extends Command
         $this->info('10. Reset password pengguna, kembalikan password hilang');
         $this->info('11. Perbaikan input Capaian Kompetensi, deskripsi hilang ketika inputan invalid (melebihi maksimal karakter yang diijinkan)');
         $this->info('12. Validasi numeric saat import nilai');
+        $this->info('13. Update count TP di laman beranda admin untuk kurmer & k13');
     }
 }
