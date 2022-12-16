@@ -189,6 +189,9 @@ class Anggota_rombel extends Model
 	public function nilai_akhir_pk(){
 		return $this->hasOne(Nilai_akhir::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompetensi_id', 3);
 	}
+	public function nilai_akhir_kurmer(){
+		return $this->hasOne(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 4);
+	}
 	public function nilai_ukk_satuan(){
 		return $this->hasOne(Nilai_ukk::class, 'anggota_rombel_id', 'anggota_rombel_id');
 	}

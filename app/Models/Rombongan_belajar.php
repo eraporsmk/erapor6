@@ -53,4 +53,14 @@ class Rombongan_belajar extends Model
 	{
 		return $this->hasOne(Sekolah::class, 'sekolah_id', 'sekolah_id');
 	}
+	public function pd(){
+		return $this->hasManyThrough(
+            Peserta_didik::class,
+            Anggota_rombel::class,
+            'rombongan_belajar_id', // Foreign key on the environments table...
+            'peserta_didik_id', // Foreign key on the deployments table...
+            'rombongan_belajar_id', // Local key on the projects table...
+            'peserta_didik_id' // Local key on the environments table...
+        );
+	}
 }

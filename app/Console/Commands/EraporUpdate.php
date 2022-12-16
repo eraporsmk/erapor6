@@ -223,19 +223,17 @@ class EraporUpdate extends Command
             ]
         );
         $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi '.$version);
-        $this->info('Info Perbaikan:');
-        $this->info('1. Perbaikan cetak P5');
-        $this->info('2. Penambahan maks 100 karakter Capaian Kompetensi');
-        $this->info('3. Kecualikan sub mapel saat input Capaian Kompetensi');
-        $this->info('4. Maksimal karakter Capaian Kompetensi bisa di atur oleh Admin di menu Pengaturan Umum');
-        $this->info('5. Urutan abjad di cetak rapor akademik');
-        $this->info('6. Perbaikan nama mapel saat import TP');
-        $this->info('7. Perbaikan penambahan bahasa cina di cetak rapor');
-        $this->info('8. Perbaikan nilai rombel pilihan di legger walas & wakakur');
-        $this->info('9. Catatan proses P5 yang tidak sesuai dengan inputan');
-        $this->info('10. Reset password pengguna, kembalikan password hilang');
-        $this->info('11. Perbaikan input Capaian Kompetensi, deskripsi hilang ketika inputan invalid (melebihi maksimal karakter yang diijinkan)');
-        $this->info('12. Validasi numeric saat import nilai');
-        $this->info('13. Update count TP di laman beranda admin untuk kurmer & k13');
+        $this->info('Info Perbaikan per tanggal 16/12/2022:');
+        $this->info('1. Pembaharuan: Progres Penilaian di login Waka Kurikulum');
+        $this->info('2. Perbaikan view legger di login wali kelas');
+        $this->info('3. add header Content-Type: application/pdf di cetak rapor nilai akhir');
+        $this->info('4. Perbaikan logo tidak tampil, dan ukuran tinggi logo di cetak');
+        $this->info('5. Perbaikan cek status server pusat');
+        $this->info('6. Perbaikan waktu pengiriman data e-Rapor');
+        $this->info('7. Penambahan align text justify deskripsi mata pelajaran di cetak rapor');
+        $this->info('8. Perbaikan mengabaikan kode HTML di deskripsi mata pelajaran di cetak rapor');
+        $this->info('9. Perbaikan penghapusan TP terceklist ganda melalui pengosongan angka di template nilai akhir');
+        $this->info('10. Perbaikan menampilkan nilai mapel rombel pilihan di excel unduh legger');
+        $this->info('11. [Pull Request by janglapuk] Penambahan kelompok kurikulum 2021 dan 2022 pada ref_kelompok.json');
     }
 }

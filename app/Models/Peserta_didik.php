@@ -73,10 +73,10 @@ class Peserta_didik extends Model
 		return $this->hasOneThrough(
             Rombongan_belajar::class,
             Anggota_rombel::class,
-            'peserta_didik_id', // Foreign key on users table...
-            'rombongan_belajar_id', // Foreign key on history table...
-            'peserta_didik_id', // Local key on suppliers table...
-            'rombongan_belajar_id' // Local key on users table...
+            'peserta_didik_id',
+            'rombongan_belajar_id', 
+            'peserta_didik_id',
+            'rombongan_belajar_id'
         );
 	}
 	public function pekerjaan_ayah(){
@@ -98,13 +98,45 @@ class Peserta_didik extends Model
 		return $this->hasManyThrough(
             Nilai_ekstrakurikuler::class,
             Anggota_rombel::class,
-            'peserta_didik_id', // Foreign key on history table...
-            'anggota_rombel_id', // Foreign key on users table...
-            'peserta_didik_id', // Local key on suppliers table...
-            'anggota_rombel_id' // Local key on users table...
+            'peserta_didik_id', 
+            'anggota_rombel_id',
+            'peserta_didik_id',
+            'anggota_rombel_id'
         );
 	}
 	public function nilai_ukk(){
 		return $this->hasOne(Nilai_ukk::class, 'peserta_didik_id', 'peserta_didik_id');
+	}
+	public function nilai_akhir_pengetahuan(){
+		return $this->hasOneThrough(
+            Nilai_akhir::class,
+            Anggota_rombel::class,
+            'peserta_didik_id',
+            'anggota_rombel_id',
+            'peserta_didik_id',
+            'anggota_rombel_id'
+        )->where('kompetensi_id', 1);
+		//return $this->hasOne(Nilai_akhir::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompetensi_id', 1);
+	}
+	public function nilai_akhir_kurmer(){
+		return $this->hasOneThrough(
+            Nilai_akhir::class,
+            Anggota_rombel::class,
+            'peserta_didik_id',
+            'anggota_rombel_id',
+            'peserta_didik_id',
+            'anggota_rombel_id'
+        )->where('kompetensi_id', 4);
+		//return $this->hasOne(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 4);
+	}
+	public function deskripsi_mapel(){
+		return $this->hasOneThrough(
+            Deskripsi_mata_pelajaran::class,
+            Anggota_rombel::class,
+            'peserta_didik_id',
+            'anggota_rombel_id',
+            'peserta_didik_id',
+            'anggota_rombel_id'
+        );
 	}
 }

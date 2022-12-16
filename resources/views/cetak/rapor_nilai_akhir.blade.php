@@ -77,7 +77,7 @@
 		@foreach ($budaya_kerja as $catatan)
 		<tr>
 			<td>{{$catatan->aspek}}</td>
-			<td>{{($catatan->catatan_budaya_kerja) ? $catatan->catatan_budaya_kerja->catatan : ''}}</td>
+			<td style="text-align: justify;">{{($catatan->catatan_budaya_kerja) ? $catatan->catatan_budaya_kerja->catatan : ''}}</td>
 		</tr>
 		@endforeach
 	</tbody>
@@ -166,18 +166,18 @@
 			<td class="text-center" style="vertical-align:middle;">{{$i++}}</td>
 			<td style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
 			<td class="text-center" style="vertical-align:middle;">{{$pembelajaran->nilai_akhir}}</td>
-			<td style="vertical-align:middle;">
+			<td style="vertical-align:middle; text-align:justify;">
 			@if($pembelajaran->deskripsi_mata_pelajaran)
 				@if($pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan)
-				{!!  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+				{{  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
 				<div class="kotak"><hr class="baris"></div>
-				{!! $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+				{{ $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan }}
 				@endif
 				@if($pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan)
-				{!!  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+				{{  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
 				@endif
 				@if(!$pembelajaran->deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan)
-				{!!  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+				{{  $pembelajaran->deskripsi_mata_pelajaran->deskripsi_keterampilan }}
 				@endif
 			@endif
 			</td>
@@ -193,15 +193,15 @@
 		<td style="vertical-align:middle;">
 		@if($pembelajaran->single_deskripsi_mata_pelajaran)
 			@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
-			{!!  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+			{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
 			<div class="kotak"><hr class="baris"></div>
-			{!! $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+			{{ $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan }}
 			@endif
 			@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
-			{!!  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan !!}
+			{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
 			@endif
 			@if(!$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
-			{!!  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan !!}
+			{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan }}
 			@endif
 		@endif
 		</td>

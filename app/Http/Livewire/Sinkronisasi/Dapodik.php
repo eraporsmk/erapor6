@@ -85,6 +85,9 @@ class Dapodik extends Component
             $dapodik = ($this->data_dapodik()) ?? NULL;
             $referensi = ($this->referensi()) ?? NULL;
             $erapor = $this->ref_erapor();
+            if(!$dapodik->dapodik){
+                $this->online = FALSE;
+            }
         }
         $this->sekolah_id = auth()->user()->sekolah_id;
         return view('livewire.sinkronisasi.dapodik', [

@@ -116,6 +116,7 @@ class CetakController extends Controller
 		return $pdf->stream($filename.'.pdf');  
     }
 	public function rapor_cover(Request $request){
+		//header("Content-Type: application/pdf");
 		if($request->route('rombongan_belajar_id')){
 		} else {
 			$get_siswa = Anggota_rombel::with(['peserta_didik' => function($query){
@@ -164,6 +165,7 @@ class CetakController extends Controller
 		}
 	}
 	public function rapor_nilai_akhir(Request $request){
+		//header("Content-Type: application/pdf");
 		$cari_tingkat_akhir = Rombongan_belajar::where('sekolah_id', session('sekolah_id'))->where('semester_id', session('semester_aktif'))->where('tingkat', 13)->first();
 		$get_siswa = Anggota_rombel::with([
 			'kehadiran',
@@ -304,6 +306,7 @@ class CetakController extends Controller
 		$pdf->getMpdf()->WriteHTML('<pagebreak />');
 		$rapor_catatan = view('cetak.rapor_catatan', $params);
 		$pdf->getMpdf()->WriteHTML($rapor_catatan);
+		$pdf->getMpdf()->allow_charset_conversion = true;
 		return $pdf->stream('RAPOR '.$general_title.'.pdf');
 	}
 	public function rapor_semester(Request $request){

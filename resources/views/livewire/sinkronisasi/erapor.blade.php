@@ -39,7 +39,11 @@
                 <div class="card">
                     <div class="card-body text-center">
                         <p>Pengiriman data terakhir dilakukan pada <br>
+                            @if($last_sync)
+                            {{$last_sync->updated_at->translatedFormat('d F Y H:i:s')}}
+                            @else
                             <strong>10 Desember 2022 09:20</strong>
+                            @endif
                         </p>
                         @if ($show)
                             <button class="btn btn-lg btn-success" type="button" disabled>

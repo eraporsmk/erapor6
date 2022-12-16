@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 use App\Models\Semester;
 use App\Models\Sekolah;
+use App\Models\Sync_log;
 use Storage;
 
 class KirimErapor extends Command
@@ -18,7 +19,7 @@ class KirimErapor extends Command
      *
      * @var string
      */
-    protected $signature = 'kirim:erapor {table?} {sekolah_id?}, {tahun_ajaran_id?}, {semester_id?} {akses?}';
+    protected $signature = 'kirim:erapor {table?} {sekolah_id?}, {tahun_ajaran_id?}, {semester_id?} {akses?} {user_id?}';
 
     /**
      * The console command description.
@@ -48,6 +49,7 @@ class KirimErapor extends Command
         $sekolah_id = $this->argument('sekolah_id');
         $tahun_ajaran_id = $this->argument('tahun_ajaran_id');
         $semester_id = $this->argument('semester_id');
+        $user_id = $this->argument('user_id');
         if(!$table){
             $email = $this->ask('Email Administrator:');
             $user = User::where('email', $email)->first();
@@ -59,7 +61,7 @@ class KirimErapor extends Command
                     }])->find($user->sekolah_id);
                     $table_sync = table_sync();
                     foreach($table_sync as $table){
-                        $this->proses_kirim($table, $sekolah->sekolah_id, $semester->tahun_ajaran_id, $semester->semester_id);
+                        $this->proses_kirim($user->user_id, $table, $sekolah->sekolah_id, $semester->tahun_ajaran_id, $semester->semester_id);
                     }
                 } else {
                     $this->error('Email '.$email.' tidak memiliki akses Administrator');
@@ -70,17 +72,18 @@ class KirimErapor extends Command
                 exit;
             }    
         } else {
-            $this->proses_kirim($table, $sekolah_id, $tahun_ajaran_id, $semester_id);
+            $this->proses_kirim($user_id, $table, $sekolah_id, $tahun_ajaran_id, $semester_id);
         }
     }
-    private function proses_kirim($table, $sekolah_id, $tahun_ajaran_id, $semester_id){
+    private function proses_kirim($user_id, $table, $sekolah_id, $tahun_ajaran_id, $semester_id){
         $count = get_table($table, $sekolah_id, $tahun_ajaran_id, $semester_id, 1);
         if($count){
             $data = get_table($table, $sekolah_id, $tahun_ajaran_id, $semester_id);
-            $this->kirim_data($table, $data, $sekolah_id, $tahun_ajaran_id, $semester_id);
+            $this->kirim_data($user_id, $table, $data, $sekolah_id, $tahun_ajaran_id, $semester_id);
         }
+        Sync_log::updateOrCreate(['user_id' => $user_id, 'updated_at' => now()]);
     }
-    private function kirim_data($table, $data, $sekolah_id, $tahun_ajaran_id, $semester_id){
+    private function kirim_data($user_id, $table, $data, $sekolah_id, $tahun_ajaran_id, $semester_id){
         $data_sync = [
             'sekolah_id' => $sekolah_id,
             'tahun_ajaran_id' => $tahun_ajaran_id,
@@ -88,16 +91,19 @@ class KirimErapor extends Command
             'table' => $table,
             'json' => prepare_send(json_encode($data)),
         ];
-        $response = Http::withHeaders([
+        $url = 'http://app.erapor-smk.net/api/sinkronisasi/kirim-data';
+        $response = Http::withOptions([
+            'verify' => false,
+        ])->withHeaders([
             'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
             'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        ])->post('http://app.erapor-smk.net/api/sinkronisasi/kirim-data', $data_sync);
+        ])->post($url, $data_sync);
         if($response->status() == 200){
             if($this->argument('akses')){
                 $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => count($data).' data '.nama_table($table).' berhasil dikirim']);
             }
             $this->info(count($data).' data '.nama_table($table). ' berhasil dikirim');
-            $this->update_last_sync($table, $data, $sekolah_id);
+            $this->update_last_sync($user_id, $table, $data, $sekolah_id);
         } else {
             if($this->argument('akses')){
                 $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$response->status()]);
@@ -106,7 +112,7 @@ class KirimErapor extends Command
             $this->error('Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$response->status());
         }
     }
-    private function update_last_sync($table, $data, $sekolah_id){
+    private function update_last_sync($user_id, $table, $data, $sekolah_id){
         $i=0;
         foreach($data as $d){
             $this->proses_sync('Mengirim data', $table, $i, count($data), $sekolah_id);

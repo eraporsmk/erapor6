@@ -75,6 +75,9 @@ class SheetTpImport implements ToCollection
                                 $update
                             );
                         }
+                        if ($item[5] && $item[7] || !$item[5] && !$item[7]) {
+                            Tp_nilai::where('anggota_rombel_id', $json->anggota_rombel_id)->where('tp_id', $item[4])->delete();
+                        }
                     }
                 }
             }

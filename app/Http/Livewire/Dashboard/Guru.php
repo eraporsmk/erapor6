@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Dashboard;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Illuminate\Support\Str;
 use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\Pembelajaran;
@@ -22,10 +23,11 @@ class Guru extends Component
     public $kompentesi_id;
 
     protected $paginationTheme = 'bootstrap';
-    public $search_kurtilas = '';
-    public $search_kurmer = '';
-    public $per_page_kurtilas = 10;
-    public $per_page_kurmer = 10;
+    public $nama_mata_pelajaran;
+    public $search = '';
+    public $per_page = 10;
+    public $merdeka = FALSE;
+    public $data_siswa = [];
     public function updatingSearch()
     {
         $this->resetPage();
@@ -118,60 +120,34 @@ class Guru extends Component
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('sekolah_id', session('sekolah_id'));
                 })->first() : NULL,
-            'collection_kurtilas' => ($this->loggedUser()->hasRole('waka', session('semester_id'))) ? Pembelajaran::where(function($query){
+            'collection' => ($this->loggedUser()->hasRole('waka', session('semester_id'))) ? Pembelajaran::where(function($query){
                     $query->whereNotNull('kelompok_id');
                     $query->whereNotNull('no_urut');
-                    $query->whereHas('rombongan_belajar', function($query){
+                    $query->whereNull('induk_pembelajaran_id');
+                    /*$query->whereHas('rombongan_belajar', function($query){
                         $query->where('jenis_rombel', 1);
                         $query->where('semester_id', session('semester_aktif'));
                         $query->where('sekolah_id', session('sekolah_id'));
-                        $query->whereHas('kurikulum', function($query){
-                            $query->where('nama_kurikulum', 'ILIKE', '%REV%');
-                        });
-                    });
+                    });*/
                 })
-                ->with(['rombongan_belajar' => function($query){
-                    $query->orderBy('tingkat', 'ASC');
-                }])
+                ->with(['rombongan_belajar'])
                 ->withCount([
-                    'rencana_penilaian as rencana_pengetahuan' => function($query){
-                        $query->where('kompetensi_id', 1);
-                    },
-                    'rencana_penilaian as rencana_keterampilan' => function($query){
-                        $query->where('kompetensi_id', 2);
-                    },
-                    'rencana_penilaian as pengetahuan_dinilai' => function($query){
-                        $query->where('kompetensi_id', 1);
-                        $query->has('nilai');
-                    },
-                    'rencana_penilaian as keterampilan_dinilai' => function($query){
-                        $query->where('kompetensi_id', 2);
-                        $query->has('nilai');
-                    },
-                    'nilai_akhir as na_pengetahuan' => function($query){
-                        $query->where('kompetensi_id', 1);
-                    },
-                    'nilai_akhir as na_keterampilan' => function($query){
-                        $query->where('kompetensi_id', 2);
-                    },
+                    'anggota_rombel',
                 ])
-                ->paginate($this->per_page_kurtilas) : collect([]),
-            'collection_kurmer' => ($this->loggedUser()->hasRole('waka', session('semester_id'))) ? Pembelajaran::where(function($query){
-                    $query->whereNotNull('kelompok_id');
-                    $query->whereNotNull('no_urut');
-                    $query->whereHas('rombongan_belajar', function($query){
-                        $query->where('jenis_rombel', 1);
-                        $query->where('semester_id', session('semester_aktif'));
-                        $query->where('sekolah_id', session('sekolah_id'));
-                        $query->whereHas('kurikulum', function($query){
-                            $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
-                        });
+                ->when($this->search, function($query) {
+                    $query->where('nama', 'ILIKE', '%' . $this->search . '%')
+                    ->orWhereIn('guru_id', function($query){
+                        $query->select('guru_id')
+                        ->from('guru')
+                        ->where('sekolah_id', session('sekolah_id'))
+                        ->where('jenis_rombel', 1)
+                        ->where('semester_id', session('semester_aktif'))
+                        ->where('nama', 'ILIKE', '%' . $this->search . '%');
                     });
                 })
-                ->with(['rombongan_belajar' => function($query){
-                    $query->orderBy('tingkat', 'ASC');
-                }])
-                ->paginate($this->per_page_kurmer) : collect([]),
+                //->orderBy('rombongan_belajar.tingkat')
+                //->orderBy('rombongan_belajar.nama')
+                ->paginate($this->per_page) : collect([]),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"]
             ],
@@ -314,5 +290,29 @@ class Guru extends Component
             'allowOutsideClick' => false,
             'timer' => null
         ]);
+    }
+    public function detil($pembelajaran_id){
+        $this->pembelajaran_id = $pembelajaran_id;
+        $pembelajaran = Pembelajaran::with(['rombongan_belajar' => function($query){
+            $query->with(['pd' => function($query){
+                $query->orderBy('nama');
+                $query->with([
+                    'nilai_akhir_kurmer' => function($query){
+                        $query->where('pembelajaran_id', $this->pembelajaran_id);
+                    },
+                    'nilai_akhir_pengetahuan' => function($query){
+                        $query->where('pembelajaran_id', $this->pembelajaran_id);
+                    },
+                    'deskripsi_mapel' => function($query){
+                        $query->where('pembelajaran_id', $this->pembelajaran_id);
+                    },
+                    'agama',
+                ]);
+            }]);
+        }])->find($pembelajaran_id);
+        $this->nama_mata_pelajaran = $pembelajaran->nama_mata_pelajaran;
+        $this->data_siswa = $pembelajaran->rombongan_belajar->pd;
+        $this->merdeka = Str::contains($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
+        $this->emit('show-detil');
     }
 }

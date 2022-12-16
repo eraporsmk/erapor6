@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use App\Models\Sekolah;
+use App\Models\Sync_log;
 use Storage;
 use Artisan;
 
@@ -30,6 +31,7 @@ class Erapor extends Component
     {
         return view('livewire.sinkronisasi.erapor', [
             'sekolah' => Sekolah::find(session('sekolah_id')),
+            'last_sync' => Sync_log::where('user_id', session('user_id'))->first(),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Sinkronisasi'], ['name' => 'Kirim Data e-Rapor']
             ]
@@ -64,6 +66,7 @@ class Erapor extends Component
                 'tahun_ajaran_id' => substr(session('semester_aktif'), 0, 4),
                 'semester_id' => session('semester_aktif'),
                 'akses' => 1,
+                'user_id' => session('user_id'),
             ]);
         }
         $this->status = 'Menyelesaikan pengiriman data';

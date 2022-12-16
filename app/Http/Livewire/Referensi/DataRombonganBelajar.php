@@ -52,12 +52,13 @@ class DataRombonganBelajar extends Component
     }
     public function render()
     {
+        $where = function($query){
+            $query->where('jenis_rombel', 1);
+            $query->where('semester_id', session('semester_aktif'));
+            $query->where('sekolah_id', session('sekolah_id'));
+        };
         return view('livewire.referensi.data-rombongan-belajar', [
-            'collection' => Rombongan_belajar::where(function($query){
-                $query->where('jenis_rombel', 1);
-                $query->where('semester_id', session('semester_aktif'));
-                $query->where('sekolah_id', session('sekolah_id'));
-            })->with([
+            'collection' => Rombongan_belajar::where($where)->with([
                 'wali_kelas' => function($query){
                     $query->select('guru_id', 'nama');
                 },
@@ -67,17 +68,21 @@ class DataRombonganBelajar extends Component
                 'kurikulum' => function($query){
                     $query->select('kurikulum_id', 'nama_kurikulum');
                 },
-            ])->orderBy($this->sortby, $this->sortbydesc)->orderBy('nama', $this->sortbydesc)
-                ->when($this->search, function($query) {
-                    $query->where('nama', 'ILIKE', '%' . $this->search . '%')
-                    ->orWhereIn('guru_id', function($query){
-                        $query->select('guru_id')
-                        ->from('guru')
-                        ->where('sekolah_id', session('sekolah_id'))
-                        ->where('jenis_rombel', 1)
-                        ->where('semester_id', session('semester_aktif'))
-                        ->where('nama', 'ILIKE', '%' . $this->search . '%');
-                    });
+            ])
+            ->orderBy($this->sortby, $this->sortbydesc)
+            ->orderBy('nama', $this->sortbydesc)
+            ->when($this->search, function($query) use ($where){
+                $query->where('nama', 'ILIKE', '%' . $this->search . '%');
+                $query->where($where);
+                $query->orWhereIn('guru_id', function($query){
+                    $query->select('guru_id')
+                    ->from('guru')
+                    ->where('sekolah_id', session('sekolah_id'))
+                    ->where('jenis_rombel', 1)
+                    ->where('semester_id', session('semester_aktif'))
+                    ->where('nama', 'ILIKE', '%' . $this->search . '%');
+                });
+                $query->where($where);
             })->paginate($this->per_page),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Rombongan Belajar"]
