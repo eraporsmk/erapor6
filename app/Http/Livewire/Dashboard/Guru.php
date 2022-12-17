@@ -124,29 +124,38 @@ class Guru extends Component
                     $query->whereNotNull('kelompok_id');
                     $query->whereNotNull('no_urut');
                     $query->whereNull('induk_pembelajaran_id');
-                    /*$query->whereHas('rombongan_belajar', function($query){
-                        $query->where('jenis_rombel', 1);
-                        $query->where('semester_id', session('semester_aktif'));
-                        $query->where('sekolah_id', session('sekolah_id'));
-                    });*/
                 })
                 ->with(['rombongan_belajar'])
                 ->withCount([
                     'anggota_rombel',
                 ])
                 ->when($this->search, function($query) {
-                    $query->where('nama', 'ILIKE', '%' . $this->search . '%')
-                    ->orWhereIn('guru_id', function($query){
-                        $query->select('guru_id')
-                        ->from('guru')
-                        ->where('sekolah_id', session('sekolah_id'))
-                        ->where('jenis_rombel', 1)
-                        ->where('semester_id', session('semester_aktif'))
-                        ->where('nama', 'ILIKE', '%' . $this->search . '%');
+                    $query->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereNull('induk_pembelajaran_id');
+                    $query->orWhereHas('rombongan_belajar', function($query){
+                        $query->whereIn('jenis_rombel', [1, 16]);
+                        $query->where('semester_id', session('semester_aktif'));
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->where('nama', 'ILIKE', '%' . $this->search . '%');
                     });
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereNull('induk_pembelajaran_id');
+                    $query->orWhereHas('guru', function($query){
+                        $query->where('nama', 'ILIKE', '%' . $this->search . '%');
+                    });
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereNull('induk_pembelajaran_id');
+                    $query->orWhereHas('pengajar', function($query){
+                        $query->where('nama', 'ILIKE', '%' . $this->search . '%');
+                    });
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereNull('induk_pembelajaran_id');
                 })
-                //->orderBy('rombongan_belajar.tingkat')
-                //->orderBy('rombongan_belajar.nama')
                 ->paginate($this->per_page) : collect([]),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"]

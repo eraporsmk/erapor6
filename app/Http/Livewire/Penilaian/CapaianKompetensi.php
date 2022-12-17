@@ -288,7 +288,7 @@ class CapaianKompetensi extends Component
         }
     }
     public function store(){
-        $this->getNilaiSiswa();
+        /*$this->getNilaiSiswa();
         $max_karakter = (config('global.'.session('sekolah_id').'.'.session('semester_aktif').'.max_karakter') ?? 100);
         $this->validate(
             [
@@ -299,7 +299,7 @@ class CapaianKompetensi extends Component
                 'deskripsi_kompeten.*.max' => 'Deskripsi maksimal '.$max_karakter.' karakter!',
                 'deskripsi_inkompeten.*.max' => 'Deskripsi maksimal '.$max_karakter.' karakter!',
             ]
-        );
+        );*/
         foreach($this->deskripsi_kompeten as $anggota_rombel_id => $deskripsi_kompeten){
             if($deskripsi_kompeten){
                 Deskripsi_mata_pelajaran::updateOrCreate(

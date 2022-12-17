@@ -85,6 +85,7 @@
                                 </select>
                             </div>
                         </div>
+                        {{--
                         <div class="mb-1">
                             <label for="max_karakter" class="form-label">Jumlah Maksimal Karakter Deskripsi Capaian Kompetensi</label>
                             <div wire:ignore>
@@ -97,6 +98,7 @@
                                 </select>
                             </div>
                         </div>
+                        --}}
                     </div>
                     <div class="col-5">
                         <div class="mb-1 text-center">

@@ -16,18 +16,91 @@
                     </div>
                     <div class="row mb-2 {{($show) ? '' : 'd-none'}}" wire:loading.remove wire:target="changePembelajaran">
                         <div class="table-responsive">
-                            <table class="table table-bordered {{table_striped()}}">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th class="text-center align-middle" rowspan="2">Nama Peserta Didik</th>
                                         <th class="text-center align-middle" rowspan="2">Nilai Akhir</th>
-                                        <th class="text-center align-middle" colspan="2">Capaian Kompetensi</th>
+                                        <th class="text-center align-middle" colspan="3">Capaian Kompetensi</th>
                                     </tr>
                                     <tr>
-                                        <th class="text-center align-middle">Kompetensi yang sudah dicapai</th>
-                                        <th class="text-center align-middle">Kompetensi yang perlu ditingkatkan</th>
+                                        <th class="text-center align-middle">Dicapai</th>
+                                        <th class="text-center align-middle">Belum dicapai</th>
+                                        <th class="text-center align-middle">Deskripsi</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    <?php
+                                    $no = 1;
+                                    ?>
+                                    @if(count($data_tp))
+                                    @foreach ($data_siswa as $siswa)
+                                    <tr @if($no % 2 == 0) class="table-secondary" @endif>
+                                        <td rowspan="{{count($data_tp) + 1}}">
+                                            {{$siswa->nama}}
+                                        </td>
+                                        <td class="text-center" rowspan="{{count($data_tp) + 1}}">
+                                            <input type="number" class="form-control @error('nilai.'.$siswa->anggota_rombel->anggota_rombel_id) is-invalid @enderror" wire:model.defer="nilai.{{$siswa->anggota_rombel->anggota_rombel_id}}">
+                                            @error('nilai.'.$siswa->anggota_rombel->anggota_rombel_id) {{$message}} @enderror
+                                        </td>
+                                    </tr>
+                                    @foreach ($data_tp as $tp)
+                                    <tr @if($no % 2 == 0) class="table-secondary" @endif>
+                                        <td class="text-center">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="{{$tp->tp_id}}" id="tp_dicapai-{{$tp->tp_id}}" wire:model="tp_dicapai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$tp->tp_id}}"
+                                                @if(isset($tp_belum_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp->tp_id]) && $tp_belum_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp->tp_id])
+                                                disabled
+                                                @endif
+                                                >
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="{{$tp->tp_id}}" id="tp_belum_dicapai-{{$tp->tp_id}}" wire:model="tp_belum_dicapai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$tp->tp_id}}"
+                                                @if(isset($tp_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp->tp_id]) && $tp_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp->tp_id])
+                                                disabled
+                                                @endif
+                                                >
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{$tp->deskripsi}}
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                        {{--
+                                        <td>
+                                            @foreach ($data_tp as $tp)
+                                            <div class="form-check mb-1">
+                                                <input class="form-check-input" type="checkbox" value="{{$tp->tp_id}}" id="tp_belum_dicapai-{{$tp->tp_id}}" wire:model="tp_belum_dicapai.{{$siswa->anggota_rombel->anggota_rombel_id}}.{{$tp->tp_id}}"
+                                                @if(isset($tp_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp->tp_id]) && $tp_dicapai[$siswa->anggota_rombel->anggota_rombel_id][$tp->tp_id])
+                                                disabled
+                                                @endif
+                                                >
+                                                <label class="form-check-label" for="tp_belum_dicapai-{{$tp->tp_id}}">
+                                                    {{$tp->deskripsi}}
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                        </td>
+                                        --}}
+                                    <?php $no++; ?>
+                                    @endforeach
+                                    @else
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="alert alert-danger" role="alert">
+                                                <div class="alert-body text-center">
+                                                    <h2>Tidak ditemukan data Tujuan Pembelajaran</h2>
+                                                    <p>Silahkan tambah data Tujuan Pembelajaran terlebih dahulu <a href="{{route('referensi.tujuan-pembelajaran.tambah')}}">disini</a></p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                </tbody>
+                                {{--
                                 <tbody>
                                     @if(count($data_tp))
                                     @foreach ($data_siswa as $siswa)
@@ -82,12 +155,13 @@
                                     </tr>
                                     @endif
                                 </tbody>
+                                --}}
                             </table>
                         </div>
                     </div>                        
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary {{($show && count($data_tp)) ? '' : 'd-none'}}">Simpan</button>
+                    <button type="submit" class="btn btn-success fly-button {{($show && count($data_tp)) ? '' : 'd-none'}}">Simpan</button>
                 </div>
             </form>
         </div>
@@ -120,4 +194,21 @@
         $('[data-bs-toggle="tooltip"]').tooltip()
     })
 </script>
+@endpush
+@push('styles')
+<style>
+.fly-button {
+  bottom: 11%;
+  position: fixed;
+  right: 79px;
+  z-index: 1031;
+}
+.form-check-input{
+    float:none;
+    margin: 0;
+}
+.form-check-inline{
+    margin: 0;
+}
+</style>
 @endpush

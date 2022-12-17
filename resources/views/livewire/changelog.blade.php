@@ -4,6 +4,33 @@
         <div class="card">
             <div class="card-body">
                 <div id="form">
+                    <legend><h3>Versi 6.0.3</h3></legend>
+                    <ol>
+                        <li><b class="text-success">[Pembaharuan]</b> Progres Penilaian di laman Beranda login Waka Kurikulum</li>
+                        <li><b class="text-success">[Pembaharuan]</b> Menghilangkan batasan jumlah maksimal karakter deskripsi Capaian Kompetensi</li>
+                        <li><b class="text-success">[Pembaharuan]</b> Membuat tombol simpan melayang di laman input Nilai Akhir &amp; laman input Capaian Kompetensi</li>
+                        <li><b class="text-success">[Pembaharuan]</b> Merubah susunan kolom tabel input Capaian Kompetensi</li>
+                        <li><b class="text-success">[Pembaharuan]</b> Penambahan align text justify deskripsi mata pelajaran di cetak rapor</li>
+                        <li><b class="text-success">[Pembaharuan]</b> Penambahan warna khusus Mata Pelajaran rombel pilihan di Progres Penilaian</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Pencarian data Progres Penilaian </li>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan view legger di login wali kelas</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Add header Content-Type: application/pdf di cetak rapor nilai akhir</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Logo tidak tampil, dan ukuran tinggi logo di cetak</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Cek status server pusat</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Waktu pengiriman data e-Rapor</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Mengabaikan kode HTML di deskripsi mata pelajaran di cetak rapor</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Penghapusan TP terceklist ganda melalui pengosongan angka di template nilai akhir</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Menampilkan nilai mapel rombel pilihan di excel unduh legger</li>
+                        <li><b class="text-danger">[Perbaikan]</b> <b class="text-warning">[Pull Request by janglapuk]</b> Penambahan kelompok kurikulum 2021 dan 2022 pada ref_kelompok.json</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Filter mata pelajaran agama Kepercayaan kpd Tuhan YME di cetak rapor</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Nama mata pelajaran di template Export TP</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Penambahan bahasa Hanzi di cetak rapor</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Nilai rombel pilihan di legger walas &amp; wakakur</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Catatan proses P5 yang tidak sesuai dengan inputan</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Reset password pengguna, kembalikan password hilang</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Validasi numeric saat import nilai</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Validasi NIK Instruktur &amp; Asesor</li>
+                    </ol>
                     <legend><h3>Versi 6.0.2</h3></legend>
                     <ol>
                         <li><b class="text-success">[Pembaharuan]</b> Aktifasi pengiriman data e-Rapor ke server Direktorat SMK</li>

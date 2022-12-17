@@ -62,7 +62,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($data_siswa as $siswa)
-                                    <tr>
+                                    <tr @if($loop->iteration % 2 == 0) class="table-secondary" @endif>
                                         <td class="align-middle">{{$siswa->nama}}</td>
                                         <td class="align-middle text-center">
                                             {{($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : 0}}
@@ -86,7 +86,7 @@
                     </div>
                 </div>
                 <div class="card-footer{{($show) ? '' : ' d-none'}}">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" class="btn btn-success fly-button">SIMPAN</button>
                 </div>
             </form>
         </div>
@@ -115,4 +115,14 @@
         });
     })
 </script>
+@endpush
+@push('styles')
+<style>
+.fly-button {
+  bottom: 11%;
+  position: fixed;
+  right: 79px;
+  z-index: 1031;
+}
+</style>
 @endpush

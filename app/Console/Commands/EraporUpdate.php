@@ -223,17 +223,5 @@ class EraporUpdate extends Command
             ]
         );
         $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi '.$version);
-        $this->info('Info Perbaikan per tanggal 16/12/2022:');
-        $this->info('1. Pembaharuan: Progres Penilaian di login Waka Kurikulum');
-        $this->info('2. Perbaikan view legger di login wali kelas');
-        $this->info('3. add header Content-Type: application/pdf di cetak rapor nilai akhir');
-        $this->info('4. Perbaikan logo tidak tampil, dan ukuran tinggi logo di cetak');
-        $this->info('5. Perbaikan cek status server pusat');
-        $this->info('6. Perbaikan waktu pengiriman data e-Rapor');
-        $this->info('7. Penambahan align text justify deskripsi mata pelajaran di cetak rapor');
-        $this->info('8. Perbaikan mengabaikan kode HTML di deskripsi mata pelajaran di cetak rapor');
-        $this->info('9. Perbaikan penghapusan TP terceklist ganda melalui pengosongan angka di template nilai akhir');
-        $this->info('10. Perbaikan menampilkan nilai mapel rombel pilihan di excel unduh legger');
-        $this->info('11. [Pull Request by janglapuk] Penambahan kelompok kurikulum 2021 dan 2022 pada ref_kelompok.json');
     }
 }

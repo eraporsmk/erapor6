@@ -155,7 +155,7 @@
                             </thead>
                             <tbody>
                                 @forelse ($collection->sortBy('rombongan_belajar.tingkat')->sortBy('rombongan_belajar.nama') as $item)
-                                    <tr>
+                                    <tr @if($item->rombongan_belajar->jenis_rombel == 16) class="table-warning" @endif>
                                         <td>{{ $item->rombongan_belajar->nama }}</td>
                                         <td>{{ $item->nama_mata_pelajaran }}</td>
                                         <td>{{ $item->guru_pengajar_id ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap }}</td>
