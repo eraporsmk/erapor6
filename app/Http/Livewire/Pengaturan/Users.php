@@ -143,7 +143,9 @@ class Users extends Component
                         $user->attachRole($WalasRole, session('semester_id'));
                     }
                 } else {
-                    $user->detachRole($WalasRole, session('semester_id'));
+                    if($user->hasRole($WalasRole, session('semester_id'))){
+                        $user->detachRole($WalasRole, session('semester_id'));
+                    }
                 }
                 $find_mapel_p5 = Pembelajaran::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->where('mata_pelajaran_id', '200040000')->has('tema')->first();
                 if($find_mapel_p5){
@@ -151,7 +153,9 @@ class Users extends Component
                         $user->attachRole($p5Role, session('semester_id'));
                     }
                 } else {
-                    $user->detachRole($p5Role, session('semester_id'));
+                    if($user->hasRole($p5Role, session('semester_id'))){
+                        $user->detachRole($p5Role, session('semester_id'));
+                    }
                 }
                 $find_ekskul = Ekstrakurikuler::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->first();
                 if($find_ekskul){
@@ -159,7 +163,9 @@ class Users extends Component
                         $user->attachRole($PembinaRole, session('semester_id'));
                     }
                 } else {
-                    $user->detachRole($PembinaRole, session('semester_id'));
+                    if($user->hasRole($PembinaRole, session('semester_id'))){
+                        $user->detachRole($PembinaRole, session('semester_id'));
+                    }
                 }
             }
         }
