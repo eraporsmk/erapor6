@@ -124,6 +124,8 @@ class Guru extends Component
                     $query->whereNotNull('kelompok_id');
                     $query->whereNotNull('no_urut');
                     $query->whereNull('induk_pembelajaran_id');
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->where('sekolah_id', session('sekolah_id'));
                 })
                 ->with(['rombongan_belajar'])
                 ->withCount([
