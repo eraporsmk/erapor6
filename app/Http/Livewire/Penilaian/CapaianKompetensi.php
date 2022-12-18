@@ -301,7 +301,7 @@ class CapaianKompetensi extends Component
             ]
         );*/
         foreach($this->deskripsi_kompeten as $anggota_rombel_id => $deskripsi_kompeten){
-            if($deskripsi_kompeten){
+            if($deskripsi_kompeten || $this->deskripsi_inkompeten[$anggota_rombel_id]){
                 Deskripsi_mata_pelajaran::updateOrCreate(
                     [
                         'sekolah_id' => session('sekolah_id'),
