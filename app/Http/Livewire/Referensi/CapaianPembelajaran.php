@@ -32,12 +32,16 @@ class CapaianPembelajaran extends Component
         return view('livewire.referensi.capaian-pembelajaran', [
             'collection' => Capaian_pembelajaran::with(['mata_pelajaran'])->withCount('tp')->where(function($query){
                 $query->whereHas('pembelajaran', function($query){
-                    $query->where('guru_id', $this->loggedUser()->guru_id);
+                    $query->where('guru_id', session('guru_id'));
                     $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereNull('induk_pembelajaran_id');
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
-                    $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+                    $query->orWhere('guru_pengajar_id', session('guru_id'));
                     $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->whereNull('induk_pembelajaran_id');
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
                 });
@@ -45,7 +49,25 @@ class CapaianPembelajaran extends Component
             ->orderBy('updated_at', $this->sortbydesc)
                 ->when($this->search, function($query) {
                     $query->where('elemen', 'ILIKE', '%' . $this->search . '%');
-                    $query->orWhere('mata_pelajaran.nama', 'ILIKE', '%' . $this->search . '%');
+                    $query->whereHas('mata_pelajaran', function($query){
+                        $query->where('nama', 'ILIKE', '%' . $this->search . '%');
+                    });
+                    $query->whereHas('pembelajaran', function($query){
+                        $query->where('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');
+                        $query->where('guru_id', session('guru_id'));
+                        $query->whereNotNull('kelompok_id');
+                        $query->whereNotNull('no_urut');
+                        $query->whereNull('induk_pembelajaran_id');
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->where('semester_id', session('semester_aktif'));
+                        $query->orWhere('nama_mata_pelajaran', 'ILIKE', '%' . $this->search . '%');
+                        $query->where('guru_pengajar_id', session('guru_id'));
+                        $query->whereNotNull('kelompok_id');
+                        $query->whereNotNull('no_urut');
+                        $query->whereNull('induk_pembelajaran_id');
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->where('semester_id', session('semester_aktif'));
+                    });
             })->paginate($this->per_page),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Capaian Pembelajaran"]
