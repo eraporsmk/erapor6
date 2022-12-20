@@ -33,7 +33,7 @@
   <tr>
     <td style="width: 30%;padding:20px;">Kecamatan</td>
     <td style="width: 5%">:</td>
-    <td style="width: 65%">{{$get_siswa->peserta_didik->sekolah->kecamatan}}</td>
+    <td style="width: 65%">{{str_replace('Kec. ','',$get_siswa->peserta_didik->sekolah->kecamatan)}}</td>
   </tr>
   <tr>
     <td style="width: 30%;padding:20px;">Kabupaten/Kota</td>
@@ -43,7 +43,7 @@
   <tr>
     <td style="width: 30%;padding:20px;">Provinsi</td>
     <td style="width: 5%">:</td>
-    <td style="width: 65%">{{$get_siswa->peserta_didik->sekolah->provinsi}}</td>
+    <td style="width: 65%">{{str_replace('Prov. ','',$get_siswa->peserta_didik->sekolah->provinsi)}}</td>
   </tr>
   <tr>
     <td style="width: 30%;padding:20px;">Website</td>
