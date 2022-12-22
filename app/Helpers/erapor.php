@@ -466,14 +466,12 @@ function nama_table($table){
     return ucwords($data);
 }
 function http_client($satuan, $data_sync, $url){
-    //dump($satuan);
-    //dd($data_sync);
     $response = Http::withOptions([
         'verify' => false,
+        'debug' => (session('user_id')) ? FALSE : config('app.debug'),
     ])->withHeaders([
-        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
-        'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    ])->retry(3, 100)->post($url.'/'.$satuan, $data_sync);
+        'x-api-key' => $data_sync['sekolah_id'],
+    ])->retry(3, 100)->withBasicAuth('admin', '1234')->asForm()->post($url.'/'.$satuan, $data_sync);
     return $response;
 }
 function merdeka($nama_kurikulum){

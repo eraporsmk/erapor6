@@ -107,6 +107,7 @@ class Users extends Component
         $PembinaRole = Role::where('name', 'pembina_ekskul')->first();
         $p5Role = Role::where('name', 'guru-p5')->first();
         $WalasRole = Role::where('name', 'wali')->first();
+        $adminRole = Role::where('name', 'admin')->first();
         $new = 0;
         if($data){
             foreach($data as $d){
@@ -116,7 +117,7 @@ class Users extends Component
                 if(!$user){
                     $user_email = $this->check_email($d, 'guru_id');
                     $user = User::create([
-                        'name' => $d->nama,
+                        'name' => $d->nama_lengkap,
 						'email' => $user_email,
 						'nuptk'	=> $d->nuptk,
 						'password' => bcrypt($new_password),
@@ -126,7 +127,11 @@ class Users extends Component
 						'guru_id'	=> $d->guru_id,
 						'default_password' => $new_password,
                     ]);
+                } else {
+                    $user->name = $d->nama_lengkap;
+                    $user->save();
                 }
+                $user->detachRole($adminRole, session('semester_id'));
                 if($jenis_tu->contains($d->jenis_ptk_id)){
                     $role = Role::where('name', 'tu')->first();
                 } elseif($asesor->contains($d->jenis_ptk_id)){
@@ -193,6 +198,7 @@ class Users extends Component
             $query->where('sekolah_id', session('sekolah_id'));
         })->get();
         $role = Role::where('name', 'siswa')->first();
+        $adminRole = Role::where('name', 'admin')->first();
         if($data){
             foreach($data as $d){
                 $new_password = strtolower(Str::random(8));
@@ -211,6 +217,7 @@ class Users extends Component
 						'default_password' => $new_password,
                     ]);
                 }
+                $user->detachRole($adminRole, session('semester_id'));
                 if(!$user->hasRole($role, session('semester_id'))){
                     $user->attachRole($role, session('semester_id'));
                 }

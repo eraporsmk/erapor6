@@ -90,8 +90,9 @@ class SinkronDapodik extends Command
         if($this->argument('satuan')){
             $satuan = $this->argument('satuan');
             $semester = Semester::find(session('semester_aktif'));
-            $sekolah = Sekolah::with(['user' => function($query) use ($semester){
-                $query->whereRoleIs('admin', $semester->nama);
+            $user = auth()->user();
+            $sekolah = Sekolah::with(['user' => function($query) use ($user){
+                $query->where('email', $user->email);
             }])->find(session('sekolah_id'));
         } else {
             $email = $this->ask('Email Administrator:');
@@ -100,8 +101,8 @@ class SinkronDapodik extends Command
             if($user){
                 $semester = Semester::where('periode_aktif', 1)->first();
                 if($user->hasRole('admin', $semester->nama)){
-                    $sekolah = Sekolah::with(['user' => function($query) use ($semester){
-                        $query->whereRoleIs('admin', $semester->nama);
+                    $sekolah = Sekolah::with(['user' => function($query) use ($user){
+                        $query->where('email', $user->email);
                     }])->find($user->sekolah_id);
                     $satuan = $this->choice(
                         'Pilih data untuk di sinkronisasi!',
@@ -227,6 +228,9 @@ class SinkronDapodik extends Command
                     return $this->error('Sekolah tidak memiliki pengguna Admin');
                 }
             } catch (\Exception $e){
+                if($this->argument('akses')){
+                    $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$e->getMessage()]);
+                }
                 $this->proses_sync('', 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon', 0, 0, 0);
                 return $this->error('Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$e->getMessage());
             }

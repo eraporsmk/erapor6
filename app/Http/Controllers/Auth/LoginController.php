@@ -116,7 +116,7 @@ class LoginController extends Controller
                     'display_name' => $semester->nama,
                     'description' => $semester->nama,
                 ]);
-                if(!$user->hasRole('admin', $semester->semester_id)){
+                if(!$user->hasRole('admin', $semester->nama)){
                     $user->attachRole('admin', $team);
                 }
             }

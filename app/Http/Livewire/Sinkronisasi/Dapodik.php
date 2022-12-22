@@ -412,9 +412,18 @@ class Dapodik extends Component
     public function finishSync(){
         $response = Str::of($this->respon_artisan)->between('{', '}');
         $response = json_decode('{'.$response.'}');
+        if($response){
+            $status = $response->status;
+            $title = $response->title;
+            $message = $response->message;
+        } else {
+            $status = 'success';
+            $title = 'Berhasil';
+            $message = 'Pengambilan data Dapodik berhasil';
+        }
         $this->reset(['prosesSync', 'server', 'satuan']);
-        $this->alert($response->status, $response->title, [
-            'text' => $response->message,
+        $this->alert($status, $title, [
+            'text' => $message,
             'allowOutsideClick' => false,
             'toast' => false,
             'timer' => null,

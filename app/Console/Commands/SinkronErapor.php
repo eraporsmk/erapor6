@@ -57,8 +57,8 @@ class SinkronErapor extends Command
         if($satuan){
             $semester = Semester::where('periode_aktif', 1)->first();
             $user = User::where('email', $this->argument('email'))->first();
-            $sekolah = Sekolah::with(['user' => function($query) use ($semester){
-                $query->whereRoleIs('admin', $semester->nama);
+            $sekolah = Sekolah::with(['user' => function($query) use ($user){
+                $query->where('email', $user->email);
             }])->find($user->sekolah_id);
         } else {
             $email = $this->ask('Email Administrator:');
@@ -66,8 +66,8 @@ class SinkronErapor extends Command
             if($user){
                 $semester = Semester::where('periode_aktif', 1)->first();
                 if($user->hasRole('admin', $semester->nama)){
-                    $sekolah = Sekolah::with(['user' => function($query) use ($semester){
-                        $query->whereRoleIs('admin', $semester->nama);
+                    $sekolah = Sekolah::with(['user' => function($query) use ($user){
+                        $query->where('email', $user->email);
                     }])->find($user->sekolah_id);
                     $satuan = $this->choice(
                         'Pilih data untuk di sinkronisasi!',
