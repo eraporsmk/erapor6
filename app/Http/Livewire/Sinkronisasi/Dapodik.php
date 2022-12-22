@@ -85,7 +85,7 @@ class Dapodik extends Component
             $dapodik = ($this->data_dapodik()) ?? NULL;
             $referensi = ($this->referensi()) ?? NULL;
             $erapor = $this->ref_erapor();
-            if(!$dapodik->dapodik){
+            if(!$dapodik){
                 $this->online = FALSE;
             }
         }
