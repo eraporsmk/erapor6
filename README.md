@@ -23,6 +23,11 @@ Tokenizer PHP Extension
 
 XML PHP Extension
 
+PHP's xmlreader
+
+PHP's xmlwriter
+
+ PHP's zip
 
 ## Cara Install (Untuk Pengguna Baru)
 
