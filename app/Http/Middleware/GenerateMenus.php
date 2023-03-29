@@ -299,6 +299,11 @@ class GenerateMenus
                         'smt' => collect([1,2]),
                         'cara_penilaian' => collect(['sederhana'])
                     ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());*/
+                    $menu->wali_kelas->add('Kenaikan Kelas', 'kenaikan-kelas')->data([
+                        'role' => ['wali', 'waka', 'tu'], 
+                        'smt' => collect([2]),
+                        'cara_penilaian' => collect(['lengkap', 'sederhana'])
+                    ])->append($this->setAppend())->prepend($this->icon('hand-point-right'))->link->attr($this->text_class());
                     $menu->wali_kelas->add('Cetak Rapor', 'rapor-nilai-akhir')->data([
                         'role' => ['wali', 'waka', 'tu'], 
                         'smt' => collect([1,2]),
@@ -573,7 +578,6 @@ class GenerateMenus
             $semester = $request->session()->get('semester_id');
             $semester_aktif = Str::substr($request->session()->get('semester_aktif'), 4, 1);
             $cara_penilaian = 'sederhana';
-            //config('global.'.session('sekolah_id').'.'.session('semester_aktif').'.cara_penilaian');
             if($cara_penilaian && $item->data('cara_penilaian')){
                 if(
                     $user 

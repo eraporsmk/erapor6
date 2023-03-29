@@ -69,7 +69,7 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 	</thead>
 	<tbody>
 		@if($get_siswa->all_prakerin->count())
-		@foreach($get_siswa->all_prakerin as $prakerin){
+		@foreach($get_siswa->all_prakerin as $prakerin)
 		<tr>
 			<td style="vertical-align: middle;">{{$loop->iteration}}</td>
 			<td>{{$prakerin->mitra_prakerin}}</td>

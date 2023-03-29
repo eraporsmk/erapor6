@@ -147,7 +147,7 @@ Route::middleware([
         Route::get('/prestasi-pd', [EraporController::class, 'prestasi_pd'])->name('prestasi-pd');
         Route::get('/catatan-sikap', [EraporController::class, 'catatan_sikap'])->name('catatan-sikap');
         Route::get('/ketidakhadiran', [EraporController::class, 'ketidakhadiran'])->name('ketidakhadiran');
-        //Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekskul'])->name('nilai-ekstrakurikuler');
+        Route::get('/kenaikan-kelas', [EraporController::class, 'kenaikan_kelas'])->name('kenaikan-kelas');
         Route::get('/nilai-ekstrakurikuler', [EraporController::class, 'nilai_ekstrakurikuler'])->name('nilai-ekstrakurikuler');
         Route::get('/leger', [EraporController::class, 'leger_kurmer'])->name('leger-kurmer');
     });

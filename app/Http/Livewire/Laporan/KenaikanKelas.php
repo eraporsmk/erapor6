@@ -134,7 +134,7 @@ class KenaikanKelas extends Component
             } else {
                 $find = Anggota_rombel::with(['rombongan_belajar'])->find($name[1]);
                 $this->rombongan_belajar_id[$name[1]] = $find->rombongan_belajar->rombongan_belajar_id;
-                $this->nama_kelas[$name[1]] = $find->rombongan_belajar->nama;
+                //$this->nama_kelas[$name[1]] = $find->rombongan_belajar->nama;
             }
         }
     }

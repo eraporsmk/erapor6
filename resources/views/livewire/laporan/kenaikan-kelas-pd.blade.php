@@ -25,7 +25,7 @@
                     @endrole
                 </td>
                 <td>
-                    <input type="text" wire:model="nama_kelas.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control">
+                    <input type="text" wire:model.defer="nama_kelas.{{$siswa->anggota_rombel->anggota_rombel_id}}" class="form-control">
                     <input type="hidden" wire:model="rombongan_belajar_id.{{$siswa->anggota_rombel->rombongan_belajar_id}}" class="form-control">
                 </td>
             </tr>
