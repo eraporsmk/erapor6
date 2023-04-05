@@ -707,13 +707,6 @@ class SinkronDapodik extends Command
 		$data->email = strtolower($data->email);
 		$data->nuptk = ($data->nuptk) ? $data->nuptk : mt_rand();
         $jenis_ptk_id = 0;
-        $jabatan_ptk_id = NULL;
-        if(isset($data->jenis_ptk_id)){
-            $jenis_ptk_id = $data->jenis_ptk_id;
-        }
-        if(isset($data->jabatan_ptk_id)){
-            $jabatan_ptk_id = $data->jabatan_ptk_id;
-        }
         $create_guru = Guru::withTrashed()->updateOrCreate(
 			[
                 'guru_id' => $data->ptk_id
@@ -729,8 +722,8 @@ class SinkronDapodik extends Command
                 'tempat_lahir' 			=> $data->tempat_lahir,
                 'tanggal_lahir' 		=> $data->tanggal_lahir,
                 'status_kepegawaian_id'	=> $data->status_kepegawaian_id,
-                'jenis_ptk_id' 			=> $jenis_ptk_id,
-                'jabatan_ptk_id' 		=> $jabatan_ptk_id,
+                'jenis_ptk_id' 			=> $data->ptk_terdaftar->jenis_ptk_id,
+                'jabatan_ptk_id' 		=> ($data->tugas_tambahan) ? $data->tugas_tambahan->jabatan_ptk_id : NULL,
                 'agama_id' 				=> $data->agama_id,
                 'alamat' 				=> $data->alamat_jalan,
                 'rt' 					=> $data->rt,
