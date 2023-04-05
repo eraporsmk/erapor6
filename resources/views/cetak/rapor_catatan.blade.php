@@ -153,7 +153,7 @@ if($get_siswa->rombongan_belajar->semester->semester == 2){
 }
 ?>
 @if($get_siswa->rombongan_belajar->semester->semester == 2)
-@if($get_siswa->rombongan_belajar->tingkat == 12)
+@if($get_siswa->rombongan_belajar->tingkat >= 12)
 <div class="strong"><strong>{{$huruf_kenaikan}}.&nbsp;&nbsp;{{$text_status}}</strong></div>
 @else
 <div class="strong"><strong>{{$huruf_kenaikan}}.&nbsp;&nbsp;{{$text_status}}</strong></div>
