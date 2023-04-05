@@ -193,7 +193,8 @@ class EraporUpdate extends Command
                 }
             }
         }
-        Semester::where('semester_id', '<>', '20221')->update(['periode_aktif' => 0]);
+        Semester::where('semester_id', '<>', '20222')->update(['periode_aktif' => 0]);
+        Semester::where('semester_id', '20222')->update(['periode_aktif' => 1]);
         $guru = Guru::whereRaw('guru_id <> guru_id_dapodik')->first();
         if($guru){
             $semester = Semester::where('periode_aktif', 1)->first();

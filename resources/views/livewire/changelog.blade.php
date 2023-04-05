@@ -4,6 +4,11 @@
         <div class="card">
             <div class="card-body">
                 <div id="form">
+                    <legend><h3>Versi 6.0.4</h3></legend>
+                    <ol>
+                        <li><b class="text-success">[Pembaharuan]</b> Memunculkan menu Kenaikan Kelas</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan proses sinkronisasi Dapodik</li>
+                    </ol>
                     <legend><h3>Versi 6.0.3</h3></legend>
                     <ol>
                         <li><b class="text-success">[Pembaharuan]</b> Progres Penilaian di laman Beranda login Waka Kurikulum</li>

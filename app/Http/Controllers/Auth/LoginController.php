@@ -151,7 +151,8 @@ class LoginController extends Controller
                 'email' => $request->email,
                 'password' => $request->password,
             ];
-            $response = Http::withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/register', $data_sync);
+            $response = Http::post('http://app.erapor-smk.net/api/sync/register', $data_sync);
+            //Http::withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/register', $data_sync);
             $data = $response->object();
             if($response->successful()){
                 return $this->create_user($data, $request->email, $request->password);
@@ -170,7 +171,7 @@ class LoginController extends Controller
             session()->flash('status', $data->message);
             return redirect()->route('register');
         }
-        $set_data = $data->data;
+        $set_data = $data->data->sekolah;
         if($set_data->bentuk_pendidikan_id == '15'){
             $get_kode_wilayah = $set_data->wilayah;
             $kode_wilayah = $set_data->kode_wilayah;

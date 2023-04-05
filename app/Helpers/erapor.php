@@ -465,14 +465,14 @@ function nama_table($table){
     $data = str_replace('ref.', '', $data);
     return ucwords($data);
 }
-function http_client($satuan, $data_sync, $url){
+function http_client($satuan, $data_sync){
     $response = Http::withOptions([
         'verify' => false,
         'debug' => (session('user_id')) ? FALSE : config('app.debug'),
     ])->withHeaders([
         'x-api-key' => $data_sync['sekolah_id'],
-    ])->retry(3, 100)->withBasicAuth('admin', '1234')->asForm()->post($url.'/'.$satuan, $data_sync);
-    return $response;
+    ])->retry(3, 100)->post('http://app.erapor-smk.net/api/sync/dapodik/'.$satuan, $data_sync);
+    return $response->object();
 }
 function merdeka($nama_kurikulum){
     return Str::contains($nama_kurikulum, 'Merdeka');

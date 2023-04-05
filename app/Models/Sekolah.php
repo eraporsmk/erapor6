@@ -39,6 +39,9 @@ class Sekolah extends Model
 	public function peserta_didik(){
 		return $this->hasMany(Peserta_didik::class, 'sekolah_id', 'sekolah_id');
 	}
+	public function anggota_rombel(){
+		return $this->hasMany(Anggota_rombel::class, 'sekolah_id', 'sekolah_id');
+	}
 	public function pd_aktif()
 	{
 		return $this->hasMany(Peserta_didik::class, 'sekolah_id', 'sekolah_id')->whereHas('anggota_rombel', function(Builder $query){

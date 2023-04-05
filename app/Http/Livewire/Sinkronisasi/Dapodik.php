@@ -53,20 +53,13 @@ class Dapodik extends Component
                 'semester_id'		=> $semester->semester_id,
                 'sekolah_id'		=> $user->sekolah->sekolah_id,
             ];
-            $response = Http::withHeaders([
-                'x-api-key' => $user->sekolah->sekolah_id,
-            ])->withBasicAuth('admin', '1234')->asForm()->post('http://app.erapor-smk.net/api/dapodik/status', $data_sync);
-            $return = $response->object();
-            $this->online = ($return) ? TRUE : FALSE;
-            return $return;
-        } catch (\Exception $e){
+            $response = http_client('status', $data_sync);
+            if($response && !$response->error){
+                $this->online = TRUE;
+                return $response->dapodik;
+            }
             $this->online = FALSE;
-        }
-    }
-    private function referensi(){
-        try {
-            $response = Http::get('http://app.erapor-smk.net/api/referensi');
-            return $response->object();
+            return FALSE;
         } catch (\Exception $e){
             $this->online = FALSE;
         }
@@ -79,11 +72,9 @@ class Dapodik extends Component
         $now = Carbon::now()->timezone($timezone);
         $jam_sinkron = Carbon::now()->timezone($timezone)->isBetween($start, $end, false);
         $dapodik = NULL;
-        $referensi = NULL;
         $erapor = NULL;
         if(!$jam_sinkron){
             $dapodik = ($this->data_dapodik()) ?? NULL;
-            $referensi = ($this->referensi()) ?? NULL;
             $erapor = $this->ref_erapor();
             if(!$dapodik){
                 $this->online = FALSE;
@@ -95,7 +86,7 @@ class Dapodik extends Component
             'data_sinkron' => (!$jam_sinkron) ? [
                 [
                     'nama' => 'Jurusan',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->jurusan : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->jurusan : 0,
                     'erapor' => $erapor['jurusan'],
                     'sinkron' => $erapor['jurusan'],
                     'aksi' => 'jurusan',
@@ -105,7 +96,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Kurikulum',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->kurikulum : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->kurikulum : 0,
                     'erapor' => $erapor['kurikulum'],
                     'sinkron' => $erapor['kurikulum'],
                     'aksi' => 'kurikulum',
@@ -115,7 +106,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Mata Pelajaran',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->mata_pelajaran : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->mata_pelajaran : 0,
                     'erapor' => $erapor['mata_pelajaran'],
                     'sinkron' => $erapor['mata_pelajaran'],
                     'aksi' => 'mata_pelajaran',
@@ -123,41 +114,33 @@ class Dapodik extends Component
                     'icon' => FALSE,
                     'html' => NULL,
                 ],
-                /*[
-                    'nama' => 'Mata Pelajaran Kurikulum',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->mata_pelajaran_kurikulum : 0,
-                    'erapor' => $erapor['mata_pelajaran_kurikulum'],
-                    'sinkron' => $erapor['mata_pelajaran_kurikulum'],
-                    'aksi' => 'mata_pelajaran_kurikulum',
-                    'server' => 'dapodik',
-                ],*/
                 [
                     'nama' => 'Wilayah',
-                    'dapodik' => ($referensi) ? $referensi->wilayah : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->wilayah : 0,
                     'erapor' => $erapor['wilayah'],
                     'sinkron' => $erapor['wilayah'],
                     'aksi' => 'wilayah',
-                    'server' => 'erapor',
+                    'server' => 'dapodik',
                     'icon' => FALSE,
                     'html' => NULL,
                 ],
                 [
                     'nama' => 'Ref. Kompetensi Dasar',
-                    'dapodik' => ($referensi) ? $referensi->ref_kd : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->ref_kd : 0,
                     'erapor' => $erapor['ref_kd'],
                     'sinkron' => $erapor['ref_kd'],
-                    'aksi' => 'kompetensi-dasar',
-                    'server' => 'erapor',
+                    'aksi' => 'kd',
+                    'server' => 'dapodik',
                     'icon' => FALSE,
                     'html' => NULL,
                 ],
                 [
                     'nama' => 'Ref. Capaian Pembelajaran',
-                    'dapodik' => ($referensi) ? $referensi->ref_cp : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->ref_cp : 0,
                     'erapor' => $erapor['ref_cp'],
                     'sinkron' => $erapor['ref_cp_sync'],
-                    'aksi' => 'capaian-pembelajaran',
-                    'server' => 'erapor',
+                    'aksi' => 'cp',
+                    'server' => 'dapodik',
                     'icon' => FALSE,
                     'html' => NULL,
                 ],
@@ -173,7 +156,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'GTK',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->ptk_terdaftar : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->ptk_terdaftar : 0,
                     'erapor' => $erapor['ptk'],
                     'sinkron' => $erapor['ptk'],
                     'aksi' => 'ptk',
@@ -183,7 +166,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Rombongan Belajar',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->rombongan_belajar : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->rombongan_belajar : 0,
                     'erapor' => $erapor['rombongan_belajar'],
                     'sinkron' => $erapor['rombongan_belajar'],
                     'aksi' => 'rombongan_belajar',
@@ -193,7 +176,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Peserta Didik Aktif',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->registrasi_peserta_didik : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->registrasi_peserta_didik : 0,
                     'erapor' => $erapor['peserta_didik_aktif'],
                     'sinkron' => $erapor['peserta_didik_aktif'],
                     'aksi' => 'peserta_didik_aktif',
@@ -203,7 +186,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Peserta Didik Keluar',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->siswa_keluar_dapodik : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->siswa_keluar_dapodik : 0,
                     'erapor' => $erapor['peserta_didik_keluar'],
                     'sinkron' => $erapor['peserta_didik_keluar'],
                     'aksi' => 'peserta_didik_keluar',
@@ -213,7 +196,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Anggota Rombel Matpel Pilihan',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->anggota_rombel_pilihan : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->anggota_rombel_pilihan : 0,
                     'erapor' => $erapor['anggota_rombel_pilihan'],
                     'sinkron' => $erapor['anggota_rombel_pilihan'],
                     'aksi' => 'anggota_rombel_pilihan',
@@ -223,7 +206,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Pembelajaran',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->pembelajaran_dapodik : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->pembelajaran_dapodik : 0,
                     'erapor' => $erapor['pembelajaran'],
                     'sinkron' => $erapor['pembelajaran'],
                     'aksi' => 'pembelajaran',
@@ -233,7 +216,7 @@ class Dapodik extends Component
                 ],
                 /*[
                     'nama' => 'Pembelajaran (Sub Mapel/Tema P5)',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->sub_pembelajaran : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->sub_pembelajaran : 0,
                     'erapor' => $erapor['sub_pembelajaran'],
                     'sinkron' => $erapor['sub_pembelajaran'],
                     'aksi' => 'pembelajaran',
@@ -241,7 +224,7 @@ class Dapodik extends Component
                 ],*/
                 [
                     'nama' => 'Ekstrakurikuler',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->ekskul_dapodik : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->ekskul_dapodik : 0,
                     'erapor' => $erapor['ekstrakurikuler'],
                     'sinkron' => $erapor['ekstrakurikuler'],
                     'aksi' => 'ekstrakurikuler',
@@ -251,7 +234,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Anggota Ekstrakurikuler',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->anggota_ekskul_dapodik : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->anggota_ekskul_dapodik : 0,
                     'erapor' => $erapor['anggota_ekskul'],
                     'sinkron' => $erapor['anggota_ekskul'],
                     'aksi' => 'anggota_ekskul',
@@ -261,7 +244,7 @@ class Dapodik extends Component
                 ],
                 [
                     'nama' => 'Relasi Dunia Usaha & Industri',
-                    'dapodik' => ($dapodik && $dapodik->dapodik) ? $dapodik->dapodik->dudi_dapodik : 0,
+                    'dapodik' => ($dapodik) ? $dapodik->dudi_dapodik : 0,
                     'erapor' => $erapor['dudi'],
                     'sinkron' => $erapor['dudi'],
                     'aksi' => 'dudi',
@@ -302,12 +285,11 @@ class Dapodik extends Component
                     $query->where('semester_id', session('semester_aktif'));
                 });
             },
-            'peserta_didik as anggota_rombel_pilihan' => function($query){
-                $query->whereHas('anggota_rombel', function($query){
+            'anggota_rombel as anggota_rombel_pilihan' => function($query){
+                $query->where('semester_id', session('semester_aktif'));
+                $query->whereHas('rombongan_belajar', function($query){
                     $query->where('semester_id', session('semester_aktif'));
-                    $query->whereHas('rombongan_belajar', function($query){
-                        $query->where('jenis_rombel', 16);
-                    });
+                    $query->where('jenis_rombel', 16);
                 });
             },
             'pembelajaran' => function($query){
@@ -316,8 +298,15 @@ class Dapodik extends Component
             'ekstrakurikuler' => function($query){
                 $query->where('semester_id', session('semester_aktif'));
             },
-            'anggota_ekskul' => function($query){
+            'anggota_rombel as anggota_ekskul_count' => function($query){
                 $query->where('semester_id', session('semester_aktif'));
+                $query->whereHas('rombongan_belajar', function($query){
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->where('jenis_rombel', 51);
+                });
+                $query->whereHas('peserta_didik', function($query){
+                    $query->doesntHave('pd_keluar');
+                });
             },
             'mou'
         ])->find(session('sekolah_id'));

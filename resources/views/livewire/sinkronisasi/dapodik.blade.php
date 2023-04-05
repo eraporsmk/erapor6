@@ -76,7 +76,15 @@
                                     </button>
                                 </div>
                                 <div wire:loading.remove>
-                                    <button class="btn btn-sm btn-success" wire:click="syncSatuan('{{$sinkron['server']}}', '{{$sinkron['aksi']}}')">Sinkronisasi</button>
+                                    @if($sinkron['dapodik'] > 1500)
+                                        <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="Harap sinkronisasi melalui Command Prompt">
+                                            <i class="fa-regular fa-circle-question"></i>
+                                        </a>
+                                    @elseif($sinkron['dapodik'] > 0)
+                                        <button class="btn btn-sm btn-success" wire:click="syncSatuan('{{$sinkron['server']}}', '{{$sinkron['aksi']}}')">Sinkronisasi</button>
+                                    @else
+                                        <button class="btn btn-sm btn-secondary" disabled>Sinkronisasi</button>
+                                    @endif
                                 </div>
                             </div>
                         </td>
