@@ -140,7 +140,7 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 	$not_yet = 'Belum dilakukan kelulusan';
 } else*/
 if($get_siswa->rombongan_belajar->semester->semester == 2){
-	if($get_siswa->rombongan_belajar->tingkat == 12){
+	if($get_siswa->rombongan_belajar->tingkat >= 12){
 		$text_status = 'Status Kelulusan';
 		$not_yet = 'Belum dilakukan kelulusan';
 	} else {

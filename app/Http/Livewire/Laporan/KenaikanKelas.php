@@ -35,6 +35,7 @@ class KenaikanKelas extends Component
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Laporan'], ['name' => "Kenaikan Kelas"]
             ],
             'data_siswa' => ($this->check_walas()) ? $this->getPD() : [],
+            //'rombongan_belajar_id' => $this->check_walas()
         ]);
     }
     public function mount(){
@@ -71,6 +72,26 @@ class KenaikanKelas extends Component
     }
     private function check_walas(){
         if($this->loggedUser()->hasRole('wali', session('semester_id'))){
+            $rombel = Rombongan_belajar::where(function($query){
+                $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('semester_id', session('semester_aktif'));
+                $query->where('jenis_rombel', 1);
+            })->first();
+            $next_rombel = NULL;
+            if($rombel){
+                $next_rombel = Rombongan_belajar::where(function($query) use ($rombel){
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('tingkat', ($rombel->tingkat + 1));
+                })->first();
+                $this->tingkat = ($rombel) ? $rombel->tingkat : 0;
+            }
+            if($next_rombel){
+                $this->tingkat = $next_rombel->tingkat;
+            } else {
+                $this->tingkat = ($rombel) ? $rombel->tingkat : 0;
+            }
             return TRUE;
         } else {
             return FALSE;
@@ -93,7 +114,11 @@ class KenaikanKelas extends Component
                 );
             }
         }
-        $this->alert('success', 'Kenaikan Kelas berhasil disimpan', [
+        $text = 'Kenaikan Kelas';
+        if($this->tingkat >= 12){
+            $text = 'Kelulusan';
+        }
+        $this->alert('success', $text.' berhasil disimpan', [
             'showConfirmButton' => true,
             'confirmButtonText' => 'OK',
             'onConfirmed' => 'confirmed' 
