@@ -131,8 +131,9 @@ class DataEkstrakurikuler extends Component
             'sekolah_id'		=> $user->sekolah->sekolah_id,
             'satuan'			=> $this->rombongan_belajar_id,
         ];
-        $response = Http::post('http://app.erapor-smk.net/api/dapodik/anggota_ekskul_by_rombel', $data_sync);
-        $return = $response->object();
+        $return = http_client('anggota_ekskul_by_rombel', $data_sync);
+        //$response = Http::post('http://app.erapor-smk.net/api/dapodik/anggota_ekskul_by_rombel', $data_sync);
+        //$return = $response->object();
         if($return){
             $this->simpan_anggota_ekskul($return->dapodik, $user, $semester);
             $this->alert('success', 'Anggota Ekstrakurikuler berhasil disinkronisasi', [

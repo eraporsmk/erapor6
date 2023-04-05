@@ -111,7 +111,8 @@
                     <div class="row mb-2">
                         <label for="diterima_kelas" class="col-sm-3 col-form-label">Diterima dikelas</label>
                         <div class="col-sm-9">
-                            <div class="input-group">
+                            <input wire:model="diterima_kelas" type="text" class="form-control" placeholder="" aria-label="Diterima dikelas" aria-describedby="button-addon1">
+                            <!--div class="input-group">
                                 <button wire:loading wire:target="syncPD" class="btn btn-outline-primary" type="button" id="button-addon1">
                                     <div class="spinner-border spinner-border-sm text-info" role="status">
                                         <span class="visually-hidden">Loading...</span>
@@ -119,7 +120,7 @@
                                 </button>
                                 <button wire:loading.remove wire:target="syncPD" class="btn btn-outline-primary" type="button" id="button-addon1" wire:click="syncPD"><i class="fa-solid fa-rotate"></i></button>
                                 <input wire:model="diterima_kelas" type="text" class="form-control" placeholder="" aria-label="Diterima dikelas" aria-describedby="button-addon1">
-                          </div>                              
+                            </div-->                              
                         </div>
                     </div>
                     <div class="row mb-2">

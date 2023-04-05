@@ -120,12 +120,12 @@ class PesertaDidikAktif extends Component
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Peserta Didik Aktif"]
             ],
-            'tombol_add' => ($this->rombongan_belajar_id) ? [
+            /*'tombol_add' => ($this->rombongan_belajar_id) ? [
                 'wire' => 'sinkronisasi',
                 'link' => '',
                 'color' => 'warning',
                 'text' => 'Sinkronisasi'
-            ] : NULL
+            ] : NULL*/
         ]);
     }
     public function kondisi(){
