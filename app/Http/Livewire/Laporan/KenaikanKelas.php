@@ -80,12 +80,13 @@ class KenaikanKelas extends Component
             })->first();
             $next_rombel = NULL;
             if($rombel){
-                $next_rombel = Rombongan_belajar::where(function($query) use ($rombel){
-                    $query->where('semester_id', session('semester_aktif'));
-                    $query->where('sekolah_id', session('sekolah_id'));
-                    $query->where('tingkat', ($rombel->tingkat + 1));
-                })->first();
-                $this->tingkat = ($rombel) ? $rombel->tingkat : 0;
+                if($rombel->tingkat == 12){
+                    $next_rombel = Rombongan_belajar::where(function($query) use ($rombel){
+                        $query->where('semester_id', session('semester_aktif'));
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->where('tingkat', ($rombel->tingkat + 1));
+                    })->first();
+                }
             }
             if($next_rombel){
                 $this->tingkat = $next_rombel->tingkat;
