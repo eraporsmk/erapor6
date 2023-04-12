@@ -934,6 +934,7 @@ class SinkronDapodik extends Command
                 $induk = Pembelajaran::withTrashed()->find($induk_pembelajaran_id);
             }
             $find = Rombongan_belajar::find($data->rombongan_belajar_id);
+            $this->simpan_guru($data->ptk_terdaftar, $user, $semester);
             $mapel = $this->cari_mapel($user, $semester, $data->mata_pelajaran_id);
             if($find){
                 Pembelajaran::withTrashed()->updateOrCreate(
