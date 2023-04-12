@@ -308,7 +308,7 @@ class Dapodik extends Component
                     $query->doesntHave('pd_keluar');
                 });
             },
-            'mou'
+            'dudi'
         ])->find(session('sekolah_id'));
         $ref_cp_sync = NULL;
         try {
@@ -330,7 +330,7 @@ class Dapodik extends Component
             'pembelajaran' => $sekolah->pembelajaran_count,
             'ekstrakurikuler' => $sekolah->ekstrakurikuler_count,
             'anggota_ekskul' => $sekolah->anggota_ekskul_count,
-            'dudi' => $sekolah->mou_count,
+            'dudi' => $sekolah->dudi_count,
             'jurusan' => Jurusan::select(DB::raw('TRIM(jurusan_id)'))
             ->groupByRaw('TRIM(jurusan_id)')->get()->count(),
             'kurikulum' => Kurikulum::count(),
