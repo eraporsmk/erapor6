@@ -7,12 +7,13 @@
                 <th class="text-center">Skala Kesesuaian dengan Kompetensi Keahlian (1-10)</th>
                 <th class="text-center">Lamanya (bulan)</th>
                 <th class="text-center">Keterangan</th>
+                <th class="text-center">Aksi</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($data_siswa as $urut => $siswa)
             <tr>
-                <td class="align-top">{{$siswa->nama}}: {{$urut}}</td>
+                <td class="align-top">{{$siswa->nama}}</td>
                 <td class="align-top">
                     @role('wali', session('semester_id'))
                     <input type="text" class="form-control" wire:model.defer="lokasi_prakerin.{{$siswa->anggota_rombel->anggota_rombel_id}}" id="lokasi_prakerin">
@@ -64,6 +65,17 @@
                     @else
                     {{$keterangan_prakerin[$siswa->anggota_rombel->anggota_rombel_id]}}
                     @endrole
+                </td>
+                <td class="align-top text-center">
+                    @role('wali', session('semester_id'))
+                        @isset($prakerin_id[$siswa->anggota_rombel->anggota_rombel_id])
+                        <button type="button" class="btn btn-sm btn-danger waves-effect waves-float waves-light" wire:click="hapusPrakerin('{{$prakerin_id[$siswa->anggota_rombel->anggota_rombel_id]}}', '{{$siswa->anggota_rombel->anggota_rombel_id}}')">Hapus</button>
+                        @else
+                        -
+                        @endif
+                    @else
+                    -
+                    @endif
                 </td>
             </tr>
             @empty

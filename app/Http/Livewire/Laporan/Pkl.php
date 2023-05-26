@@ -21,6 +21,8 @@ class Pkl extends Component
     public $nama_kurikulum;
     public $data_siswa = [];
     public $data_dudi = [];
+    public $prakerin_id;
+    public $prakerin_id_delete;
     public $mitra_prakerin = [];
     public $lokasi_prakerin = [];
     public $skala = [];
@@ -34,6 +36,7 @@ class Pkl extends Component
         return [
             'confirmed' => '$refresh',
             'showAlert',
+            'confirmed_delete'
         ];
     }
     public function render()
@@ -86,21 +89,23 @@ class Pkl extends Component
             $this->nama_kurikulum = $rombel->kurikulum->nama_kurikulum;
         }
     }
-    private function callback_anggota_rombel(){
-        return function($query){
+    private function callback_anggota_rombel($nama_dudi = NULL){
+        return function($query) use ($nama_dudi){
             $query->whereHas('rombongan_belajar', function($query){
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('guru_id', $this->loggedUser()->guru_id);
             });
-            $query->with(['single_prakerin']);
+            $query->with(['single_prakerin' => function($query) use ($nama_dudi){
+                $query->where('mitra_prakerin', $nama_dudi);
+            }]);
         };
     }
     public function updatedDudiId($value){
         $this->reset(['data_siswa', 'show', 'lokasi_prakerin', 'lama_prakerin', 'skala', 'keterangan_prakerin']);
         $this->dudi_id = $value;
         $this->dudi = Dudi::find($this->dudi_id);
-        $callback_anggota_rombel = $this->callback_anggota_rombel();
+        $callback_anggota_rombel = $this->callback_anggota_rombel($this->dudi->nama);
         $callback_anggota_akt_pd = function($query){
             $query->whereHas('akt_pd', function($query){
                 $query->whereHas('dudi', function($query){
@@ -114,6 +119,7 @@ class Pkl extends Component
         ])->orderBy('nama')->get();
         if($this->data_siswa->count()){
             foreach($this->data_siswa as $siswa){
+                $this->prakerin_id[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_prakerin) ? $siswa->anggota_rombel->single_prakerin->prakerin_id : '';
                 $this->lokasi_prakerin[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_prakerin) ? $siswa->anggota_rombel->single_prakerin->lokasi_prakerin : $this->dudi->alamat_jalan;
                 $this->skala[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_prakerin) ? $siswa->anggota_rombel->single_prakerin->skala : '';
                 $this->lama_prakerin[$siswa->anggota_rombel->anggota_rombel_id] = ($siswa->anggota_rombel->single_prakerin) ? $siswa->anggota_rombel->single_prakerin->lama_prakerin : '';
@@ -145,11 +151,11 @@ class Pkl extends Component
             if($this->lama_prakerin[$anggota_rombel_id] && $this->skala[$anggota_rombel_id] && $this->keterangan_prakerin[$anggota_rombel_id]){
                 Prakerin::UpdateOrCreate(
                     [
-                        'anggota_rombel_id' => $anggota_rombel_id
-                    ],
-                    [
+                        'anggota_rombel_id' => $anggota_rombel_id,
                         'sekolah_id' => session('sekolah_id'),
                         'mitra_prakerin' 	=> $this->dudi->nama,
+                    ],
+                    [
                         'lokasi_prakerin'		=> $lokasi_prakerin,
                         'lama_prakerin'		=> $this->lama_prakerin[$anggota_rombel_id],
                         'skala'		=> $this->skala[$anggota_rombel_id],
@@ -166,5 +172,31 @@ class Pkl extends Component
         $this->reset(['dudi_id', 'dudi', 'data_siswa', 'show', 'lokasi_prakerin', 'lama_prakerin', 'skala', 'keterangan_prakerin']);
         $this->alert('success', 'Data Praktik Kerja Lapangan berhasil disimpan');
         $this->emit('confirmed');
+    }
+    public function hapusPrakerin($prakerin_id, $anggota_rombel_id){
+        $this->prakerin_id[$anggota_rombel_id] = $prakerin_id;
+        $this->prakerin_id_delete = $prakerin_id;
+        $this->alert('question', 'Apakah Anda yakin?', [
+            'text' => 'Tindakan ini tidak dapat dikembalikan',
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'OK',
+            'onConfirmed' => 'confirmed_delete',
+            'showCancelButton' => true,
+            'cancelButtonText' => 'Batal',
+            'allowOutsideClick' => false,
+            'timer' => null
+        ]);
+    }
+    public function confirmed_delete(){
+        $a = Prakerin::find($this->prakerin_id_delete);
+        $a->delete();
+        $this->alert('success', 'Prakerin berhasil dihapus', [
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'OK',
+            'onConfirmed' => 'confirmed',
+            'allowOutsideClick' => false,
+            'timer' => null
+        ]);
+        $this->updatedDudiId($this->dudi_id);
     }
 }
