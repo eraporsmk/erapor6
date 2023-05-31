@@ -95,6 +95,7 @@ class Pkl extends Component
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->where('jenis_rombel', 1);
             });
             $query->with(['single_prakerin' => function($query) use ($nama_dudi){
                 $query->where('mitra_prakerin', $nama_dudi);
