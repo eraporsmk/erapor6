@@ -1107,6 +1107,7 @@ class SinkronDapodik extends Command
         );
     }
     private function simpan_dudi($dapodik, $user, $semester){
+        Storage::disk('public')->put('dudi.json', json_encode($dapodik));
         $i=1;
         $bar = $this->output->createProgressBar(count($dapodik));
         $bar->start();
@@ -1121,7 +1122,8 @@ class SinkronDapodik extends Command
                     'sekolah_id'		=> $user->sekolah_id,
                     'nama'				=> $data->nama,
                     'bidang_usaha_id'	=> $data->bidang_usaha_id,
-                    'nama_bidang_usaha'	=> $data->mou->nama_bidang_usaha,
+                    'nama_bidang_usaha'	=> '-',
+                    //$mou->nama_bidang_usaha,
                     'alamat_jalan'		=> $data->alamat_jalan,
                     'rt'				=> $data->rt,
                     'rw'				=> $data->rw,
@@ -1139,91 +1141,93 @@ class SinkronDapodik extends Command
                     'last_sync'			=> now(),
                 ]
             );
-            Mou::withTrashed()->updateOrCreate(
-                [
-                    'mou_id' => $data->mou->mou_id
-                ],
-                [
-                    'mou_id_dapodik' => $data->mou->mou_id,
-                    'id_jns_ks'			=> $data->mou->id_jns_ks,
-                    'dudi_id'			=> $data->mou->dudi_id,
-                    'dudi_id_dapodik'	=> $data->mou->dudi_id,
-                    'sekolah_id'		=> $data->mou->sekolah_id,
-                    'nomor_mou'			=> $data->mou->nomor_mou,
-                    'judul_mou'			=> $data->mou->judul_mou,
-                    'tanggal_mulai'		=> $data->mou->tanggal_mulai,
-                    'tanggal_selesai'	=> ($data->mou->tanggal_selesai) ? $data->mou->tanggal_selesai : date('Y-m-d'),
-                    'nama_dudi'			=> $data->mou->nama_dudi,
-                    'npwp_dudi'			=> $data->mou->npwp_dudi,
-                    'nama_bidang_usaha'	=> $data->mou->nama_bidang_usaha,
-                    'telp_kantor'		=> $data->mou->telp_kantor,
-                    'fax'				=> $data->mou->fax,
-                    'contact_person'	=> $data->mou->contact_person,
-                    'telp_cp'			=> $data->mou->telp_cp,
-                    'jabatan_cp'		=> $data->mou->jabatan_cp,
-                    'last_sync'			=> now(),
-                ]
-            );
-            foreach($data->mou->akt_pd as $akt_pd){
-                Akt_pd::withTrashed()->updateOrCreate(
+            foreach($data->mou as $mou){
+                Mou::withTrashed()->updateOrCreate(
                     [
-                        'akt_pd_id' => $akt_pd->id_akt_pd
+                        'mou_id' => $mou->mou_id
                     ],
                     [
-                        'akt_pd_id_dapodik' => $akt_pd->id_akt_pd,
-                        'sekolah_id'	=> $user->sekolah_id,
-                        'mou_id'		=> $data->mou->mou_id,
-                        'id_jns_akt_pd'	=> $akt_pd->id_jns_akt_pd,
-                        'judul_akt_pd'	=> $akt_pd->judul_akt_pd,
-                        'sk_tugas'		=> ($akt_pd->sk_tugas) ? $akt_pd->sk_tugas : '-',
-                        'tgl_sk_tugas'	=> $akt_pd->tgl_sk_tugas,
-                        'ket_akt'		=> $akt_pd->ket_akt,
-                        'a_komunal'		=> $akt_pd->a_komunal,
-                        'last_sync'		=> now(),
+                        'mou_id_dapodik' => $mou->mou_id,
+                        'id_jns_ks'			=> $mou->id_jns_ks,
+                        'dudi_id'			=> $mou->dudi_id,
+                        'dudi_id_dapodik'	=> $mou->dudi_id,
+                        'sekolah_id'		=> $mou->sekolah_id,
+                        'nomor_mou'			=> $mou->nomor_mou,
+                        'judul_mou'			=> $mou->judul_mou,
+                        'tanggal_mulai'		=> $mou->tanggal_mulai,
+                        'tanggal_selesai'	=> ($mou->tanggal_selesai) ? $mou->tanggal_selesai : date('Y-m-d'),
+                        'nama_dudi'			=> $mou->nama_dudi,
+                        'npwp_dudi'			=> $mou->npwp_dudi,
+                        'nama_bidang_usaha'	=> $mou->nama_bidang_usaha,
+                        'telp_kantor'		=> $mou->telp_kantor,
+                        'fax'				=> $mou->fax,
+                        'contact_person'	=> $mou->contact_person,
+                        'telp_cp'			=> $mou->telp_cp,
+                        'jabatan_cp'		=> $mou->jabatan_cp,
+                        'last_sync'			=> now(),
                     ]
                 );
-                if($akt_pd->anggota_akt_pd){
-                    foreach($akt_pd->anggota_akt_pd as $anggota_akt_pd){
-                        if($anggota_akt_pd->registrasi_peserta_didik){
-                            $find = Peserta_didik::find($anggota_akt_pd->registrasi_peserta_didik->peserta_didik_id);
+                foreach($mou->akt_pd as $akt_pd){
+                    Akt_pd::withTrashed()->updateOrCreate(
+                        [
+                            'akt_pd_id' => $akt_pd->id_akt_pd
+                        ],
+                        [
+                            'akt_pd_id_dapodik' => $akt_pd->id_akt_pd,
+                            'sekolah_id'	=> $user->sekolah_id,
+                            'mou_id'		=> $mou->mou_id,
+                            'id_jns_akt_pd'	=> $akt_pd->id_jns_akt_pd,
+                            'judul_akt_pd'	=> $akt_pd->judul_akt_pd,
+                            'sk_tugas'		=> ($akt_pd->sk_tugas) ? $akt_pd->sk_tugas : '-',
+                            'tgl_sk_tugas'	=> $akt_pd->tgl_sk_tugas,
+                            'ket_akt'		=> $akt_pd->ket_akt,
+                            'a_komunal'		=> $akt_pd->a_komunal,
+                            'last_sync'		=> now(),
+                        ]
+                    );
+                    if($akt_pd->anggota_akt_pd){
+                        foreach($akt_pd->anggota_akt_pd as $anggota_akt_pd){
+                            if($anggota_akt_pd->registrasi_peserta_didik){
+                                $find = Peserta_didik::find($anggota_akt_pd->registrasi_peserta_didik->peserta_didik_id);
+                                if($find){
+                                    $create_anggota_akt_pd = Anggota_akt_pd::withTrashed()->updateOrCreate(
+                                        [
+                                            'anggota_akt_pd_id' => $anggota_akt_pd->id_ang_akt_pd,
+                                        ],
+                                        [
+                                            'id_ang_akt_pd' => $anggota_akt_pd->id_ang_akt_pd,
+                                            'sekolah_id'		=> $user->sekolah_id,
+                                            'akt_pd_id'			=> $akt_pd->id_akt_pd,
+                                            'peserta_didik_id'	=> $anggota_akt_pd->registrasi_peserta_didik->peserta_didik_id,
+                                            'nm_pd'				=> $anggota_akt_pd->nm_pd,
+                                            'nipd'				=> $anggota_akt_pd->nipd,
+                                            'jns_peran_pd'		=> $anggota_akt_pd->jns_peran_pd,
+                                            'last_sync'			=> now(),
+                                        ]
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    if($akt_pd->bimbing_pd){
+                        foreach($akt_pd->bimbing_pd as $bimbing_pd){
+                            $find = Guru::withTrashed()->find($bimbing_pd->ptk_id);
                             if($find){
-                                $create_anggota_akt_pd = Anggota_akt_pd::withTrashed()->updateOrCreate(
+                                $create_bimbing_pd = Bimbing_pd::withTrashed()->updateOrCreate(
                                     [
-                                        'anggota_akt_pd_id' => $anggota_akt_pd->id_ang_akt_pd,
+                                        'bimbing_pd_id' => $bimbing_pd->id_bimb_pd
                                     ],
                                     [
-                                        'id_ang_akt_pd' => $anggota_akt_pd->id_ang_akt_pd,
+                                        'id_bimb_pd' => $bimbing_pd->id_bimb_pd,
                                         'sekolah_id'		=> $user->sekolah_id,
                                         'akt_pd_id'			=> $akt_pd->id_akt_pd,
-                                        'peserta_didik_id'	=> $anggota_akt_pd->registrasi_peserta_didik->peserta_didik_id,
-                                        'nm_pd'				=> $anggota_akt_pd->nm_pd,
-                                        'nipd'				=> $anggota_akt_pd->nipd,
-                                        'jns_peran_pd'		=> $anggota_akt_pd->jns_peran_pd,
+                                        'guru_id'			=> $bimbing_pd->ptk_id,
+                                        'ptk_id'			=> $bimbing_pd->ptk_id,
+                                        'urutan_pembimbing'	=> $bimbing_pd->urutan_pembimbing,
                                         'last_sync'			=> now(),
                                     ]
                                 );
                             }
-                        }
-                    }
-                }
-                if($akt_pd->bimbing_pd){
-                    foreach($akt_pd->bimbing_pd as $bimbing_pd){
-                        $find = Guru::withTrashed()->find($bimbing_pd->ptk_id);
-                        if($find){
-                            $create_bimbing_pd = Bimbing_pd::withTrashed()->updateOrCreate(
-                                [
-                                    'bimbing_pd_id' => $bimbing_pd->id_bimb_pd
-                                ],
-                                [
-                                    'id_bimb_pd' => $bimbing_pd->id_bimb_pd,
-                                    'sekolah_id'		=> $user->sekolah_id,
-                                    'akt_pd_id'			=> $akt_pd->id_akt_pd,
-                                    'guru_id'			=> $bimbing_pd->ptk_id,
-                                    'ptk_id'			=> $bimbing_pd->ptk_id,
-                                    'urutan_pembimbing'	=> $bimbing_pd->urutan_pembimbing,
-                                    'last_sync'			=> now(),
-                                ]
-                            );
                         }
                     }
                 }
