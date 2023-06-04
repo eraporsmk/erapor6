@@ -16,6 +16,7 @@ class KenaikanKelas extends Component
     public $form = FALSE;
     public $tingkat;
     //public $data_siswa = [];
+    public $rombel_empat_tahun;
     public $status = [];
     public $nama_kelas = [];
     public $rombongan_belajar_id = [];
@@ -72,12 +73,13 @@ class KenaikanKelas extends Component
     }
     private function check_walas(){
         if($this->loggedUser()->hasRole('wali', session('semester_id'))){
-            $rombel = Rombongan_belajar::where(function($query){
+            $rombel = Rombongan_belajar::with(['rombel_empat_tahun'])->where(function($query){
                 $query->where('guru_id', $this->loggedUser()->guru_id);
                 $query->where('sekolah_id', session('sekolah_id'));
                 $query->where('semester_id', session('semester_aktif'));
                 $query->where('jenis_rombel', 1);
             })->first();
+            $this->rombel_empat_tahun = $rombel->rombel_empat_tahun;
             $next_rombel = NULL;
             if($rombel){
                 if($rombel->tingkat == 12){

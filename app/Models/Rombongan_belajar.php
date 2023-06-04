@@ -53,6 +53,10 @@ class Rombongan_belajar extends Model
 	{
 		return $this->hasOne(Sekolah::class, 'sekolah_id', 'sekolah_id');
 	}
+	public function rombel_empat_tahun()
+	{
+		return $this->hasOne(Rombel_empat_tahun::class, 'rombongan_belajar_id', 'rombongan_belajar_id');
+	}
 	public function pd(){
 		return $this->hasManyThrough(
             Peserta_didik::class,

@@ -135,12 +135,11 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 </table>
 <br />
 <?php
-/*if($cari_tingkat_akhir && !in_array($get_siswa->rombongan_belajar_id, $rombel_4_tahun)){
-	$text_status = 'Status Kelulusan';
-	$not_yet = 'Belum dilakukan kelulusan';
-} else*/
 if($get_siswa->rombongan_belajar->semester->semester == 2){
-	if($get_siswa->rombongan_belajar->tingkat >= 12){
+	if($get_siswa->rombongan_belajar->rombel_empat_tahun){
+		$text_status = 'Kenaikan Kelas';
+		$not_yet = 'Belum dilakukan kenaikan kelas';
+	} elseif($get_siswa->rombongan_belajar->tingkat >= 12 ){
 		$text_status = 'Status Kelulusan';
 		$not_yet = 'Belum dilakukan kelulusan';
 	} else {
