@@ -76,19 +76,12 @@
 			<tr>
 				<th colspan="5"><strong class="strong">{{$item->budaya_kerja->aspek}}</strong></th>
 			</tr>
-			@foreach ($item->budaya_kerja->elemen_budaya_kerja as $elemen)
 			<tr>
-				<td><span style="font-weight:bold;">{{$elemen->elemen}}.</span> {{$elemen->deskripsi}}</td>
+				<td><span style="font-weight:bold;">{{$item->elemen_budaya_kerja->elemen}}.</span> {{$item->elemen_budaya_kerja->deskripsi}}</td>
 				@foreach ($opsi_budaya_kerja as $opsi)
-				<?php
-				$nilai_budaya_kerja = $elemen->nilai_budaya_kerja()->whereHas('rencana_budaya_kerja', function($query) use ($rencana){
-					$query->where('aspek_budaya_kerja.rencana_budaya_kerja_id', $rencana->rencana_budaya_kerja_id);
-				})->where('anggota_rombel_id', $get_siswa->anggota_rombel_id)->first();
-				?>
-				<td class="text-center strong">{!! ($nilai_budaya_kerja && $nilai_budaya_kerja->opsi_id == $opsi->opsi_id) ? '√' : '' !!}</td>
+				<td class="text-center strong">{!! ($item->elemen_budaya_kerja->nilai_budaya_kerja && $item->elemen_budaya_kerja->nilai_budaya_kerja->opsi_id == $opsi->opsi_id) ? '√' : '' !!}</td>
 				@endforeach
 			</tr>
-			@endforeach
 		@endforeach
 	</tbody>
 	<tfoot>
