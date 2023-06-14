@@ -4,6 +4,17 @@
         <div class="card">
             <div class="card-body">
                 <div id="form">
+                    <legend><h3>Versi 6.0.5</h3></legend>
+                    <ol>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan Jumlah sub elemen tidak sesuai perencanaan di cetak rapor P5</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan Kenaikan kelas 12 khusus SMK 4 Tahun</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan satu DUDI memiliki lebih dari satu MoU/Prakerin</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan Bug wali kelas yang merangkap Pembina Ekskul</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Penambahan tombol hapus nilai PKL</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Penambahan opsi kelulusan untuk tingkat akhir</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan lampiran rapor untuk SMK Program 4 tahun</li>
+                        <li><b class="text-danger">[Perbaikan]</b> Perbaikan opsi kenaikan kelas</li>
+                    </ol>
                     <legend><h3>Versi 6.0.4</h3></legend>
                     <ol>
                         <li><b class="text-success">[Pembaharuan]</b> Memunculkan menu Kenaikan Kelas</li>
