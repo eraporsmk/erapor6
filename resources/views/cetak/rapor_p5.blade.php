@@ -72,16 +72,30 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach ($rencana->aspek_budaya_kerja->unique('budaya_kerja_id') as $item)
+		<?php
+		$nilai_p5 = [];
+		foreach ($rencana->aspek_budaya_kerja as $item){
+			$nilai_p5[$item->budaya_kerja->aspek][] = [
+				'elemen' => [
+					'elemen' => $item->elemen_budaya_kerja->elemen,
+					'deskripsi' => $item->elemen_budaya_kerja->deskripsi,
+				],
+				'nilai_budaya_kerja' => $item->elemen_budaya_kerja->nilai_budaya_kerja,
+			];
+		}
+		?>
+		@foreach ($nilai_p5 as $aspek => $nilai)
 			<tr>
-				<th colspan="5"><strong class="strong">{{$item->budaya_kerja->aspek}}</strong></th>
+				<th colspan="5"><strong class="strong">{{$aspek}}</strong></th>
 			</tr>
-			<tr>
-				<td><span style="font-weight:bold;">{{$item->elemen_budaya_kerja->elemen}}.</span> {{$item->elemen_budaya_kerja->deskripsi}}</td>
-				@foreach ($opsi_budaya_kerja as $opsi)
-				<td class="text-center strong">{!! ($item->elemen_budaya_kerja->nilai_budaya_kerja && $item->elemen_budaya_kerja->nilai_budaya_kerja->opsi_id == $opsi->opsi_id) ? '√' : '' !!}</td>
-				@endforeach
-			</tr>
+			@foreach ($nilai as $item)
+				<tr>
+					<td><span style="font-weight:bold;">{{$item['elemen']['elemen']}}.</span> {{$item['elemen']['deskripsi']}}</td>
+					@foreach ($opsi_budaya_kerja as $opsi)
+					<td class="text-center strong">{!! ($item['nilai_budaya_kerja'] && $item['nilai_budaya_kerja']->opsi_id == $opsi->opsi_id) ? '√' : '' !!}</td>
+					@endforeach
+				</tr>
+			@endforeach
 		@endforeach
 	</tbody>
 	<tfoot>

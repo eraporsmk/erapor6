@@ -937,14 +937,19 @@ class SinkronDapodik extends Command
             $this->simpan_guru($data->ptk_terdaftar, $user, $semester);
             $mapel = $this->cari_mapel($user, $semester, $data->mata_pelajaran_id);
             if($find){
+                if(isset($data->Soft_delete)){
+                    $soft_delete = ($data->Soft_delete) ? now() : NULL;
+                } else {
+                    $soft_delete = ($data->soft_delete) ? now() : NULL;
+                }
                 Pembelajaran::withTrashed()->updateOrCreate(
                     [
                         'pembelajaran_id' => $data->pembelajaran_id
                     ],
                     [
-                        'pembelajaran_id_dapodik' => $data->pembelajaran_id,
-                        'induk_pembelajaran_id' => ($induk) ? $induk_pembelajaran_id : NULL,
-                        'semester_id' => $data->semester_id,
+                        'pembelajaran_id_dapodik'   => $data->pembelajaran_id,
+                        'induk_pembelajaran_id'     => ($induk) ? $induk_pembelajaran_id : NULL,
+                        'semester_id'               => $data->semester_id,
                         'sekolah_id'				=> $user->sekolah_id,
                         'rombongan_belajar_id'		=> $data->rombongan_belajar_id,
                         'guru_id'					=> $data->ptk_terdaftar->ptk_id,
@@ -952,6 +957,7 @@ class SinkronDapodik extends Command
                         'nama_mata_pelajaran'		=> $data->nama_mata_pelajaran,
                         'kkm'						=> 0,
                         'is_dapodik'				=> 1,
+                        'deleted_at'                => $soft_delete,
                         'last_sync'					=> now(),
                     ]
                 );
