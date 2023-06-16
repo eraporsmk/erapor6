@@ -205,12 +205,27 @@ class CetakController extends Controller
 			'kenaikan',
 			'all_prakerin',
 			'single_catatan_wali',
-			'all_nilai_ekskul' => function($query){
+			/*'all_nilai_ekskul' => function($query){
 				$query->whereHas('ekstrakurikuler', function($query){
 					$query->where('semester_id', session('semester_aktif'));
 				});
 				$query->with(['ekstrakurikuler']);
-			},
+			},*/
+			'anggota_ekskul' => function($query){
+                $query->whereHas('rombongan_belajar', function($query){
+                    $query->where('sekolah_id', session('sekolah_id'));
+                    $query->where('semester_id', session('semester_aktif'));
+                    $query->where('jenis_rombel', 51);
+                });
+                $query->with([
+                    'rombongan_belajar' => function($query){
+                        $query->where('sekolah_id', session('sekolah_id'));
+                        $query->where('semester_id', session('semester_aktif'));
+                        $query->where('jenis_rombel', 51);
+                    },
+                    'single_nilai_ekstrakurikuler'
+                ]);
+            },
 		])->find($request->route('anggota_rombel_id'));
 		$budaya_kerja = Budaya_kerja::with(['catatan_budaya_kerja' => function($query){
 			$query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
