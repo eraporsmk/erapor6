@@ -102,7 +102,7 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 		<tr>
 			<td style="vertical-align: middle;">{{$loop->iteration}}</td>
 			<td>{{strtoupper($nilai_ekskul->rombongan_belajar->nama)}}</td>
-			<td>{{$nilai_ekskul->single_nilai_ekstrakurikuler->deskripsi_ekskul}}</td>
+			<td>{{($nilai_ekskul->single_nilai_ekstrakurikuler) ? $nilai_ekskul->single_nilai_ekstrakurikuler->deskripsi_ekskul : ''}}</td>
 		</tr>
 		@endforeach
 		@else
