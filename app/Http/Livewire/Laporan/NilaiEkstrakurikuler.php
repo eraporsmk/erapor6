@@ -86,13 +86,13 @@ class NilaiEkstrakurikuler extends Component
                     $query->where('sekolah_id', session('sekolah_id'));
                     $query->where('semester_id', session('semester_aktif'));
                     $query->where('jenis_rombel', 51);
+                    $query->has('kelas_ekskul');
                 });
                 $query->with([
                     'rombongan_belajar' => function($query){
                         $query->where('sekolah_id', session('sekolah_id'));
                         $query->where('semester_id', session('semester_aktif'));
                         $query->where('jenis_rombel', 51);
-                        $query->has('kelas_ekskul');
                         $query->with(['kelas_ekskul' => function($query){
                             $query->with('guru');
                         }]);
