@@ -53,6 +53,9 @@ class LegerKurmer extends Component
                 },
                 'anggota_pilihan' => function($query){
                     $query->where('semester_id', session('semester_aktif'));
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->where('jurusan_id', $this->loggedUser()->guru->rombongan_belajar->jurusan_id);
+                    });
                 }
             ])->orderBy('nama')->get();
             $this->data_pembelajaran = Pembelajaran::with(['rombongan_belajar'])->where(function($query){
@@ -113,8 +116,11 @@ class LegerKurmer extends Component
                 'anggota_rombel' => function($query){
                     $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
                 },
-                'anggota_pilihan' => function($query){
+                'anggota_pilihan' => function($query) use ($rombongan_belajar){
                     $query->where('semester_id', session('semester_aktif'));
+                    $query->whereHas('rombongan_belajar', function($query) use ($rombongan_belajar){
+                        $query->where('jurusan_id', $rombongan_belajar->jurusan_id);
+                    });
                 }
             ])->orderBy('nama')->get();
             /*$this->data_pembelajaran = Pembelajaran::where(function($query){

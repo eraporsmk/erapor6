@@ -22,14 +22,18 @@ class LeggerNilaiKurmerExport implements FromView, ShouldAutoSize
     }
 	public function view(): View
     {
+        $rombongan_belajar = Rombongan_belajar::with(['sekolah'])->find($this->rombongan_belajar_id);
         $data_siswa = Peserta_didik::whereHas('anggota_rombel', function($query){
             $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
         })->with([
             'anggota_rombel' => function($query){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
             },
-            'anggota_pilihan' => function($query){
+            'anggota_pilihan' => function($query) use ($rombongan_belajar){
                 $query->where('semester_id', session('semester_aktif'));
+                $query->whereHas('rombongan_belajar', function($query) use ($rombongan_belajar){
+                    $query->where('jurusan_id', $rombongan_belajar->jurusan_id);
+                });
             }
         ])->orderBy('nama')->get();
 		//$get_siswa = Anggota_rombel::with('siswa')->where('rombongan_belajar_id', $this->rombongan_belajar_id)->order()->get();
@@ -47,7 +51,7 @@ class LeggerNilaiKurmerExport implements FromView, ShouldAutoSize
 		$params = array(
 			'data_siswa' => $data_siswa,
 			'all_pembelajaran'	=> $all_pembelajaran,
-            'rombongan_belajar' => Rombongan_belajar::with(['sekolah'])->find($this->rombongan_belajar_id),
+            'rombongan_belajar' => $rombongan_belajar,
             'merdeka' => $this->merdeka,
 		);
 		return view('content.laporan.legger_nilai_kurmer', $params);
