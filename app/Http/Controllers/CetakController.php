@@ -462,6 +462,7 @@ class CetakController extends Controller
 						'elemen_budaya_kerja' => function($query) use ($anggota_rombel_id){
 							$query->with(['nilai_budaya_kerja' => function($query) use ($anggota_rombel_id){
 								$query->where('anggota_rombel_id', $anggota_rombel_id);
+								$query->whereNotNull('aspek_budaya_kerja_id');
 							}]);
 						},
 						'budaya_kerja',

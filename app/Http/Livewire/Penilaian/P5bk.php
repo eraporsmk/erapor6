@@ -197,16 +197,16 @@ class P5bk extends Component
         }
         foreach($this->nilai as $anggota_rombel_id => $nilai_p5){
             foreach($nilai_p5 as $aspek_budaya_kerja_id => $nilai){
-                $collection = Str::of($nilai)->explode('|');
+                $segments = Str::of($nilai)->split('/[\s|]+/');
                 Nilai_budaya_kerja::updateOrCreate(
                     [
                         'sekolah_id' => session('sekolah_id'),
                         'anggota_rombel_id' => $anggota_rombel_id,
                         'aspek_budaya_kerja_id' => $aspek_budaya_kerja_id,
-                        'elemen_id' => $collection[1],
+                        'elemen_id' => $segments->last(),
                     ],
                     [
-                        'opsi_id' => $collection[0],
+                        'opsi_id' => $segments->first(),
                     ]
                 );
             }
