@@ -54,8 +54,12 @@ class UjiKompetensiKeahlian extends Component
     public $status_satuan;
     public $kode_unit_satuan = [];
     public $nama_unit_satuan = [];
+    public $unit_ukk;
 
-    protected $listeners = ['postAdded' => 'incrementRow'];
+    protected $listeners = [
+        'postAdded' => 'incrementRow',
+        'confirmed_delete'
+    ];
     public function incrementRow(){
         $this->jml++;
     }
@@ -251,5 +255,36 @@ class UjiKompetensiKeahlian extends Component
         foreach($this->paket_ukk->unit_ukk as $unit_ukk){
             $this->paket_ukk_satuan[$unit_ukk->unit_ukk_id] = $unit_ukk;
         }
+    }
+    public function deleteUnit($unit_ukk_id){
+        $this->getUnit($this->paket_ukk_id, 'edit');
+        $this->unit_ukk = Unit_ukk::find($unit_ukk_id);
+        $this->alert('question', 'Apakah Anda yakin?', [
+            'text' => 'Tindakan ini tidak dapat dikembalikan',
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'OK',
+            'onConfirmed' => 'confirmed_delete',
+            'showCancelButton' => true,
+            'cancelButtonText' => 'Batal',
+            'allowOutsideClick' => false,
+            'timer' => null
+        ]);
+    }
+    public function confirmed_delete(){
+        if($this->unit_ukk->delete()){
+            $type = 'success';
+            $text = 'Unit UKK berhasil dihapus!';
+        } else {
+            $type = 'error';
+            $text = 'Unit UKK Gagal dihapus!';
+        }
+        $this->alert($type, $text, [
+            'showConfirmButton' => true,
+            'confirmButtonText' => 'OK',
+            'onConfirmed' => 'confirmed',
+            'allowOutsideClick' => false,
+            'timer' => null
+        ]);
+        $this->getUnit($this->paket_ukk_id, 'edit');
     }
 }

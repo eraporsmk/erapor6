@@ -48,8 +48,8 @@
                             @endforeach
                             @for ($i = 0; $i < $jml; $i++)
                             <tr>
-                                <td><input type="text" class="form-control" wire:model="kode_unit.{{$i}}"></td>
-                                <td><input type="text" class="form-control" wire:model="nama_unit.{{$i}}"></td>
+                                <td><input type="text" class="form-control" wire:model.defer="kode_unit.{{$i}}"></td>
+                                <td><input type="text" class="form-control" wire:model.defer="nama_unit.{{$i}}"></td>
                             </tr> 
                             @endfor
                         </tbody>

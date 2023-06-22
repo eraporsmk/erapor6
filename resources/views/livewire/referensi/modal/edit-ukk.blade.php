@@ -58,18 +58,22 @@
                                         <tr>
                                             <th class="tex-center">Kode Unit</th>
                                             <th class="tex-center">Nama Unit Kompetensi</th>
+                                            <th class="tex-center">#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($paket_ukk_satuan as $unit)
                                             <tr>
                                                 <td>
-                                                    <input type="text" class="form-control" wire:model.lazy="kode_unit_satuan.{{$unit->unit_ukk_id}}">
+                                                    <input type="text" class="form-control" wire:model.defer="kode_unit_satuan.{{$unit->unit_ukk_id}}">
                                                     @error('kode_unit_satuan.'.$unit->unit_ukk_id) <div class="text-danger">{{$message}}</div> @enderror
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control" wire:model.lazy="nama_unit_satuan.{{$unit->unit_ukk_id}}">
+                                                    <input type="text" class="form-control" wire:model.defer="nama_unit_satuan.{{$unit->unit_ukk_id}}">
                                                     @error('nama_unit_satuan.'.$unit->unit_ukk_id) <div class="text-danger">{{$message}}</div> @enderror
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="javascript:void(0)" wire:click="deleteUnit('{{$unit->unit_ukk_id}}')" class="text-danger"><i class="fas fa-trash"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach
