@@ -151,6 +151,7 @@ class NilaiAkhir extends Component
         if($this->merdeka){
             $query->whereHas('tp', function($query){
                 $query->whereHas('cp', function($query){
+                    $query->where('aktif', 1);
                     $query->whereHas('pembelajaran', function($query){
                         $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
                         $query->where($this->kondisi());
@@ -159,6 +160,7 @@ class NilaiAkhir extends Component
             });
         } else {
             $query->whereHas('kd', function($query){
+                $query->where('aktif', 1);
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
                     $query->where($this->kondisi());

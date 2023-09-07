@@ -60,6 +60,7 @@ class TujuanPembelajaran extends Component
                 $query->where('deskripsi', 'ILIKE', '%' . $this->search . '%');                
             }
             $query->whereHas('cp', function($query){
+                $query->where('aktif', 1);
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('guru_id', session('guru_id'));
                     $query->whereNotNull('kelompok_id');
@@ -78,6 +79,7 @@ class TujuanPembelajaran extends Component
                 });
             });
             $query->orWhereHas('kd', function($query){
+                $query->where('aktif', 1);
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('guru_id', session('guru_id'));
                     $query->whereNotNull('kelompok_id');
