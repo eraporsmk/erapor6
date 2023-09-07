@@ -197,10 +197,12 @@ class NilaiAkhir extends Component
         })->with(['anggota_rombel' => $callback])->orderBy('nama')->get();
         if($this->merdeka){
             $this->data_tp = Tujuan_pembelajaran::whereHas('cp', function($query){
+                $query->where('aktif', 1);
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
             })->orderBy('created_at')->get();
         } else {
             $this->data_tp = Tujuan_pembelajaran::whereHas('kd', function($query){
+                $query->where('aktif', 1);
                 $query->where('mata_pelajaran_id', $this->mata_pelajaran_id);
             })->orderBy('created_at')->get();
         }
