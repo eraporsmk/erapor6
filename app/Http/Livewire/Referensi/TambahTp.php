@@ -140,6 +140,7 @@ class TambahTp extends Component
                 $query->where('kelas_'.$this->tingkat, 1);
                 $query->where('kompetensi_id', $this->kompetensi_id);
                 $query->where('aktif', 1);
+                $query->whereNotIn('kurikulum', [2006, 2013, 2022]);
             })->orderBy('id_kompetensi')->get();
             $this->dispatchBrowserEvent('data_kd', ['data_kd' => $data_kd]);
             $this->dispatchBrowserEvent('pharaonic.select2.init');
