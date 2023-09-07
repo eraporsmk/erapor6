@@ -44,7 +44,7 @@ class KompetensiDasar extends Component
     {
         return view('livewire.referensi.kompetensi-dasar', [
             'collection' => Kompetensi_dasar::has('mata_pelajaran')->with(['mata_pelajaran'])->where($this->kondisiKd())->orderBy($this->sortby, $this->sortbydesc)
-                ->orderBy('aktif', 'DESC')
+                //->orderBy('aktif', 'DESC')
                 ->when($this->search, function($query) {
                     //$query->where('kompetensi_dasar', 'ILIKE', '%' . $this->search . '%');
                     //$query->orWhere('mata_pelajaran.nama', 'ILIKE', '%' . $this->search . '%');
