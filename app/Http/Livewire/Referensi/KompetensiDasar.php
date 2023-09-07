@@ -43,29 +43,21 @@ class KompetensiDasar extends Component
     public function render()
     {
         return view('livewire.referensi.kompetensi-dasar', [
-            'collection' => Kompetensi_dasar::has('mata_pelajaran')->with(['mata_pelajaran'])->where(function($query){
-                $query->whereHas('pembelajaran', function($query){
-                    $query->where('guru_id', $this->loggedUser()->guru_id);
-                    $query->whereNotNull('kelompok_id');
-                    $query->where('sekolah_id', session('sekolah_id'));
-                    $query->where('semester_id', session('semester_aktif'));
-                    $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
-                    $query->whereNotNull('kelompok_id');
-                    $query->where('sekolah_id', session('sekolah_id'));
-                    $query->where('semester_id', session('semester_aktif'));
-                });
-                $query->whereNotIn('kurikulum', [2006, 2013, 2022]);
-            })->orderBy($this->sortby, $this->sortbydesc)
+            'collection' => Kompetensi_dasar::has('mata_pelajaran')->with(['mata_pelajaran'])->where($this->kondisiKd())->orderBy($this->sortby, $this->sortbydesc)
                 ->when($this->search, function($query) {
                     //$query->where('kompetensi_dasar', 'ILIKE', '%' . $this->search . '%');
                     //$query->orWhere('mata_pelajaran.nama', 'ILIKE', '%' . $this->search . '%');
                     $query->where('id_kompetensi', 'ilike', '%'.$this->search.'%');
+                    $query->where($this->kondisiKd());
 					$query->orWhere('kompetensi_dasar', 'ilike', '%'.$this->search.'%');
+                    $query->where($this->kondisiKd());
 					$query->orWhere('kurikulum', 'ilike', '%'.$this->search.'%');
+                    $query->where($this->kondisiKd());
 					$query->orWhereHas('mata_pelajaran', function($q){ 
 						$q->where('mata_pelajaran_id', 'ilike', '%'.$this->search.'%');
                         $q->orWhere('nama', 'ilike', '%'.$this->search.'%');
 					});
+                    $query->where($this->kondisiKd());
             })->paginate($this->per_page),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Kompetensi Dasar"]
@@ -77,6 +69,21 @@ class KompetensiDasar extends Component
                 'text' => 'Tambah Data'
             ]
         ]);
+    }
+    private function kondisiKd(){
+        return function($query){
+            $query->whereHas('pembelajaran', function($query){
+                $query->where('guru_id', $this->loggedUser()->guru_id);
+                $query->whereNotNull('kelompok_id');
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('semester_id', session('semester_aktif'));
+                $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+                $query->whereNotNull('kelompok_id');
+                $query->where('sekolah_id', session('sekolah_id'));
+                $query->where('semester_id', session('semester_aktif'));
+            });
+            $query->whereNotIn('kurikulum', [2006, 2013, 2022]);
+        };
     }
     private function loggedUser(){
         return auth()->user();
