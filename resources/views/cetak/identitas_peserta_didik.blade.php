@@ -76,7 +76,7 @@
 		<td style="width: 5%;">&nbsp;</td>
 		<td style="width: 35%;padding:5px;">Di kelas</td>
 		<td style="width: 1%;">:</td>
-		<td style="width: 58%">{{($get_siswa->peserta_didik->diterima_kelas) ? $get_siswa->peserta_didik->diterima_kelas : '-'}}</td>
+		<td style="width: 58%">{{($get_siswa->peserta_didik->diterima_kelas) ? $get_siswa->peserta_didik->diterima_kelas : $get_siswa->rombongan_belajar->nama}}</td>
 	</tr>
 	<tr>
 		<td style="width: 5%;">&nbsp;</td>
